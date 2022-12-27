@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "admin",
+    "database": "test-db2",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "desktop-7mj31ns\\manta",
+    "password": "admin",
+    "database": "test-db2",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "desktop-7mj31ns\\manta",
+    "password": "admin",
+    "database": "test-db2",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
