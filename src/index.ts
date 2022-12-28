@@ -1,72 +1,140 @@
-import dotenv from "dotenv";
 import xlsx from "xlsx";
 import * as fs from "fs";
 import path from "path";
+import { InputOutputPath, ExportOption } from "./types";
 
-dotenv.config();
+// TODO: modify field values based on chosen options (ex. replace "AMOUNT" value to 5000)
 
 class ExcelToJson {
-  private readonly inputPath!: string;
-  private readonly outputPath!: string;
+  private inputPath!: string;
+  private outputPath!: string;
+  private outputTextFileName!: string;
+  private rawOutputFileName!: string;
+  private rawJsonData: Object = [];
 
-  constructor(_options: InputOutput) {
-    this.inputPath = _options.inputPath;
-    this.outputPath = _options.outputPath;
-  }
-
-  getWorkSheetContent(_filePath: string): xlsx.WorkSheet {
+  private getWorkSheetContent(_filePath: string): xlsx.WorkSheet {
     const workBook = xlsx.readFile(_filePath)
-    const firstSheet = workBook.SheetNames[0];
-    return workBook.Sheets[firstSheet];
+    const sheetName = workBook.SheetNames[0];
+    return workBook.Sheets[sheetName];
   }
 
-  convertContentToJSON_log(_excelData: xlsx.WorkSheet) {
-    const data = xlsx.utils.sheet_to_json(_excelData);
-    // data.map((row) => {
-    //   console.log(row)
-    // });
-    return data;
+  private convertContentToJSON(_sheet: any): Object {
+    const lastRow: xlsx.WorkSheet = _sheet['!ref'].split(":")[1].substring(0);
+    const headerRow = "A12"
+    const range = `${headerRow}:${lastRow}`;
+
+    console.log("Converting to JSON...")
+    const json = xlsx.utils.sheet_to_json(_sheet, {range: range});
+    return this.rawJSONData(JSON.stringify(json, null, 2));
   }
 
-  // writeFileToOutput(_path: string = this.outputPath, _outputFileName: string, _fileContent: any) {
-  //   const filePath: string = path.join(__dirname, 'files', 'output', `${_path}`, `${_outputFileName}`);
-  //   fs.writeFileSync(filePath, _fileContent);
-  // }
-
-  writeFileToOutput(_outputFileName: string, _fileContent: any) {
-    const filePath: string = path.join(__dirname, 'files', 'output', `${_outputFileName}`);
+  private writeFileToOutput(_outputTextFileName: string, _fileContent: any) {
+    const filePath: string = path.join(__dirname, 'files', 'output', `${_outputTextFileName}`);
     fs.writeFileSync(filePath, _fileContent);
   }
 
+  private getExportTimeStamp(): string {
+    const date = new Date();
 
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDay();
+    const time = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
 
-  // TODO: save output to text file
-  // TODO: name output file with current dateTime (to prevent from overwriting) OR make an option to choose how the file should be named
-
-  JSON() {
-    const workSheetContent = this.getWorkSheetContent(this.inputPath);
-    const toJson = this.convertContentToJSON_log(workSheetContent);
-    this.writeFileToOutput('write_test.txt', JSON.stringify(toJson,null, 2));
+    return `${year}${month}${day}-${time}${minutes}${seconds}`;
   }
 
-  debug() {
-    console.log(this.inputPath);
-    console.log(this.outputPath);
+  private rawJSONData(_data: Object = this.rawJsonData): Object {
+    this.rawJsonData = _data;
+    return this.rawJsonData;
+  }
+
+  private updateJsonData(_data: Object) {
+    const data = _data;
+    const result: Array<Object> = [];
+    // const data2 = Object.entries(data);
+
+    // TODO: change json to array of objects that you can map
+    Object.entries(data).map(([key, value]) => {
+      const obj = {[key]: value}
+      result.push(obj)
+    })
+
+
+    // TODO: iterate over each object of the array
+
+
+
+
+    // TODO: change the values based on options
+
+
+
+
+    // console.log(data);
+    console.log(result[0], result[1]);
+    return {};
+  }
+
+  private exportJSON(_jsonData: Object) {
+    this.writeFileToOutput(this.outputTextFileName, _jsonData);
+  }
+
+  private exportJSONFromOption(_workSheet: xlsx.WorkSheet, _exportOptions: ExportOption) {
+    if (_exportOptions === "raw") {
+      const json = this.convertContentToJSON(_workSheet);
+      this.exportJSON(json);
+    }
+
+    if (_exportOptions === "transform") {
+      const originalJson = this.convertContentToJSON(_workSheet);
+      // const updatedData = this.updateJsonData(originalJson);
+
+      this.updateJsonData(originalJson);
+
+
+      // this.exportJSON(updatedData);
+    }
+
+    if (_exportOptions === "both") {
+      const originalJson = this.convertContentToJSON(_workSheet);
+      const updatedData = this.updateJsonData(originalJson);
+
+      // this.exportJSON(originalJson);
+      // this.exportJSON(updatedData);
+    }
+  }
+
+  JSON(_inputOutputOptions: InputOutputPath, _outputFileName: string, _exportOption: ExportOption = "raw") {
+    this.inputPath = _inputOutputOptions.inputPath;
+    this.outputPath = _inputOutputOptions.outputPath;
+    this.outputTextFileName = _outputFileName + "_" + this.getExportTimeStamp() + ".txt";
+    this.rawOutputFileName = _outputFileName + "_" + "Orig" + "_" + this.getExportTimeStamp() + ".txt";
+
+    const workSheet = this.getWorkSheetContent(this.inputPath);
+
+    if (workSheet) {
+      try {
+        this.exportJSONFromOption(workSheet, _exportOption);
+      } catch (e) {
+        console.log("Error!", e)
+      }
+    }
+
+    return this;
   }
 }
 
-interface InputOutput {
-  inputPath: string,
-  outputPath: string
+const options: InputOutputPath = {
+  inputPath: path.join(__dirname, 'files', 'input', 'input.xlsx'),
+  outputPath: path.join(__dirname, 'files', 'output')
 }
 
-const options: InputOutput = {
-  inputPath: "./files/input/input.xlsx",
-  outputPath: "./files/output"
-}
+const excelToJson = new ExcelToJson();
 
-const filePathLog = new ExcelToJson(options);
-filePathLog.JSON();
+excelToJson.JSON(options, 'FILENAME_JSON_Export', "transform");
 
 // INPUT_PATH = ./src/files/input
 // OUTPUT_PATH = ./src/files/output
