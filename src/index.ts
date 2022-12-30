@@ -1,4 +1,4 @@
-import xlsx from "xlsx";
+import XLSX from "xlsx";
 import * as fs from "fs";
 import path from "path";
 import { InputOutputPath, ExportOption } from "./types";
@@ -12,19 +12,17 @@ class ExcelToJson {
   private rawOutputFileName!: string;
   private rawJsonData: Object = [];
 
-  private getWorkSheetContent(_filePath: string): xlsx.WorkSheet {
-    const workBook = xlsx.readFile(_filePath)
+  private getWorkSheetData(_filePath: string): XLSX.WorkSheet {
+    const workBook = XLSX.readFile(_filePath)
     const sheetName = workBook.SheetNames[0];
     return workBook.Sheets[sheetName];
   }
 
   private convertContentToJSON(_sheet: any): Object {
-    const lastRow: xlsx.WorkSheet = _sheet['!ref'].split(":")[1].substring(0);
-    const headerRow = "A12"
-    const range = `${headerRow}:${lastRow}`;
+    const range = this.setSheetRange(_sheet, "A12");
 
     console.log("Converting to JSON...")
-    const json = xlsx.utils.sheet_to_json(_sheet, {range: range});
+    const json = XLSX.utils.sheet_to_json(_sheet, {range: range});
     return this.rawJSONData(JSON.stringify(json, null, 2));
   }
 
@@ -51,79 +49,99 @@ class ExcelToJson {
     return this.rawJsonData;
   }
 
-  private updateJsonData(_data: Object) {
+  private processData(_data: any): XLSX.WorkSheet {
     const data = _data;
-    const result: Array<Object> = [];
-    // const data2 = Object.entries(data);
+    let result: XLSX.WorkSheet = {};
 
-    // TODO: change json to array of objects that you can map
-    Object.entries(data).map(([key, value]) => {
-      const obj = {[key]: value}
-      result.push(obj)
-    })
+    // TODO: iterate over each worksheet lines field (print to console to check)
+    const rangeStr = this.setSheetRange(data,"A12");
+    const range: any = XLSX.utils.decode_range(rangeStr);
 
+    const row = data[range];
 
-    // TODO: iterate over each object of the array
+    // TODO: change selected field the values based on options
 
+    // console.log(range);
 
+    const firstRow = row[0].v = 'test'
+    console.log(firstRow);
 
+    // console.log(row);
 
-    // TODO: change the values based on options
+    // // Iterate over the cells in the header row and log their values
+    // for (let c = range.s.c; c <= range.e.c; c++) {
+    //   const cell = sheet[XLSX.utils.encode_cell({ c, r: range.s.r })];
+    //
+    //   if (cell) {
+    //     console.log(cell.v);
+    //   }
+    // }
 
-
-
-
-    // console.log(data);
-    console.log(result[0], result[1]);
-    return {};
+    return result;
   }
 
   private exportJSON(_jsonData: Object) {
     this.writeFileToOutput(this.outputTextFileName, _jsonData);
   }
 
-  private exportJSONFromOption(_workSheet: xlsx.WorkSheet, _exportOptions: ExportOption) {
-    if (_exportOptions === "raw") {
-      const json = this.convertContentToJSON(_workSheet);
-      this.exportJSON(json);
-    }
-
+  private exportJSONFromOption(_workSheet: XLSX.WorkSheet, _exportOptions: ExportOption) {
     if (_exportOptions === "transform") {
-      const originalJson = this.convertContentToJSON(_workSheet);
-      // const updatedData = this.updateJsonData(originalJson);
-
-      this.updateJsonData(originalJson);
-
-
-      // this.exportJSON(updatedData);
+      // const transformed = this.processData(_workSheet);
+      // const json = this.convertContentToJSON(transformed);
+      this.processData(_workSheet);
+      return;
     }
 
-    if (_exportOptions === "both") {
-      const originalJson = this.convertContentToJSON(_workSheet);
-      const updatedData = this.updateJsonData(originalJson);
-
-      // this.exportJSON(originalJson);
-      // this.exportJSON(updatedData);
-    }
+    const json = this.convertContentToJSON(_workSheet);
+    this.exportJSON(json);
   }
 
-  JSON(_inputOutputOptions: InputOutputPath, _outputFileName: string, _exportOption: ExportOption = "raw") {
-    this.inputPath = _inputOutputOptions.inputPath;
-    this.outputPath = _inputOutputOptions.outputPath;
-    this.outputTextFileName = _outputFileName + "_" + this.getExportTimeStamp() + ".txt";
-    this.rawOutputFileName = _outputFileName + "_" + "Orig" + "_" + this.getExportTimeStamp() + ".txt";
+  private setSheetRange(_sheet: any, _header: string = "A12") {
+    const lastRow: XLSX.WorkSheet = _sheet['!ref'].split(":")[1].substring(0);
+    const headerRow = "A12"
+    return `${headerRow}:${lastRow}`;
+  }
 
-    const workSheet = this.getWorkSheetContent(this.inputPath);
+  private getHeaders(_startRow: string): Array<any> {
+    const sheet: any = this.getWorkSheetData(this.inputPath);;
+    const rangeStr = this.setSheetRange(sheet, _startRow);
+    const range = XLSX.utils.decode_range(rangeStr);
+    const headers = [];
 
-    if (workSheet) {
+    for (let c = range.s.c; c <= range.e.c; c++) {
+      const cell = sheet[XLSX.utils.encode_cell({ c, r: range.s.r })];
+
+      if (cell) {
+        headers.push(cell.v);
+      }
+    }
+
+    return headers;
+  }
+
+  JSON(_inputOutputOptions: InputOutputPath, _outputFileName: string, _exportOption: ExportOption = "original") {
+    const {inputPath, outputPath} = _inputOutputOptions;
+    const fileName = _outputFileName;
+    const option = _exportOption;
+
+    this.inputPath = inputPath;
+    this.outputPath = outputPath;
+
+    this.outputTextFileName = fileName + "_" + this.getExportTimeStamp() + ".txt";
+    this.rawOutputFileName = fileName + "_" + "Orig" + "_" + this.getExportTimeStamp() + ".txt";
+
+    const sheet: any = this.getWorkSheetData(this.inputPath);
+
+    console.log(this.getHeaders("A12"));
+
+    if (sheet) {
+      // console.log("sheet:", sheet[range]);
       try {
-        this.exportJSONFromOption(workSheet, _exportOption);
+        this.exportJSONFromOption(sheet, option);
       } catch (e) {
         console.log("Error!", e)
       }
     }
-
-    return this;
   }
 }
 
@@ -134,7 +152,8 @@ const options: InputOutputPath = {
 
 const excelToJson = new ExcelToJson();
 
-excelToJson.JSON(options, 'FILENAME_JSON_Export', "transform");
+excelToJson.JSON(options, 'FILENAME_JSON_Export');
+// excelToJson.JSON(options, 'FILENAME_JSON_Export', "transform");
 
 // INPUT_PATH = ./src/files/input
 // OUTPUT_PATH = ./src/files/output

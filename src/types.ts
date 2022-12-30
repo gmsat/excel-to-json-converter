@@ -3,4 +3,4 @@ export interface InputOutputPath {
   outputPath: string
 }
 
-export type ExportOption = 'raw' | 'transform' | 'both';
+export type ExportOption = 'original' | 'transform';
