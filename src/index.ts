@@ -1,10 +1,8 @@
 import XLSX from "xlsx";
 import * as fs from "fs";
 import path from "path";
-import { ExportOption, FCondition, InputOutputPath } from "./types";
+import { ExportOption, FCondition, InputOutputPath, Headers } from "./types";
 import moment from "moment";
-
-// TODO: modify field values based on chosen options (ex. replace "AMOUNT" value to 5000)
 
 class ExcelToJson {
   private inputPath!: string;
@@ -16,14 +14,16 @@ class ExcelToJson {
   private getWorkSheetData(_filePath: string): XLSX.WorkSheet {
     const workBook = XLSX.readFile(_filePath)
     const sheetName = workBook.SheetNames[0];
+
     return workBook.Sheets[sheetName];
   }
 
   private convertContentToJSON(_sheet: any): string {
-    const range = this.setSheetRange(_sheet, "A12");
-
     console.log("Converting to JSON...")
+
+    const range = this.setSheetRange(_sheet, "A12");
     const json = XLSX.utils.sheet_to_json(_sheet, {range: range});
+
     return this.rawJSONData(JSON.stringify(json, null, 2));
   }
 
@@ -46,62 +46,21 @@ class ExcelToJson {
     return this.rawJsonData;
   }
 
-  private processExcelData(_data: any): XLSX.WorkSheet {
-    const data = _data;
-    let result: XLSX.WorkSheet = {};
-
-    // TODO: iterate over each worksheet lines field (print to console to check)
-    const rangeStr = this.setSheetRange(data,"A12");
-    const range: any = XLSX.utils.decode_range(rangeStr);
-
-    const row = data[range];
-
-    // TODO: change selected field the values based on options
-
-    // console.log(range);
-
-    const firstRow = row[0].v = 'test'
-    console.log(firstRow);
-
-    // console.log(row);
-
-    // // Iterate over the cells in the header row and log their values
-    // for (let c = range.s.c; c <= range.e.c; c++) {
-    //   const cell = sheet[XLSX.utils.encode_cell({ c, r: range.s.r })];
-    //
-    //   if (cell) {
-    //     console.log(cell.v);
-    //   }
-    // }
-
-    return result;
-  }
-
   private processJsonData(_json: string) {
     console.log("Process Json data method running...");
+
     const data: any[] = JSON.parse(_json);
-
-    // const modifiedData = data.map((item, index) => {
-    //   Object.entries(item).map(([key, value]) => {
-    //     if (key === "AMOUNT") {
-    //       item[key] = 9999;
-    //     }
-    //     // return [key === "AMOUNT" ? "TEST_KEY" : key, value];
-    //   });
-    //   return item;
-    // });
-
     const modifiedData = this.changeDataFromKey(data, "AMOUNT", 4444);
     const changeKeys = this.multiRenameKeys(modifiedData, ["AMOUNT", "N.laukas", "CURRENCY"], ["A", "N", "C"]);
 
     return JSON.stringify(changeKeys, null, 2);
   }
 
-  private changeDataByCondition(_array: any[], _key: string, _condition: FCondition) {
-
+  private changeDataByCondition(_array: any[], _key: Headers, _condition: FCondition) {
+    // TODO: filter function that updates data based on selected ranges
   }
 
-  private changeDataFromKey(_array: any[], _key: string, _newValue: string | number) {
+  private changeDataFromKey(_array: any[], _key: Headers, _newValue: string | number) {
     return _array.map((item, index) => {
       Object.entries(item).map(([key, value]) => {
         if (key === _key) {
@@ -153,6 +112,7 @@ class ExcelToJson {
   private setSheetRange(_sheet: any, _header: string = "A12") {
     const lastRow: XLSX.WorkSheet = _sheet['!ref'].split(":")[1].substring(0);
     const headerRow = "A12"
+
     return `${headerRow}:${lastRow}`;
   }
 
@@ -171,6 +131,7 @@ class ExcelToJson {
     }
 
     console.log(headers);
+
     return headers;
   }
 
@@ -188,7 +149,6 @@ class ExcelToJson {
     const sheet: any = this.getWorkSheetData(this.inputPath);
 
     if (sheet) {
-      // console.log("sheet:", sheet[range]);
       try {
         this.exportJSONFromOption(sheet, option);
       } catch (e) {
@@ -206,6 +166,7 @@ const options: InputOutputPath = {
 const excelToJson = new ExcelToJson();
 
 excelToJson.JSON(options, 'FILENAME_JSON_Export', "transform");
+excelToJson.JSON(options, 'FILENAME_JSON_Export');
 
 // INPUT_PATH = ./src/files/input
 // OUTPUT_PATH = ./src/files/output

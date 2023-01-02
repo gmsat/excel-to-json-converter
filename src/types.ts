@@ -3,7 +3,7 @@ export interface InputOutputPath {
   outputPath: string
 }
 
-export const Headers = [
+const headers = [
   'N.laukas',          'PAYMENT_ID',        'STATUS',
   'SYNCED',            'DOCTYPE',           'BUSINESSAREA',
   'PRIORITY',          'AMOUNT',            'CURRENCY',
@@ -31,6 +31,8 @@ export const Headers = [
   'REASON PRTRY',      'ORIGINATOR BIC',    'ORIGINATOR NAME',
   'CHARGES AMOUNT',    'CREATOR_ID'
 ] as const
+
+export type Headers = typeof headers[number];
 
 export interface PayerObject {
   [index: string]: Headers
