@@ -90,7 +90,7 @@ class ExcelToJson {
     //   });
     //   return item;
     // });
-    this.changeDataByCondition(data, "AMOUNT", );
+
     const modifiedData = this.changeDataFromKey(data, "AMOUNT", 4444);
     const changeKeys = this.multiRenameKeys(modifiedData, ["AMOUNT", "N.laukas", "CURRENCY"], ["A", "N", "C"]);
 
