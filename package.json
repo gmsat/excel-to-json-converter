@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
-    "start": "nodemon src/index.ts",
+    "start": "nodemon src/modules/excel-to-json/index.ts",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
