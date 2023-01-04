@@ -1,7 +1,7 @@
-import { utils, readFile, WorkSheet } from "xlsx";
+import { readFile, utils, WorkSheet } from "xlsx";
 import * as fs from "fs";
 import path from "path";
-import { ExportOption, FCondition, InputOutputPath, Headers } from "./types";
+import { ExportOption, FCondition, Headers, InputOutputPath } from "./types";
 import moment from "moment";
 
 export default class ExcelToJson {
@@ -10,6 +10,11 @@ export default class ExcelToJson {
   private outputTextFileName!: string;
   private rawOutputFileName!: string;
   private rawJsonData: string = "";
+  private headers: string = "A1";
+  private oldKeys: Headers[] | undefined = [];
+  private newKeys: string[] | undefined = [];
+  private keyToChangeValueFor: Headers | undefined;
+  private newValueForKey: string | number | undefined;
 
   private getWorkSheetData(_filePath: string): WorkSheet {
     const workBook = readFile(_filePath)
@@ -21,7 +26,7 @@ export default class ExcelToJson {
   private convertContentToJSON(_sheet: any): string {
     console.log("Converting to JSON...")
 
-    const range = this.setSheetRange(_sheet, "A12");
+    const range = this.setSheetRange(_sheet, this.headers);
     const json = utils.sheet_to_json(_sheet, {range: range});
 
     return this.rawJSONData(JSON.stringify(json, null, 2));
@@ -30,6 +35,10 @@ export default class ExcelToJson {
   private writeFileToOutput(_outputTextFileName: string, _fileContent: any) {
     const filePath: string = path.join(this.outputPath, `${_outputTextFileName}`);
     fs.writeFileSync(filePath, _fileContent);
+  }
+
+  private writeFileToOutputFromUpload(_outputTextFileName: string, _fileContent: any) {
+    fs.writeFileSync(_outputTextFileName, _fileContent);
   }
 
   private getExportTimeStamp(): string {
@@ -50,10 +59,15 @@ export default class ExcelToJson {
     console.log("Process Json data method running...");
 
     const data: any[] = JSON.parse(_json);
-    const modifiedData = this.changeDataFromKey(data, "AMOUNT", 4444);
-    const changeKeys = this.multiRenameKeys(modifiedData, ["AMOUNT", "N.laukas", "CURRENCY"], ["A", "N", "C"]);
+    const modifiedData = this.changeDataFromKey(data, this.keyToChangeValueFor, this.newValueForKey);
 
-    return JSON.stringify(changeKeys, null, 2);
+    if (this.oldKeys && this.newKeys) {
+      const changeKeys = this.multiRenameKeys(modifiedData, this.oldKeys, this.newKeys);
+
+      return JSON.stringify(changeKeys, null, 2);
+    }
+
+    return "";
   }
 
   private changeDataByCondition(_array: any[], _key: Headers, _condition: FCondition) {
@@ -64,7 +78,7 @@ export default class ExcelToJson {
     alert("test!");
   }
 
-  private changeDataFromKey(_array: any[], _key: Headers, _newValue: string | number) {
+  private changeDataFromKey(_array: any[], _key: Headers | undefined, _newValue: string | number | undefined) {
     return _array.map((item, index) => {
       Object.entries(item).map(([key, value]) => {
         if (key === _key) {
@@ -79,7 +93,7 @@ export default class ExcelToJson {
   private multiRenameKeys(_array: any[], _oldKeys: string[], _newKeys: string[]) {
     let changedKeys = _array;
 
-    for (let i = 0; i <= _newKeys.length-1; i++) {
+    for (let i = 0; i <= _newKeys.length - 1; i++) {
       changedKeys = this.renameKey(changedKeys, _oldKeys[i], _newKeys[i]);
     }
 
@@ -113,43 +127,70 @@ export default class ExcelToJson {
     this.exportJSON(this.rawOutputFileName, json);
   }
 
-  private setSheetRange(_sheet: any, _header: string = "A12") {
+  private setSheetRange(_sheet: any, _header: string) {
     const lastRow: WorkSheet = _sheet['!ref'].split(":")[1].substring(0);
-    const headerRow = "A12"
+    const headerRow = this.headers;
 
     return `${headerRow}:${lastRow}`;
   }
 
   private getHeaders(_startRow: string): Array<any> {
-    const sheet: any = this.getWorkSheetData(this.inputPath);;
+    const sheet: any = this.getWorkSheetData(this.inputPath);
     const rangeStr = this.setSheetRange(sheet, _startRow);
     const range = utils.decode_range(rangeStr);
     const headers = [];
 
     for (let c = range.s.c; c <= range.e.c; c++) {
-      const cell = sheet[utils.encode_cell({ c, r: range.s.r })];
+      const cell = sheet[utils.encode_cell({c, r: range.s.r})];
 
       if (cell) {
         headers.push(cell.v);
       }
     }
 
-    // console.log(headers);
-
     return headers;
   }
 
-  JSON_upload() {
+  // JSON_fromUpload(_inputOutputOptions: InputOutputPath, _outputFileName: string, _exportOption: ExportOption = "original") {
+  //   const fileName = _outputFileName;
+  //   const option = _exportOption;
+  //
+  //   let inputFile: string | ArrayBuffer | null;
+  //
+  //   this.outputTextFileName = fileName + "_" + this.getExportTimeStamp() + ".txt";
+  //   this.rawOutputFileName = fileName + "_" + "Orig" + "_" + this.getExportTimeStamp() + ".txt";
+  //
+  //   const sheet: any = this.getWorkSheetData(this.inputPath);
+  //
+  //   if (sheet) {
+  //     try {
+  //       this.exportJSONFromOption(sheet, option);
+  //     } catch (e) {
+  //       console.log("Error!", e)
+  //     }
+  //   }
+  // }
 
-  }
-
-  JSON(_inputOutputOptions: InputOutputPath, _outputFileName: string, _exportOption: ExportOption = "original") {
+  JSON(_inputOutputOptions: InputOutputPath,
+       _outputFileName: string,
+       _headers: string = "A1",
+       _exportOption: ExportOption = "original",
+       _oldKeys?: Headers[],
+       _newKeys?: string[],
+       _keyToChangeValueFor?: Headers,
+       _newValueForKey?: string | number
+  ) {
     const {inputPath, outputPath} = _inputOutputOptions;
     const fileName = _outputFileName;
     const option = _exportOption;
 
     this.inputPath = inputPath;
     this.outputPath = outputPath;
+    this.headers = _headers;
+    this.oldKeys = _oldKeys;
+    this.newKeys = _newKeys;
+    this.keyToChangeValueFor = _keyToChangeValueFor;
+    this.newValueForKey = _newValueForKey;
 
     this.outputTextFileName = fileName + "_" + this.getExportTimeStamp() + ".txt";
     this.rawOutputFileName = fileName + "_" + "Orig" + "_" + this.getExportTimeStamp() + ".txt";
@@ -165,21 +206,3 @@ export default class ExcelToJson {
     }
   }
 }
-
-// const options: InputOutputPath = {
-//   inputPath: path.join(__dirname, 'files', 'input', 'input.xlsx'),
-//   outputPath: path.join(__dirname, 'files', 'output')
-// }
-
-// const options = {
-//   inputPath: "",
-//   outputPath: ""
-// }
-
-// const excelToJson = new ExcelToJson();
-
-// excelToJson.JSON(options, 'FILENAME_JSON_Export', "transform");
-// excelToJson.JSON(options, 'FILENAME_JSON_Export');
-
-// INPUT_PATH = ./src/files/input
-// OUTPUT_PATH = ./src/files/output
