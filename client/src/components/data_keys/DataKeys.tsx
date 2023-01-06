@@ -5,20 +5,21 @@ interface Props {
   oldKeys: string[],
   setOldKeys: (newOldKeys: string[]) => void,
   newKeys: string[],
-  setNewKeys: (newKeys: string[]) => void
+  setNewKeys: (newKeys: string[]) => void,
+  handleSubmit: (e: any) => void
 }
 
 interface HeaderInputProps {
   itemData: string,
   index: number,
   // newKeys: string[] | null,
-  // setNewKeys: (newKeys: string[]) => void
+  setNewKeys: (newKeys: string[]) => void
 }
 
 // TODO: add checkboxes to enable / disable keys
 // TODO: add input fields to set default values for each key
 
-const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKeys}) => {
+const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKeys, handleSubmit}) => {
   const [headers, setHeaders] = useState<string[] | null>(null);
   // const [thisNewKeys, setThisNewKeys] = useState(newKeys);
 
@@ -27,14 +28,6 @@ const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKe
     // setThisNewKeys(newKeys);
   }, [data]);
 
-  // useEffect(() => {
-  //   setNewKeys(thisNewKeys);
-  // }, [thisNewKeys]);
-
-  // useEffect(() => {
-  //   setNewKeys(thisNewKeys);
-  // }, [thisNewKeys]);
-
   function getNewKeys(_array: string[], _index: number, _targetVal: any) {
     return _array!.map((item, i) => {
       if (i === _index) return _targetVal;
@@ -42,7 +35,7 @@ const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKe
     });
   }
 
-  const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index}) => {
+  const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, setNewKeys}) => {
     const [value, setValue] = useState(itemData);
     const [checked, setChecked] = useState(true);
     const [updatedKeys, setUpdatedKeys] = useState([""]);
@@ -50,16 +43,9 @@ const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKe
     const handleInputChange = (e: any) => {
       const targetVal = e.target.value;
       const updated = getNewKeys(oldKeys, index, targetVal);
-      setUpdatedKeys(updated)
+      setUpdatedKeys(updated);
       setValue(targetVal);
     }
-
-    // const handleInputChange = useCallback((e: any) => {
-    //   const targetVal = e.target.value;
-    //   const newK = getNewKeys(oldKeys, index, targetVal);
-    //   setNewKeys(newK);
-    //   setValue(targetVal);
-    // }, [index]);
 
     const handleChecked = () => {
       setChecked(!checked);
@@ -82,7 +68,7 @@ const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKe
           {index === 0 ? <text style={{fontSize: "0.8rem"}}>Edit headers</text> : null}
         </div>
 
-        <HeaderInput itemData={item} index={index}/>
+        <HeaderInput setNewKeys={setNewKeys} key={index} itemData={item} index={index}/>
 
       </div>
     )
@@ -91,6 +77,7 @@ const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKe
   return (
     <div style={{display: "flex", flexFlow: "column", gap: 5}}>
       {headers ? headersList : <div>Upload file to get data...</div>}
+      {/*<button type={"submit"} onClick={handleClick}>Submit Changes</button>*/}
     </div>
   );
 }
