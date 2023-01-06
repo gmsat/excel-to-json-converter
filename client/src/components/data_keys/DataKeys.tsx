@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState, memo, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useGlobal, setGlobal } from "reactn";
+import { GlobalState } from "../../App";
 
 interface Props {
   data: string[] | null,
@@ -16,16 +18,16 @@ interface HeaderInputProps {
   setNewKeys: (newKeys: string[]) => void
 }
 
-// TODO: add checkboxes to enable / disable keys
-// TODO: add input fields to set default values for each key
+// add checkboxes to enable / disable keys
+// add input fields to set default values for each key
 
-const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKeys, handleSubmit}) => {
+const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKeys}) => {
   const [headers, setHeaders] = useState<string[] | null>(null);
-  // const [thisNewKeys, setThisNewKeys] = useState(newKeys);
+  // const [updatedKeys, setUpdatedKeys] = useState(oldKeys);
 
   useEffect(() => {
     setHeaders(data);
-    // setThisNewKeys(newKeys);
+    // setUpdatedKeys(oldKeys)
   }, [data]);
 
   function getNewKeys(_array: string[], _index: number, _targetVal: any) {
@@ -35,27 +37,40 @@ const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKe
     });
   }
 
-  const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, setNewKeys}) => {
-    const [value, setValue] = useState(itemData);
+  const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index}) => {
+    const initialValue = useRef(itemData);
+
+    const [value, setValue] = useState(initialValue.current);
     const [checked, setChecked] = useState(true);
-    const [updatedKeys, setUpdatedKeys] = useState([""]);
+    const [updatedKeys, setUpdatedKeys] = useState(oldKeys);
 
     const handleInputChange = (e: any) => {
       const targetVal = e.target.value;
-      const updated = getNewKeys(oldKeys, index, targetVal);
+      const updated = getNewKeys(updatedKeys, index, targetVal);
+
       setUpdatedKeys(updated);
       setValue(targetVal);
+
+      console.log(updatedKeys);
     }
 
     const handleChecked = () => {
       setChecked(!checked);
     }
 
+    const handleApply = () => {
+      setNewKeys(updatedKeys);
+      // setGlobal<GlobalState>({newKeys: updatedKeys});
+    }
+
     return (
-      <div style={{display: "flex", gap: 10}}>
-        <input type="checkbox" checked={checked} onChange={handleChecked}/>
-        <input type="text" value={value} onChange={handleInputChange}/>
-        <input type="text" placeholder={"new value"}/>
+      <div>
+        {index === 0 ? <button style={{margin: 12, backgroundColor: "aquamarine"}} onClick={handleApply}>Apply Changes</button> : null}
+        <div style={{display: "flex", gap: 10}}>
+          <input type="checkbox" checked={checked} onChange={handleChecked}/>
+          <input type="text" value={value} onChange={handleInputChange}/>
+          <input type="text" placeholder={"new value"}/>
+        </div>
       </div>
     );
   }
@@ -69,6 +84,7 @@ const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKe
         </div>
 
         <HeaderInput setNewKeys={setNewKeys} key={index} itemData={item} index={index}/>
+        {/*<HeaderInput setNewKeys={setNewKeys} key={index} itemData={item} index={index}/>*/}
 
       </div>
     )
@@ -82,4 +98,4 @@ const DataKeys: React.FC<Props> = ({data, newKeys, oldKeys, setOldKeys, setNewKe
   );
 }
 
-export default DataKeys;
+export default React.memo(DataKeys);

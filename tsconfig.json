@@ -6,7 +6,7 @@
     "target": "ES2022",
     "module": "NodeNext",
     "useDefineForClassFields": true,
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext", "DOM", "dom.iterable"],
     "moduleResolution": "Node",
     "strict": true,
 //    "noImplicitAny": false,

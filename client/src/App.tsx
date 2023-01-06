@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
 import ExcelToJson from "../../src/modules/excel-to-json";
 import DataKeys from "./components/data_keys/DataKeys";
-import { useMainStore } from "./store";
+import { useGlobal, setGlobal } from "reactn";
+import { useNewKeyStore } from "./store";
 
 // upload button (input file)
 // download button (output file)
@@ -14,6 +15,10 @@ import { useMainStore } from "./store";
 // style the app (tailwind / css)
 // get headers from the uploaded .xlsx file (to change them to new values)
 // generate a preview of the first/all json object(s)
+
+export interface GlobalState {
+  newKeys: string[]
+}
 
 function App() {
   const [file, setFile] = useState<Blob | null>(null);
@@ -31,6 +36,8 @@ function App() {
   const [headerKeys, setHeaderKeys] = useState<string[]>([""]);
   const [oldKeys, setOldKeys] = useState<string[]>([""]);
   const [newKeys, setNewKeys] = useState<string[]>([]);
+
+  // const [newKeys] = useGlobal<GlobalState>("newKeys");
 
   const handleChange = (e: any) => {
     setFile(e.target.files?.[0]);
@@ -62,6 +69,8 @@ function App() {
         setHeaderKeys(headers);
         setOldKeys(headers);
         setNewKeys(headers);
+
+        // setGlobal<GlobalState>({newKeys: headers});
 
         setDownloadLink(url);
         setOutputData(parsed);
@@ -130,6 +139,18 @@ function App() {
                   <input id={"set-header"} type={"text"} value={header} onChange={changeHeader}/>
                 </div>
 
+                {/*{outputExists ?*/}
+                {/*  <DataKeys*/}
+                {/*    data={headerKeys}*/}
+                {/*    oldKeys={oldKeys}*/}
+                {/*    newKeys={newKeys ?? newKeys}*/}
+                {/*    setNewKeys={setNewKeys}*/}
+                {/*    setOldKeys={setOldKeys}*/}
+                {/*  />*/}
+
+                {/*  : null*/}
+                {/*}*/}
+
                 {outputExists ?
                   <DataKeys
                     data={headerKeys}
@@ -142,7 +163,6 @@ function App() {
 
                   : null
                 }
-
 
               </div>
 
