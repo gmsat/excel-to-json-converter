@@ -1,4 +1,4 @@
-import { readFile, read, utils, WorkSheet } from "xlsx";
+import { read, utils, WorkSheet } from "xlsx";
 import * as fs from "fs";
 import path from "path";
 import { ExportOption, FCondition, Headers, InputOutputPath } from "./types";
@@ -15,7 +15,7 @@ export default class ExcelToJson {
   private rawOutputFileName!: string;
   private rawJsonData: string = "";
   private headers: string = "A1";
-  private oldKeys: Headers[] | undefined = [];
+  private oldKeys: string[] | undefined = [];
   private newKeys: string[] | undefined = [];
   private keyToChangeValueFor: Headers | undefined;
   private newValueForKey: string | number | undefined;
@@ -38,7 +38,7 @@ export default class ExcelToJson {
     // return json;
   }
 
-  private converContentToJsonRange(_sheet: any, _range: string) {
+  private convertContentToJsonRange(_sheet: any, _range: string) {
     const range = this.setSheetRange(_sheet, _range);
     const json = utils.sheet_to_json(_sheet, {range: range});
 
@@ -171,40 +171,15 @@ export default class ExcelToJson {
     return headers;
   }
 
-  // getHeadersFromBinary(_fileName: any, _startRow: string) {
-  //   const workBook = read(_fileName, {type: "binary"}); // web
-  //   const sheetName = workBook.SheetNames[0];
-  //   const sheet = workBook.Sheets[sheetName];
-  //   const rangeStr = this.setSheetRange(sheet, _startRow);
-  //   const range = utils.decode_range(rangeStr);
-  //   const headers = [];
-  //
-  //   for (let c = range.s.c; c <= range.e.c; c++) {
-  //     const cell = sheet[utils.encode_cell({c, r: range.s.r})];
-  //
-  //     if (cell) {
-  //       headers.push(cell.v);
-  //     }
-  //   }
-  //
-  //   return headers;
-  // }
-
   getHeadersFromBinary(_fileName: any, _startRow: string) {
-    // get json data
-    // TODO: get first object from json data
-    // TODO: return key names from object
-
     this.headers = _startRow;
 
     const data = this.getWorkSheetData(_fileName);
-    const json = this.converContentToJsonRange(data, _startRow);
+    const json = this.convertContentToJsonRange(data, _startRow);
     const parsed = JSON.parse(json);
     const first = parsed[0];
 
-    const keys = Object.keys(first);
-
-    return keys;
+    return Object.keys(first);
   }
 
   JSON(_inputOutputOptions: InputOutputPath,
@@ -245,7 +220,7 @@ export default class ExcelToJson {
   JSON_web(_file: any,
            _headers: string = "A1",
            _exportOption: ExportOption = "original",
-           _oldKeys?: Headers[],
+           _oldKeys?: string[],
            _newKeys?: string[],
            _keyToChangeValueFor?: Headers,
            _newValueForKey?: string | number

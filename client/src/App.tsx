@@ -1,24 +1,21 @@
-import { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
-import React from 'react';
 import ExcelToJson from "../../src/modules/excel-to-json";
 import DataKeys from "./components/data_keys/DataKeys";
+import { useMainStore } from "./store";
 
 // upload button (input file)
 // download button (output file)
-// TODO: set options for data handling
-// TODO: choose headers start (A1, A12, etc. Set default to A1)
-// TODO: download raw json data
+// set options for data handling
+// choose headers start (A1, A12, etc. Set default to A1)
+// download raw json data
 // TODO: download json data with changed headers
-// TODO: create a custom hook for the logic of the app
-// TODO: create separate components for the app
-// TODO: style the app (tailwind / css)
-// TODO: get headers from the uploaded .xlsx file (to change them to new values)
-// TODO: generate a preview of the first json object
+// TODO: separate parts of the app into separate components
+// style the app (tailwind / css)
+// get headers from the uploaded .xlsx file (to change them to new values)
+// generate a preview of the first/all json object(s)
 
 function App() {
-  const e = new ExcelToJson();
-
   const [file, setFile] = useState<Blob | null>(null);
   const [fileData, setFileData] = useState<string | null>(null);
   const [downloadLink, setDownloadLink] = useState<null | string>(null);
@@ -31,22 +28,13 @@ function App() {
   // data options
   const [options, setOptions] = useState<boolean>(false);
   const [header, setHeader] = useState("A12");
-  const [headerKeys, setHeaderKeys] = useState<string[] | null>(null)
-
-  // log output data when it gets set
-  useEffect(() => {
-    // console.log(outputData[0]);
-    console.log("output exists:", outputExists);
-  }, [outputData]);
+  const [headerKeys, setHeaderKeys] = useState<string[]>([""]);
+  const [oldKeys, setOldKeys] = useState<string[]>([""]);
+  const [newKeys, setNewKeys] = useState<string[]>([]);
 
   const handleChange = (e: any) => {
     setFile(e.target.files?.[0]);
     setOutputExists(true);
-    // console.log("Set file:", file);
-  }
-
-  const handleEnableOptions = (e: any) => {
-    setOptions(!options);
   }
 
   const changeHeader = (e: any) => {
@@ -54,57 +42,31 @@ function App() {
     setHeader(inputVal);
   }
 
-  // const handleSubmit = (e: any) => {
-  //   e.preventDefault();
-  //
-  //   if (!file) { return; }
-  //
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(file);
-  //   reader.onload = () => {
-  //     setFileData(reader.result as string);
-  //     const testData = "file data test";
-  //     const fileBlob = new Blob([testData], {type: "text/plain"});
-  //     const url = URL.createObjectURL(fileBlob);
-  //     setDownloadLink(url);
-  //     if (downloadLink !== null || downloadLink !== "") {
-  //       console.log(downloadLink);
-  //       setOutputExists(true);
-  //     }
-  //   }
-  // }
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
-    if (!file) {
-      console.log("NO FILE!!!");
-      return;
-    }
+    if (!file) { return; }
 
     const reader = new FileReader();
     const etj = new ExcelToJson();
 
-    // reader.readAsDataURL(file);
-
     reader.onload = (evt) => {
       if (evt.target) {
         const binary = evt.target.result;
-
         const headers = etj.getHeadersFromBinary(binary, header);
-        setHeaderKeys(headers);
-
-        const data = etj.JSON_web(binary, header, "transform", ["AMOUNT", "N.laukas"], ["A", "N"]);
+        const data = etj.JSON_web(binary, header, "transform", oldKeys, newKeys);
         const parsed = JSON.parse(data);
         const fileBlob = new Blob([data], {type: "text/plain"});
         const url = URL.createObjectURL(fileBlob);
 
+        setHeaderKeys(headers);
+        setOldKeys(headers);
+        setNewKeys(headers);
+
         setDownloadLink(url);
         setOutputData(parsed);
         setOutputExists(true);
-        setPreview(parsed[0]);
-
-        // console.log("headers:", headers);
+        setPreview(parsed);
       }
     };
 
@@ -115,60 +77,80 @@ function App() {
   // set header
   // select option (original data / transform)
   // transform options
-  // TODO: controls to change old key names to custom
-  //  1. Get header keys from data
-  //  2. Options for header
-  //    *change_key_name
-  //    *change_key_value
-  //    *disable_header
+  // controls to change old key names to custom
+  // 1. Get header keys from data
+  // 2. Options for header
+  // TODO: *change_key_name
+  // TODO: *change_key_value
+  // TODO: *disable_header
   // TODO: controls to change value to custom one for selected key
-  // TODO: button to accept options and regenerate data
-  // TODO: get header keys after pressing convert to json
+  // get header keys after pressing convert to json
 
   return (
     <div className="App">
-      <div>
 
-        <div style={{display: "flex", flexFlow: "column"}} className={"card"}>
-          <label style={{textAlign: "left"}} htmlFor="preview">Preview</label>
-          <textarea style={{height: "500px", width: "600px", resize: "none"}} disabled id={"preview"} value={preview ? JSON.stringify(preview, null, 2) : ""}/>
-        </div>
+      <form onSubmit={handleSubmit}>
 
-        <div>
-          <form onSubmit={handleSubmit}>
+        <div style={{display: "flex", gap: 20}}>
 
+          <div style={{display: "flex", flexFlow: "column", border: "solid lightgrey 1px", borderRadius: 6, padding: 10, gap: 10}}>
+
+            <div style={{display: "flex", flexFlow: "row", padding: 20, alignItems: "center", backgroundColor: "lightgrey", borderRadius: 6}}>
+              <input accept={".xlsx"} type="file" id={"file"} onChange={handleChange}/>
+            </div>
+
+            <div>
+              <button disabled={!outputExists} style={{width: "100%", backgroundColor: "lightblue"}} type={"submit"} onClick={() => setDownloadEnabled(true)}>Convert</button>
+            </div>
+
+            <div>
+              <a target={"_blank"} href={`${downloadLink}`} download={"download-file.txt"}>
+                <button style={{width: "100%", backgroundColor: "orange"}} type={"button"} disabled={!downloadEnabled}>Download</button>
+              </a>
+            </div>
+
+          </div>
+
+          <div style={{display: "flex", flexFlow: "column", border: "solid lightgrey 1px", borderRadius: 6}}>
+
+            <div style={{display: "flex", flexFlow: "column"}} className={"card"}>
+              <label style={{textAlign: "left"}} htmlFor="preview">Preview</label>
+              <textarea style={{height: "75vh", width: "600px", resize: "none"}} disabled id={"preview"} value={preview ? JSON.stringify(preview, null, 2) : ""}/>
+            </div>
+
+          </div>
+
+          <div>
             <div style={{display: "flex", flexFlow: "column", width: "100%", gap: 20}}>
 
-              <div style={{display: "flex", flexFlow: "row"}}>
-                <input style={{display: "flex", flex: 2}} accept={".xlsx"} type="file" id={"file"} onChange={handleChange}/>
-                <button disabled={!outputExists} style={{display: "flex", flex: 1, width: "100%"}} type={"submit"} onClick={() => setDownloadEnabled(true)}>Convert To Json</button>
-              </div>
+              <div style={{display: "flex", flexFlow: "column", gap: 10, width: "100%", alignItems: "flex-start", padding: 7, border: "solid lightgrey 1px", borderRadius: 6}}>
 
-              <div>
-                <a target={"_blank"} href={`${downloadLink}`} download={"download-file.txt"}>
-                  <button style={{width: "100%"}} value={"Download"} type={"button"} disabled={!downloadEnabled}>Download</button>
-                </a>
-              </div>
-
-              <div style={{display: "flex", flexFlow: "column", gap: 10, width: "100%", alignItems: "flex-start", padding: 7, border: "1px solid black"}}>
-                <div>
-                  <label htmlFor="enable-disable-options">Enable options</label>
-                  <input id={"enable-disable-options"} type="checkbox" checked={options} onChange={handleEnableOptions}/>
-                </div>
-                <div>
+                <div style={{display: "flex", gap: 10, margin: "auto", alignItems: "center"}}>
                   <label htmlFor="set-header">Set Header</label>
-                  <input disabled={!options} id={"set-header"} type={"text"} value={header} onChange={changeHeader}/>
+                  <input id={"set-header"} type={"text"} value={header} onChange={changeHeader}/>
                 </div>
-                <DataKeys data={headerKeys}/>
-                <button disabled={!outputExists} style={{display: "flex", flex: 1, width: "100%"}} type={"submit"} onClick={() => setDownloadEnabled(true)}>Json With Options</button>
+
+                {outputExists ?
+                  <DataKeys
+                    data={headerKeys}
+                    oldKeys={oldKeys}
+                    newKeys={newKeys ?? newKeys}
+                    setNewKeys={setNewKeys}
+                    setOldKeys={setOldKeys}
+                  />
+
+                  : null
+                }
+
+
               </div>
 
             </div>
+          </div>
 
-          </form>
         </div>
 
-      </div>
+      </form>
     </div>
   )
 }
