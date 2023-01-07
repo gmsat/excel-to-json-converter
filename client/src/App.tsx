@@ -1,9 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import ExcelToJson from "../../src/modules/excel-to-json";
 import DataKeys from "./components/data_keys/DataKeys";
-import { useGlobal, setGlobal } from "reactn";
-import { useNewKeyStore } from "./store";
 
 // upload button (input file)
 // download button (output file)
@@ -15,10 +13,6 @@ import { useNewKeyStore } from "./store";
 // style the app (tailwind / css)
 // get headers from the uploaded .xlsx file (to change them to new values)
 // generate a preview of the first/all json object(s)
-
-export interface GlobalState {
-  newKeys: string[]
-}
 
 function App() {
   const [file, setFile] = useState<Blob | null>(null);
@@ -33,8 +27,8 @@ function App() {
   // data options
   const [options, setOptions] = useState<boolean>(false);
   const [header, setHeader] = useState("A12");
-  const [headerKeys, setHeaderKeys] = useState<string[]>([""]);
-  const [oldKeys, setOldKeys] = useState<string[]>([""]);
+  const [headerKeys, setHeaderKeys] = useState<string[]>([]);
+  const [oldKeys, setOldKeys] = useState<string[]>([]);
   const [newKeys, setNewKeys] = useState<string[]>([]);
 
   // const [newKeys] = useGlobal<GlobalState>("newKeys");
@@ -69,8 +63,6 @@ function App() {
         setHeaderKeys(headers);
         setOldKeys(headers);
         setNewKeys(headers);
-
-        // setGlobal<GlobalState>({newKeys: headers});
 
         setDownloadLink(url);
         setOutputData(parsed);
@@ -155,7 +147,7 @@ function App() {
                   <DataKeys
                     data={headerKeys}
                     oldKeys={oldKeys}
-                    newKeys={newKeys ?? newKeys}
+                    newKeys={newKeys && newKeys}
                     setNewKeys={setNewKeys}
                     setOldKeys={setOldKeys}
                     handleSubmit={handleSubmit}
