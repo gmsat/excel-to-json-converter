@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
-import ExcelToJson from "../../src/modules/excel-to-json";
 import DataKeys from "./components/data_keys/DataKeys";
+import ExcelToJson from "./modules/excel-to-json";
 
 // upload button (input file)
 // download button (output file)
