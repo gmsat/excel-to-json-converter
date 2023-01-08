@@ -1,18 +1,10 @@
 import React, { useState } from 'react';
 import './App.css';
-import DataKeys from "./components/data_keys/DataKeys";
 import ExcelToJson from "./modules/excel-to-json";
+import { UploadDownload, DataPreview, DataOptions } from "./components";
 
-// upload button (input file)
-// download button (output file)
-// set options for data handling
-// choose headers start (A1, A12, etc. Set default to A1)
-// download raw json data
-// TODO: download json data with changed headers
-// TODO: separate parts of the app into separate components
-// style the app (tailwind / css)
-// get headers from the uploaded .xlsx file (to change them to new values)
-// generate a preview of the first/all json object(s)
+// TODO: feature to change header values based on their index, choose for which objects to change values for
+// TODO: enable / disable header feature, choose which keys and values to show and update all objects
 
 function App() {
   const [file, setFile] = useState<Blob | null>(null);
@@ -31,8 +23,6 @@ function App() {
   const [oldKeys, setOldKeys] = useState<string[]>([]);
   const [newKeys, setNewKeys] = useState<string[]>([]);
 
-  // const [newKeys] = useGlobal<GlobalState>("newKeys");
-
   const handleChange = (e: any) => {
     setFile(e.target.files?.[0]);
     setOutputExists(true);
@@ -46,7 +36,9 @@ function App() {
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
-    if (!file) { return; }
+    if (!file) {
+      return;
+    }
 
     const reader = new FileReader();
     const etj = new ExcelToJson();
@@ -60,112 +52,70 @@ function App() {
         const fileBlob = new Blob([data], {type: "text/plain"});
         const url = URL.createObjectURL(fileBlob);
 
+        setDownloadLink(url);
+
         setHeaderKeys(headers);
         setOldKeys(headers);
         setNewKeys(headers);
 
-        setDownloadLink(url);
         setOutputData(parsed);
         setOutputExists(true);
         setPreview(parsed);
+
+        // setInstanceData(
+        //   headers,
+        //   url,
+        //   parsed,
+        //   true,
+        //   preview);
       }
     };
 
     reader.readAsArrayBuffer(file);
   }
 
-  // data options
-  // set header
-  // select option (original data / transform)
-  // transform options
-  // controls to change old key names to custom
-  // 1. Get header keys from data
-  // 2. Options for header
-  // TODO: *change_key_name
-  // TODO: *change_key_value
-  // TODO: *disable_header
-  // TODO: controls to change value to custom one for selected key
-  // get header keys after pressing convert to json
+  function setInstanceData(_headers: string[],
+                           _url: string,
+                           _parsed: any,
+                           _outputExists: boolean,
+                           _previewData: any
+  ) {
+    setHeaderKeys(_headers);
+    setOldKeys(_headers);
+    setNewKeys(_headers);
+
+    setDownloadLink(_url);
+    setOutputData(_parsed);
+    setOutputExists(_outputExists);
+    setPreview(_parsed);
+  }
 
   return (
     <div className="App">
-
       <form onSubmit={handleSubmit}>
-
         <div style={{display: "flex", gap: 20}}>
 
-          <div style={{display: "flex", flexFlow: "column", border: "solid lightgrey 1px", borderRadius: 6, padding: 10, gap: 10}}>
+          <UploadDownload handleChange={handleChange}
+                          outputExists={outputExists}
+                          downloadEnabled={downloadEnabled}
+                          setDownloadEnabled={setDownloadEnabled}
+                          downloadLink={downloadLink!}/>
 
-            <div style={{display: "flex", flexFlow: "row", padding: 20, alignItems: "center", backgroundColor: "lightgrey", borderRadius: 6}}>
-              <input accept={".xlsx"} type="file" id={"file"} onChange={handleChange}/>
-            </div>
+          <DataPreview preview={preview}/>
 
-            <div>
-              <button disabled={!outputExists} style={{width: "100%", backgroundColor: "lightblue"}} type={"submit"} onClick={() => setDownloadEnabled(true)}>Convert</button>
-            </div>
-
-            <div>
-              <a target={"_blank"} href={`${downloadLink}`} download={"download-file.txt"}>
-                <button style={{width: "100%", backgroundColor: "orange"}} type={"button"} disabled={!downloadEnabled}>Download</button>
-              </a>
-            </div>
-
-          </div>
-
-          <div style={{display: "flex", flexFlow: "column", border: "solid lightgrey 1px", borderRadius: 6}}>
-
-            <div style={{display: "flex", flexFlow: "column"}} className={"card"}>
-              <label style={{textAlign: "left"}} htmlFor="preview">Preview</label>
-              <textarea style={{height: "75vh", width: "600px", resize: "none"}} disabled id={"preview"} value={preview ? JSON.stringify(preview, null, 2) : ""}/>
-            </div>
-
-          </div>
-
-          <div>
-            <div style={{display: "flex", flexFlow: "column", width: "100%", gap: 20}}>
-
-              <div style={{display: "flex", flexFlow: "column", gap: 10, width: "100%", alignItems: "flex-start", padding: 7, border: "solid lightgrey 1px", borderRadius: 6}}>
-
-                <div style={{display: "flex", gap: 10, margin: "auto", alignItems: "center"}}>
-                  <label htmlFor="set-header">Set Header</label>
-                  <input id={"set-header"} type={"text"} value={header} onChange={changeHeader}/>
-                </div>
-
-                {/*{outputExists ?*/}
-                {/*  <DataKeys*/}
-                {/*    data={headerKeys}*/}
-                {/*    oldKeys={oldKeys}*/}
-                {/*    newKeys={newKeys ?? newKeys}*/}
-                {/*    setNewKeys={setNewKeys}*/}
-                {/*    setOldKeys={setOldKeys}*/}
-                {/*  />*/}
-
-                {/*  : null*/}
-                {/*}*/}
-
-                {outputExists ?
-                  <DataKeys
-                    data={headerKeys}
-                    oldKeys={oldKeys}
-                    newKeys={newKeys && newKeys}
-                    setNewKeys={setNewKeys}
-                    setOldKeys={setOldKeys}
-                    handleSubmit={handleSubmit}
-                  />
-
-                  : null
-                }
-
-              </div>
-
-            </div>
-          </div>
-
+          <DataOptions headerKeys={headerKeys}
+                       oldKeys={oldKeys}
+                       setOldKeys={setOldKeys}
+                       newKeys={newKeys}
+                       setNewKeys={setNewKeys}
+                       handleSubmit={handleSubmit}
+                       outputExists={outputExists}
+                       header={header}
+                       changeHeader={changeHeader}/>
         </div>
-
       </form>
     </div>
-  )
+  );
 }
 
 export default App
