@@ -32,6 +32,10 @@ import MyContext from "./context/my-context/MyContext";
 // TODO: refactoring tasks
 // TODO: refactor prop drilling from components
 
+// TODO: Current
+// TODO: Make a separate function to save file for manipulated data
+// TODO: Setting headers uses .xlsx file and resets the options
+
 function App() {
   // const [file, setFile] = useState<Blob | null>(null);
   // const [fileData, setFileData] = useState<string | null>(null);
@@ -48,7 +52,6 @@ function App() {
   // const [headerKeys, setHeaderKeys] = useState<string[]>([]);
   // const [oldKeys, setOldKeys] = useState<string[]>([]);
   // const [newKeys, setNewKeys] = useState<string[]>([]);
-
 
   // context
   const {file, setFile} = useContext(MyContext);
