@@ -1,36 +1,32 @@
 import { createContext } from "react";
 
 interface MyContextType {
-  // context test
   stringValue: string,
-  setStringValue: (newValue: string) => void,
-  // app variables
   file: Blob | null,
   setFile: (file: Blob | null) => void,
   downloadLink: null | string,
-  setDownloadLink: (link: string | null) => void,
   outputData: any[],
-  setOutputData: (data: any[]) => void,
   preview: any,
-  setPreview: (data: any) => void,
   outputExists: boolean,
-  setOutputExists: (bool: boolean) => void,
   downloadEnabled: boolean,
-  setDownloadEnabled: (bool: boolean) => void,
   header: string,
-  setHeader: (header: string) => void,
   headerKeys: string[],
-  setHeaderKeys: (keys: string[]) => void,
   oldKeys: string[],
-  setOldKeys: (oldKeys: string[]) => void,
   newKeys: string[],
+  setStringValue: (newValue: string) => void,
+  setDownloadLink: (link: string | null) => void,
+  setOutputData: (data: any[]) => void,
+  setPreview: (data: any) => void,
+  setOutputExists: (bool: boolean) => void,
+  setDownloadEnabled: (bool: boolean) => void,
+  setHeader: (header: string) => void,
+  setHeaderKeys: (keys: string[]) => void,
+  setOldKeys: (oldKeys: string[]) => void,
   setNewKeys: (newKeys: string[]) => void
 }
 
 const MyContext = createContext<MyContextType>({
   stringValue: "",
-  setStringValue: () => {},
-
   downloadEnabled: false,
   file: null,
   downloadLink: null,
@@ -41,6 +37,8 @@ const MyContext = createContext<MyContextType>({
   preview: null,
   outputExists: false,
   oldKeys: [],
+
+  setStringValue: () => {},
   setDownloadEnabled: () => {},
   setDownloadLink: () => {},
   setFile: () => {},
