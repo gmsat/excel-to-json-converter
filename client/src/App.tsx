@@ -32,9 +32,15 @@ import MyContext from "./context/my-context/MyContext";
 // TODO: refactoring tasks
 // TODO: refactor prop drilling from components
 
+// TODO: Requirements
+// TODO: change values by index
+// TODO: detect value types
+// TODO: create executable
+
 // TODO: Current
 // TODO: Make a separate function to save file for manipulated data
 // TODO: Setting headers uses .xlsx file and resets the options
+// TODO: implement feature to change the value of key based on index (enter index numbers / choose objects)
 
 function App() {
   // const [file, setFile] = useState<Blob | null>(null);
