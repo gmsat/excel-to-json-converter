@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import './App.css';
 import ExcelToJson from "./modules/excel-to-json";
 import { UploadDownload, DataPreview, DataOptions } from "./components";
-import ContextTest from "./components/ContextTest";
 import MyContext from "./context/my-context/MyContext";
 
 // TODO: feature to change header values based on their index, choose for which objects to change values for
@@ -131,8 +130,6 @@ function App() {
   return (
     <div className="App">
 
-      <ContextTest/>
-
       <form onSubmit={handleSubmit}>
         <div style={{display: "flex", gap: 20}}>
 
@@ -150,9 +147,7 @@ function App() {
                        newKeys={newKeys}
                        setNewKeys={setNewKeys}
                        handleSubmit={handleSubmit}
-                       outputExists={outputExists}
-                       header={header}
-                       changeHeader={changeHeader}/>
+                       outputExists={outputExists}/>
         </div>
       </form>
     </div>

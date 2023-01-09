@@ -8,9 +8,7 @@ interface DataOptionsProps {
   newKeys: string[],
   setNewKeys: (newKeys: string[]) => void,
   handleSubmit: (e: any) => void,
-  outputExists: boolean,
-  header: string,
-  changeHeader: (e: any) => void
+  outputExists: boolean
 }
 
 
@@ -22,9 +20,7 @@ const DataOptions: React.FC<DataOptionsProps> = ({
                                                    setOldKeys,
                                                    setNewKeys,
                                                    handleSubmit,
-                                                   outputExists,
-                                                   header,
-                                                   changeHeader
+                                                   outputExists
                                                  }) => {
   return (
     <div>
@@ -40,11 +36,6 @@ const DataOptions: React.FC<DataOptionsProps> = ({
           border: "solid lightgrey 1px",
           borderRadius: 6
         }}>
-
-          <div style={{display: "flex", gap: 10, margin: "auto", alignItems: "center"}}>
-            <label htmlFor="set-header">Set Header</label>
-            <input id={"set-header"} type={"text"} value={header} onChange={changeHeader}/>
-          </div>
 
           {outputExists ?
             <DataKeys

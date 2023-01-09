@@ -6,9 +6,6 @@ interface MyContextProviderProps {
 }
 
 export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) => {
-  const [stringValue, setStringValue] = useState("");
-  // const {stringValue, setStringValue} = useContext(MyContext);
-
   const [file, setFile] = useState<Blob | null>(null);
   const [fileData, setFileData] = useState<string | null>(null);
   const [downloadLink, setDownloadLink] = useState<null | string>(null);
@@ -27,7 +24,6 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
 
   return (
     <MyContext.Provider value={{
-      stringValue,
       header,
       newKeys,
       downloadEnabled,
@@ -38,7 +34,6 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
       headerKeys,
       file,
       downloadLink,
-      setStringValue,
       setPreview,
       setOutputExists,
       setOutputData,

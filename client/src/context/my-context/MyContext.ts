@@ -1,7 +1,6 @@
 import { createContext } from "react";
 
 interface MyContextType {
-  stringValue: string,
   file: Blob | null,
   setFile: (file: Blob | null) => void,
   downloadLink: null | string,
@@ -13,7 +12,6 @@ interface MyContextType {
   headerKeys: string[],
   oldKeys: string[],
   newKeys: string[],
-  setStringValue: (newValue: string) => void,
   setDownloadLink: (link: string | null) => void,
   setOutputData: (data: any[]) => void,
   setPreview: (data: any) => void,
@@ -26,7 +24,6 @@ interface MyContextType {
 }
 
 const MyContext = createContext<MyContextType>({
-  stringValue: "",
   downloadEnabled: false,
   file: null,
   downloadLink: null,
@@ -38,7 +35,6 @@ const MyContext = createContext<MyContextType>({
   outputExists: false,
   oldKeys: [],
 
-  setStringValue: () => {},
   setDownloadEnabled: () => {},
   setDownloadLink: () => {},
   setFile: () => {},
