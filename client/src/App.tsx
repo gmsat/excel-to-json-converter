@@ -94,7 +94,8 @@ function App() {
       if (evt.target) {
         const binary = evt.target.result;
         const headers = etj.getHeadersFromBinary(binary, header);
-        const data = etj.JSON_web(binary, header, "transform", oldKeys, newKeys);
+        // const data = etj.JSON_web(binary, header, "transform", oldKeys, newKeys);
+        const data = etj.JSON_web(binary, header);
         const parsed = JSON.parse(data);
         const fileBlob = new Blob([data], {type: "text/plain"});
         const url = URL.createObjectURL(fileBlob);

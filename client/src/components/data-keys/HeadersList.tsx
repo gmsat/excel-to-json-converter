@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { HeaderInput } from "./HeaderInput";
+import ExcelToJson from "../../modules/excel-to-json";
+import MyContext from "../../context/my-context/MyContext";
 
 export interface HeadersListProps {
   headers: string[],
@@ -26,14 +28,14 @@ export const HeadersList: React.FC<HeadersListProps> = ({
   const [updatedKeys, setUpdatedKeys] = useState(oldKeys);
 
   // log values on render
-  useEffect(() => {
-    console.log("First render:");
-
-    console.log("Headers:", headers);
-    console.log("UPDATED:", updatedKeys);
-    console.log("OLd keys:", oldKeys);
-    console.log("old local:", oldLocal);
-  });
+  // useEffect(() => {
+  //   console.log("First render:");
+  //
+  //   console.log("Headers:", headers);
+  //   console.log("UPDATED:", updatedKeys);
+  //   console.log("OLd keys:", oldKeys);
+  //   console.log("old local:", oldLocal);
+  // });
 
   useEffect(() => {
     setOldLocal(oldKeys);
@@ -45,13 +47,30 @@ export const HeadersList: React.FC<HeadersListProps> = ({
     setNewKeys(updatedKeys);
   }, [updatedKeys]);
 
-  const handleApply = () => {
-    console.log("Headers:", headers);
-    console.log("UPDATED:", updatedKeys);
-    console.log("OLd keys:", oldKeys);
-    console.log("old local:", oldLocal);
+  // const handleApply = () => {
+  //   console.log("Headers:", headers);
+  //   console.log("UPDATED:", updatedKeys);
+  //   console.log("OLd keys:", oldKeys);
+  //   console.log("old local:", oldLocal);
+  //
+  //   setNewKeys(updatedKeys);
+  // }
+  const {file, setFile} = useContext(MyContext);
+  const {outputData, setOutputData} = useContext(MyContext);
+  const {setDownloadLink} = useContext(MyContext);
 
-    setNewKeys(updatedKeys);
+  const handleApply = (e: any) => {
+    e.preventDefault();
+
+    if (!file) {
+      return;
+    }
+
+    const data = JSON.stringify(outputData, null, 2);
+    const fileBlob = new Blob([data], {type: "text/plain"});
+    const url = URL.createObjectURL(fileBlob);
+
+    setDownloadLink(url);
   }
 
   // function getNewKeys(_array: string[], _index: number, _targetVal: any) {
