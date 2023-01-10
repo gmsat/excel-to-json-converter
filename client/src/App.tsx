@@ -3,6 +3,8 @@ import './App.css';
 import ExcelToJson from "./modules/excel-to-json";
 import { UploadDownload, DataPreview, DataOptions } from "./components";
 import MyContext from "./context/my-context/MyContext";
+import { ArrayHelpers } from "./modules/json-data-options/ArrayHelpers";
+import ChangeValuesDialog, { ChangeValuesTable } from "./components/change-values-dialog/ChangeValuesDialog";
 
 // TODO: feature to change header values based on their index, choose for which objects to change values for
 // TODO: enable / disable header feature, choose which keys and values to show and update all objects
@@ -42,23 +44,6 @@ import MyContext from "./context/my-context/MyContext";
 // TODO: implement feature to change the value of key based on index (enter index numbers / choose objects)
 
 function App() {
-  // const [file, setFile] = useState<Blob | null>(null);
-  // const [fileData, setFileData] = useState<string | null>(null);
-  // const [downloadLink, setDownloadLink] = useState<null | string>(null);
-  // const [outputData, setOutputData] = useState([]);
-  // const [preview, setPreview] = useState(null);
-  //
-  // const [outputExists, setOutputExists] = useState(false);
-  // const [downloadEnabled, setDownloadEnabled] = useState(false);
-  //
-  // // data options
-  // // const [options, setOptions] = useState<boolean>(false);
-  // const [header, setHeader] = useState("A12");
-  // const [headerKeys, setHeaderKeys] = useState<string[]>([]);
-  // const [oldKeys, setOldKeys] = useState<string[]>([]);
-  // const [newKeys, setNewKeys] = useState<string[]>([]);
-
-  // context
   const {file, setFile} = useContext(MyContext);
   const {downloadLink, setDownloadLink} = useContext(MyContext);
   const {outputData, setOutputData} = useContext(MyContext);
@@ -89,13 +74,15 @@ function App() {
 
     const reader = new FileReader();
     const etj = new ExcelToJson();
+    const arrH = new ArrayHelpers();
 
     reader.onload = (evt) => {
       if (evt.target) {
         const binary = evt.target.result;
         const headers = etj.getHeadersFromBinary(binary, header);
-        const data = etj.JSON_web(binary, header, "transform", oldKeys, newKeys);
+        const data = etj.JSON_web(binary, header);
         const parsed = JSON.parse(data);
+        // arrH.getDataTypes(parsed);
         const fileBlob = new Blob([data], {type: "text/plain"});
         const url = URL.createObjectURL(fileBlob);
 
@@ -112,19 +99,6 @@ function App() {
     };
 
     reader.readAsArrayBuffer(file);
-  }
-
-  function setInstanceData(_headers: string[],
-                           _parsed: any,
-                           _outputExists: boolean,
-                           _previewData: any
-  ) {
-    setHeaderKeys(_headers);
-    setOldKeys(_headers);
-    setNewKeys(_headers);
-    setOutputData(_parsed);
-    setOutputExists(_outputExists);
-    setPreview(_parsed);
   }
 
   return (
@@ -148,6 +122,9 @@ function App() {
                        setNewKeys={setNewKeys}
                        handleSubmit={handleSubmit}
                        outputExists={outputExists}/>
+
+          <ChangeValuesDialog headerIndex={0}/>
+
         </div>
       </form>
     </div>

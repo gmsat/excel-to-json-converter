@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { HeaderInput } from "./HeaderInput";
+import ExcelToJson from "../../modules/excel-to-json";
+import MyContext from "../../context/my-context/MyContext";
+import ChangeValuesDialog from "../change-values-dialog/ChangeValuesDialog";
 
 export interface HeadersListProps {
   headers: string[],
@@ -25,16 +28,6 @@ export const HeadersList: React.FC<HeadersListProps> = ({
   const [oldLocal, setOldLocal] = useState(oldKeys);
   const [updatedKeys, setUpdatedKeys] = useState(oldKeys);
 
-  // log values on render
-  useEffect(() => {
-    console.log("First render:");
-
-    console.log("Headers:", headers);
-    console.log("UPDATED:", updatedKeys);
-    console.log("OLd keys:", oldKeys);
-    console.log("old local:", oldLocal);
-  });
-
   useEffect(() => {
     setOldLocal(oldKeys);
     setUpdatedKeys(oldKeys);
@@ -45,27 +38,35 @@ export const HeadersList: React.FC<HeadersListProps> = ({
     setNewKeys(updatedKeys);
   }, [updatedKeys]);
 
-  const handleApply = () => {
-    console.log("Headers:", headers);
-    console.log("UPDATED:", updatedKeys);
-    console.log("OLd keys:", oldKeys);
-    console.log("old local:", oldLocal);
+  const {file, setFile} = useContext(MyContext);
+  const {outputData, setOutputData} = useContext(MyContext);
+  const {setDownloadLink} = useContext(MyContext);
 
-    setNewKeys(updatedKeys);
+  function setDownload() {
+    if (!file) {
+      return;
+    }
+
+    const data = JSON.stringify(outputData, null, 2);
+    const fileBlob = new Blob([data], {type: "text/plain"});
+    const url = URL.createObjectURL(fileBlob);
+
+    setDownloadLink(url);
   }
 
-  // function getNewKeys(_array: string[], _index: number, _targetVal: any) {
-  //   return _array!.map((item, i) => {
-  //     if (i === _index) return _targetVal;
-  //     else return item;
-  //   });
-  // }
-  //
-  // const updateKeysOnChange = (_index: number = 1, _value: string = "TE_ST_ST") => {
-  //   const updated = getNewKeys(updatedKeys, _index, _value);
-  //   console.log("KEY VAL:", _value);
-  //   setUpdatedKeys(updated);
-  // }
+  const handleApply = (e: any) => {
+    e.preventDefault();
+
+    if (!file) {
+      return;
+    }
+
+    const data = JSON.stringify(outputData, null, 2);
+    const fileBlob = new Blob([data], {type: "text/plain"});
+    const url = URL.createObjectURL(fileBlob);
+
+    setDownloadLink(url);
+  }
 
   return (
     <>
@@ -89,6 +90,8 @@ export const HeadersList: React.FC<HeadersListProps> = ({
                        key={index}
                        itemData={item}
                        index={index}/>
+
+
 
         </div>
       )}
