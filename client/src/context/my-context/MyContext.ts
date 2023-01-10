@@ -1,5 +1,7 @@
 import { createContext } from "react";
 
+type DialogDataType = {index: number, keyIndex: number, key: string, value: any}
+
 interface MyContextType {
   file: Blob | null,
   setFile: (file: Blob | null) => void,
@@ -12,6 +14,8 @@ interface MyContextType {
   headerKeys: string[],
   oldKeys: string[],
   newKeys: string[],
+  dialogKeyValueData: DialogDataType[],
+  showUpdateKeyValuesDialog: boolean,
   setDownloadLink: (link: string | null) => void,
   setOutputData: (data: any[]) => void,
   setPreview: (data: any) => void,
@@ -20,7 +24,9 @@ interface MyContextType {
   setHeader: (header: string) => void,
   setHeaderKeys: (keys: string[]) => void,
   setOldKeys: (oldKeys: string[]) => void,
-  setNewKeys: (newKeys: string[]) => void
+  setNewKeys: (newKeys: string[]) => void,
+  setShowUpdateKeyValuesDialog: (bool: boolean) => void,
+  setDialogKeyValueData: (data: any[]) => void
 }
 
 const MyContext = createContext<MyContextType>({
@@ -34,6 +40,8 @@ const MyContext = createContext<MyContextType>({
   preview: null,
   outputExists: false,
   oldKeys: [],
+  showUpdateKeyValuesDialog: false,
+  dialogKeyValueData: [],
 
   setDownloadEnabled: () => {},
   setDownloadLink: () => {},
@@ -44,7 +52,9 @@ const MyContext = createContext<MyContextType>({
   setOldKeys: () => {},
   setOutputData: () => {},
   setOutputExists: () => {},
-  setPreview: () => {}
+  setPreview: () => {},
+  setShowUpdateKeyValuesDialog: () => {},
+  setDialogKeyValueData: () => {}
 });
 
 export default MyContext;

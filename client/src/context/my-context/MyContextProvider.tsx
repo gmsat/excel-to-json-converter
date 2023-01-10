@@ -22,6 +22,9 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
   const [oldKeys, setOldKeys] = useState<string[]>([]);
   const [newKeys, setNewKeys] = useState<string[]>([]);
 
+  const [showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog] = useState(false);
+  const [dialogKeyValueData, setDialogKeyValueData] = useState(null);
+
   return (
     <MyContext.Provider value={{
       header,
@@ -34,6 +37,8 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
       headerKeys,
       file,
       downloadLink,
+      showUpdateKeyValuesDialog,
+      dialogKeyValueData,
       setPreview,
       setOutputExists,
       setOutputData,
@@ -43,7 +48,9 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
       setDownloadEnabled,
       setHeaderKeys,
       setDownloadLink,
-      setFile
+      setFile,
+      setShowUpdateKeyValuesDialog,
+      setDialogKeyValueData
     }}>
       {children}
     </MyContext.Provider>

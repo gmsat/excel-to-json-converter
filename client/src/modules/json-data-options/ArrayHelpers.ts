@@ -1,10 +1,4 @@
-// write logic for JSON data manipulation
-
-// TODO: change key names
-
-// TODO: change key values
-
-// TODO: change key values by object index
+import validator from "is-my-json-valid";
 
 export class ArrayHelpers {
   private data: any[] = [];
@@ -39,7 +33,6 @@ export class ArrayHelpers {
   renameKeysByIndex(_array: any[], _keyIndex: number, _newKeyName: string) {
     return _array.map((obj, index) => {
       const newObj = Object.entries(obj).map(([key, value], objIndex) => {
-        // if (_newKeyName.length <= 1) return [key, value];
         return [_keyIndex === objIndex ? _newKeyName : key, value];
       })
       return Object.fromEntries(newObj);
@@ -51,90 +44,51 @@ export class ArrayHelpers {
   }
 
   updateObjectValuesByIndex(_objects: any[], _newValue: string | number, _keyNameIndex: number, _indexNumbers: number[]) {
-    // TODO: change values of the object array by selected indices [ change(_array, _objKeyIndex, _objectIndexes) ]
-    //  change(outputData, index, [1, 3, 5, 8]); -> this will will change values for key[index] for objects 1, 3, 5, 8
+    let keyToUpdate = Object.keys(_objects[0])[_keyNameIndex];
+    let updatedArray = [..._objects];
 
-    // _indexNumbers.forEach(index => {
-    //   if (index < _objects.length) {
-    //     _objects[index][_keyNameIndex] = _newValue;
-    //   }
-    // });
+    for (let i of _indexNumbers) {
+      updatedArray[i] = {
+        ...updatedArray[i],
+        [keyToUpdate]: _newValue
+      };
+    }
 
-    // return _objects;
-    // return _objects.map((obj, index) => {
-    //   const newObj = Object.entries(obj).map(([key, value], objIndex) => {
-    //     // if (_newKeyName.length <= 1) return [key, value];
-    //     return [_keyIndex === objIndex ? _newKeyName : key, value];
-    //   })
-    //   return Object.fromEntries(newObj);
-    // });
+    return updatedArray;
+  }
 
-    // const updatedObjects = _objects.map((object, index) => {
-    //   if (_indexNumbers.includes(index)) {
-    //
-    //     return {  }
-    //
-    //     // return { ...object, [_keyNameIndex]: _newValue };
-    //   }
-    //   return object;
-    // });
+  getDataTypes(_objects: any[]) {
+    const values = Object.values(_objects[0]);
+    const types: string[] = [];
 
-    // const updatedObjects = [..._objects];
-    // _indexNumbers.forEach(index => {
-    //   if (index < updatedObjects.length) {
-    //     updatedObjects[index][_keyNameIndex] = _newValue;
-    //   }
-    // });
+    for (const value of values) {
+      // TODO: check for date
+      // TODO: check for number
+      // TODO: check for string
+      console.log("value:", value);
+    }
+  }
 
-    // const newObjects = _objects.map((obj, i) => {
-    //   const newObj = Object.entries(obj).map(([key, value], objIndex) => {
-    //
-    //     if (_indexNumbers.includes(objIndex)) {
-    //
-    //       // console.log("INDEX NUMBERS:", _indexNumbers);
-    //       // console.log({
-    //       //   objectIndex: `${objIndex}`,
-    //       //   objectKey: `${obj[key][_keyNameIndex]}`,
-    //       //   originalValue: `${value}`,
-    //       //   newValue: `${_newValue}`
-    //       // });
-    //
-    //       console.log("SELECTION", {
-    //       });
-    //
-    //       return [key, _newValue];
-    //     }
-    //
-    //     return [key, value];
-    //   });
-    //
-    //   return Object.fromEntries(newObj);
-    // });
-
-    const newObjects = _objects.map((obj, i) => {
-      if (_indexNumbers.includes(i)) {
-        const newObj = Object.entries(obj).map(([key, val], objIndex) => {
-          return [key, val];
-        });
-
-        console.log(newObj);
-        return newObj;
+  /**
+   * @returns \{index, key and value\} from provided array of objects and key index
+   * @param _objects
+   * @param _keyIndex
+   */
+  getHeaderValuesByIndex(_objects: any[], _keyIndex: number) {
+    const arr = _objects.map((obj, i) => {
+      const [key, val] = Object.entries(obj)[_keyIndex];
+      const returnObject = {
+        index: i,
+        keyIndex: _keyIndex,
+        key: key,
+        value: val
       }
 
-      return;
-
-      // const newObj = Object.entries(obj).map(([key, val], objIndex) => {
-      //   if (_indexNumbers.includes(objIndex)) {
-      //     return [key, val];
-      //   }
-      //
-      //   return;
-      // });
-
-      // return Object.fromEntries(newObj);
+      return returnObject;
     });
-
-    // console.log(newObjects);
-    return newObjects;
+    // console.log([...arr]);
+    return [...arr];
   }
+
+
 }

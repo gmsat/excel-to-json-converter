@@ -1,26 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 import MyContext from "../../context/my-context/MyContext";
+import Button from "@mui/material/Button";
 
 export interface HeaderInputProps {
   itemData: string,
   index: number,
-  // newKeys: string[] | null,
-  // setNewKeys: (newKeys: string[]) => void,
-  // updateKeysOnChange: (e: any) => void,
   setUpdatedKeys: (_keys: string[]) => void,
   updatedKeys: string[],
   resetClicked: boolean,
   setResetClicked: (state: boolean) => void
 }
 
-export const HeaderInput: React.FC<HeaderInputProps> = ({
-                                                          itemData,
-                                                          index,
-                                                          setUpdatedKeys,
-                                                          updatedKeys,
-                                                          resetClicked
-                                                        }) => {
+// TODO: create UI for changing values based on object index
+// TODO: input field for indexes [can only enter valid numbers / add range so that you can only enter valid indices]
+// TODO: Lookup / dialog [checkbox, index, value]
+// TODO: detect value types
+
+export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetClicked}) => {
   const [originalVal, setOriginalVal] = useState(itemData);
   const [value, setValue] = useState(itemData);
   const [checked, setChecked] = useState(true);
@@ -29,6 +26,11 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({
   const {newKeys, setNewKeys} = useContext(MyContext);
   const {oldKeys, setOldKeys} = useContext(MyContext);
   const {preview, setPreview} = useContext(MyContext);
+  const {downloadLink, setDownloadLink} = useContext(MyContext);
+  const {file, setFile} = useContext(MyContext);
+
+  const {showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog} = useContext(MyContext);
+  const {dialogKeyValueData, setDialogKeyValueData} = useContext(MyContext);
 
   const [newData, setNewData] = useState<any[]>(outputData);
 
@@ -39,17 +41,13 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({
     setValue(originalVal);
   }, [resetClicked]);
 
+  // updates data preview based when changing fields
   useEffect(() => {
     // console.log("new", newData);
     setOutputData(newData);
     setPreview(newData);
   }, [value]);
 
-  // useEffect(() => {
-  //   setPreview();
-  // }, [outputData]);
-
-  // TODO: change this input so that it returns new data based on selected changes
   const handleInputChange = (e: any) => {
     const ah = new ArrayHelpers();
     const targetVal = e.target.value;
@@ -67,38 +65,61 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({
     const data = ah.renameKeysByIndex(outputData, index, targetVal);
 
     setNewData(data);
-    // TODO: return changed objects based on input changes
+    setOutputData(newData);
   }
 
   const testValueChanges = () => {
-    console.log("change values button clicked!");
-
     const ah = new ArrayHelpers();
     const changedValues = ah.updateObjectValuesByIndex(outputData, 5000, 5, [0, 2, 5]);
-    // expected output --> key: [amount(i:5)] = 5000 for objects with index 0, 2, 5
-    // old values for 0, 2, 5 objects
 
-    console.log(changedValues);
-
-    setPreview(changedValues);
     setNewData(changedValues);
+    setOutputData(newData);
 
-    // TODO: return changed objects based on input changes
+    setTimeout(() => {
+      // console.log("timeout executed");
+      setPreview(changedValues);
+      setDownload(changedValues);
+    }, 100);
+  }
+
+  function setDownload(_newData: any) {
+    if (!file) {
+      return;
+    }
+
+    const data = JSON.stringify(_newData, null, 2);
+    const fileBlob = new Blob([data], {type: "text/plain"});
+    const url = URL.createObjectURL(fileBlob);
+
+    setDownloadLink(url);
   }
 
   const handleChecked = () => {
     setChecked(!checked);
   }
 
+  const showDialog = (_objectIndex: number) => {
+    setDialogData(index)
+    setShowUpdateKeyValuesDialog(true);
+  }
+
+  function setDialogData(_keyIndex: number) {
+    const array = new ArrayHelpers();
+    const dialogData = array.getHeaderValuesByIndex(outputData, _keyIndex);
+    setDialogKeyValueData(dialogData);
+  }
+
   return (
-    <div>
-      <div style={{display: "flex", gap: 10}}>
-        <button onClick={testValueChanges}>Change values test</button>
-        <p>{index}</p>
+    <div style={{height: "30px"}}>
+      <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
+        <p>({index})</p>
         <input type="checkbox" checked={checked} onChange={handleChecked}/>
         <input type="text" value={value} onChange={handleInputChange}/>
-        <input type="text" placeholder={"new value"}/>
+        <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center"}}>
+          <Button sx={{height: "20px"}} size={"small"} onClick={() => showDialog(index)} variant={"outlined"} key={index}>Edit Values</Button>
+        </div>
       </div>
     </div>
+
   );
 }
