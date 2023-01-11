@@ -74,7 +74,6 @@ function App() {
 
     const reader = new FileReader();
     const etj = new ExcelToJson();
-    const arrH = new ArrayHelpers();
 
     reader.onload = (evt) => {
       if (evt.target) {
@@ -82,7 +81,6 @@ function App() {
         const headers = etj.getHeadersFromBinary(binary, header);
         const data = etj.JSON_web(binary, header);
         const parsed = JSON.parse(data);
-        // arrH.getDataTypes(parsed);
         const fileBlob = new Blob([data], {type: "text/plain"});
         const url = URL.createObjectURL(fileBlob);
 
@@ -113,8 +111,6 @@ function App() {
                           setDownloadEnabled={setDownloadEnabled}
                           downloadLink={downloadLink!}/>
 
-          <DataPreview preview={preview}/>
-
           <DataOptions headerKeys={headerKeys}
                        oldKeys={oldKeys}
                        setOldKeys={setOldKeys}
@@ -123,7 +119,9 @@ function App() {
                        handleSubmit={handleSubmit}
                        outputExists={outputExists}/>
 
-          <ChangeValuesDialog headerIndex={0}/>
+          <DataPreview preview={preview}/>
+
+          <ChangeValuesDialog/>
 
         </div>
       </form>

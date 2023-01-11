@@ -57,6 +57,14 @@ export class ArrayHelpers {
     return updatedArray;
   }
 
+  // updateSingleObjectValuesByIndex(_object: any, _key: string, _newValue: string | number) {
+  //   return {
+  //     ..._object,
+  //     [key]: value
+  //   };
+  //
+  // }
+
   getDataTypes(_objects: any[]) {
     const values = Object.values(_objects[0]);
     const types: string[] = [];
@@ -84,10 +92,42 @@ export class ArrayHelpers {
         value: val
       }
 
+      // console.log(returnObject.index, returnObject.key, returnObject.value);
+
       return returnObject;
     });
     // console.log([...arr]);
     return [...arr];
+  }
+
+  getHeaderValuesByNameIndex(_objects: any[], _keyName: string, _keyIndex: number) {
+    const arr = _objects.map((obj, i) => {
+      const val = obj[_keyName];
+      if(val === undefined) return null
+      const returnObject = {
+        index: i,
+        keyIndex: _keyIndex,
+        key: _keyName,
+        value: val
+      }
+      return returnObject;
+    });
+    return arr.filter(val => val !== null)
+  }
+
+  getHeaderValuesByName(_objects: any[], _keyName: string, _keyIndex: number = 0) {
+    const arr = _objects.map((obj, i) => {
+      const val = obj[_keyName];
+      if(val === undefined) return null
+      const returnObject = {
+        index: i,
+        keyIndex: _keyIndex,
+        key: _keyName,
+        value: val
+      }
+      return returnObject;
+    });
+    return arr.filter(val => val !== null)
   }
 
 

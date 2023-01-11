@@ -29,6 +29,7 @@ interface MyContextType {
 }
 
 const MyContext = createContext<MyContextType>({
+
   downloadEnabled: false,
   file: null,
   downloadLink: null,
@@ -54,6 +55,7 @@ const MyContext = createContext<MyContextType>({
   setPreview: () => {},
   setShowUpdateKeyValuesDialog: () => {},
   setDialogKeyValueData: () => {}
+
 });
 
 export default MyContext;

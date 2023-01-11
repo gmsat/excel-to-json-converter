@@ -78,7 +78,6 @@ export const HeadersList: React.FC<HeadersListProps> = ({
               Changes</button> : null}
           </div>
 
-
           <div style={{display: "flex", gap: 10}}>
             {index === 0 ? <text style={{fontSize: "0.8rem"}}>Edit headers</text> : null}
           </div>
@@ -90,8 +89,6 @@ export const HeadersList: React.FC<HeadersListProps> = ({
                        key={index}
                        itemData={item}
                        index={index}/>
-
-
 
         </div>
       )}
