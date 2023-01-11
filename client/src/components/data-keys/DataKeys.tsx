@@ -19,15 +19,7 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
 
   useEffect(() => {
     setHeaders(data!);
-    // setUpdatedKeys(oldKeys)
   }, [data]);
-
-  // function getNewKeys(_array: string[], _index: number, _targetVal: any) {
-  //   return _array!.map((item, i) => {
-  //     if (i === _index) return _targetVal;
-  //     else return item;
-  //   });
-  // }
 
   const handleReset = () => {
     setResetClicked(!resetClicked);

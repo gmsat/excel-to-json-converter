@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import MyContext from "./MyContext";
+import { TableData, TableObject } from "../../components/change-values-dialog/ChangeValuesDialog";
 
 interface MyContextProviderProps {
   children: React.ReactNode
@@ -23,7 +24,7 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
   const [newKeys, setNewKeys] = useState<string[]>([]);
 
   const [showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog] = useState(false);
-  const [dialogKeyValueData, setDialogKeyValueData] = useState(null);
+  const [dialogKeyValueData, setDialogKeyValueData] = useState<TableObject[]>([]);
 
   return (
     <MyContext.Provider value={{
@@ -39,6 +40,7 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
       downloadLink,
       showUpdateKeyValuesDialog,
       dialogKeyValueData,
+
       setPreview,
       setOutputExists,
       setOutputData,

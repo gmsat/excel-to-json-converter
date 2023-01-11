@@ -1,6 +1,5 @@
 import { createContext } from "react";
-
-type DialogDataType = {index: number, keyIndex: number, key: string, value: any}
+import { TableObject } from "../../components/change-values-dialog/ChangeValuesDialog";
 
 interface MyContextType {
   file: Blob | null,
@@ -14,7 +13,7 @@ interface MyContextType {
   headerKeys: string[],
   oldKeys: string[],
   newKeys: string[],
-  dialogKeyValueData: DialogDataType[],
+  dialogKeyValueData: TableObject[],
   showUpdateKeyValuesDialog: boolean,
   setDownloadLink: (link: string | null) => void,
   setOutputData: (data: any[]) => void,
