@@ -1,3 +1,7 @@
+body {
+  font-family: "Consolas", serif;
+}
+
 #root {
   margin: 0 auto;
   padding: 2rem;

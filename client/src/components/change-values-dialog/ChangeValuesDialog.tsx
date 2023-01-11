@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dialog, DialogTitle, IconButton,  } from "@mui/material";
+import { Dialog, DialogTitle, IconButton, Button } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
 import SaveIcon from '@mui/icons-material/Save';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { Input, Grid, Button } from "@mui/joy";
+import { Input, Grid } from "@mui/joy";
 import { Select } from "@mui/joy";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
+import { Typography } from "@mui/joy";
 
 // get values for each object based on header index
 // TODO: Create a component to change the values for objects based on their index [new value input, object indices]
@@ -32,13 +33,13 @@ export const MultiChangeValuesInput = () => {
       <Button variant={"outlined"} sx={{flex: 0.5, backgroundColor: "skyblue"}}>Apply</Button>
     </Grid>
   );
-
 }
 
 const KeyValueRow: React.FC<KeyValueRow> = ({obj}) => {
   const [newValue, setNewValue] = useState<string | number>("");
   const [rowData, setRowData] = useState<TableObject>(obj);
   const [applyClicked, setApplyClicked] = useState(false);
+  const [saveDisabled, setSaveDisabled] = useState(true);
 
   // const {dialogKeyValueData} = useContext(MyContext);
 
@@ -94,33 +95,36 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj}) => {
     setDownloadLink(url);
   }
 
+  function setSaveDisabledDebounced(_val: boolean, _ms: number) {
+    setTimeout(() => {
+      setSaveDisabled(_val);
+    }, _ms);
+  }
+
   return (
-    <tr>
+    <tr >
       {/*<th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>*/}
       {/*  <IconButton>*/}
       {/*    <RestartAltIcon/>*/}
       {/*  </IconButton>*/}
       {/*</th>*/}
-      <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.index}</th>
-      <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.key}</th>
-      <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.value}</th>
-      <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>
-        <Input onChange={handleValueChange} size={"sm"} variant={"plain"} type="text" placeholder={"enter new value"} value={newValue}/>
+      <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"right"}><Typography variant={"plain"}>{rowData.index}</Typography> </th>
+      <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.key}</th>
+      <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.value}</th>
+      <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>
+        <Input onBlur={() => setSaveDisabledDebounced(true, 100)} onFocus={() => setSaveDisabled(false)} onChange={handleValueChange} size={"sm"} variant={"plain"} type="text" placeholder={"enter new value"} value={newValue}/>
       </th>
-      <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>
-        <IconButton onClick={() => handleSave(rowData, newValue)}>
-          <SaveIcon/>
-        </IconButton>
+      <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"center"}>
+        {/*<IconButton onClick={() => handleSave(rowData, newValue)}>*/}
+        {/*  <SaveIcon/>*/}
+        {/*</IconButton>*/}
+        <Button disabled={saveDisabled} sx={{borderRadius: 0}} variant={"outlined"} onClick={() => handleSave(rowData, newValue)}>Save</Button>
       </th>
     </tr>
   )
 }
 
 const KeyValuesTableDataRows: React.FC<TableData> = ({data}) => {
-  // useEffect(() => {
-  //   console.log("Table Data : useEffect() [ChangeValuesDialog]", data);
-  // }, [data]);
-
   const mapData =
     <div>
 
@@ -137,7 +141,7 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data}) => {
           <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Key</th>
           <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Value</th>
           <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Set Value</th>
-          <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}>Save</th>
+          <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}></th>
         </tr>
         {data.map((obj, index) => (
           <KeyValueRow obj={obj}/>
@@ -160,18 +164,6 @@ export const ChangeValuesTable = () => {
     console.log("dialog key value data [ChangeValuesDialog]", dialogKeyValueData);
   }, [dialogKeyValueData])
 
-  // useEffect(() => {
-  //   // console.log("dialog data", dialogKeyValueData);
-  //   // TODO: log data
-  //   dialogKeyValueData.map((obj, index) => {
-  //     Object.entries(obj).map(([key, val]) => {
-  //       // console.log("dialog key val", key, val);
-  //       // console.log("dialog key val", obj.index);
-  //       console.log("USE EFFECT [ChangeValuesDialog]", obj);
-  //     });
-  //   });
-  // }, [dialogKeyValueData]);
-
   return (
     <div style={{width: "100%"}}>
       <KeyValuesTableDataRows data={dialogKeyValueData}/>
@@ -188,17 +180,12 @@ const ChangeValuesDialog: React.FC = () => {
     setShowUpdateKeyValuesDialog(false);
   }
 
-  const handleSubmit = () => {
-    // TODO: update data
-    // TODO: update download file
-  }
-
   // data and UI to show in dialog
-  // TODO: Header text
+  // Header text
   // TODO: Selector to change header / or list of headers and show currently selected header
   // TODO: Input field to enter index numbers (apply changes only to objects with index)
   // TODO: [all objects / custom selection / enter index]
-  // TODO: Table [object index, key name, value, reset original]
+  // Table [object index, key name, value, reset original]
 
   return (
     <Dialog fullWidth maxWidth={"lg"} sx={{margin: "auto", maxWidth: "100%"}} open={showUpdateKeyValuesDialog} onClose={hideDialog}>
