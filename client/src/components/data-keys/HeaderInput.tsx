@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 import MyContext from "../../context/my-context/MyContext";
 import Button from "@mui/material/Button";
+import EditIcon from '@mui/icons-material/Edit';
+import { IconButton, Input } from "@mui/joy";
 
 export interface HeaderInputProps {
   itemData: string,
@@ -34,8 +36,6 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
 
   const [newData, setNewData] = useState<any[]>(outputData);
 
-  const inputRef = useRef()
-
   // reset inputs to original values on reset button click
   useEffect(() => {
     setValue(originalVal);
@@ -49,20 +49,20 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   }, [value]);
 
   const handleInputChange = (e: any) => {
-    const ah = new ArrayHelpers();
+    const array = new ArrayHelpers();
     const targetVal = e.target.value;
 
-    if (ah.keyExists(outputData, targetVal)) {
+    if (array.keyExists(outputData, targetVal)) {
       console.log(`Key name: [${targetVal}] already exists! Enter another key!`);
       return;
     }
 
     setValue(targetVal);
 
-    const updated = ah.getNewKeys(newKeys, index, targetVal);
+    const updated = array.getNewKeys(newKeys, index, targetVal);
     setNewKeys(updated);
 
-    const data = ah.renameKeysByIndex(outputData, index, targetVal);
+    const data = array.renameKeysByIndex(outputData, index, targetVal);
 
     setNewData(data);
     setOutputData(newData);
@@ -98,26 +98,36 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     setChecked(!checked);
   }
 
+  // show dialog data based on key name!
   const showDialog = (_objectIndex: number) => {
-    setDialogData(index)
+    setDialogData(_objectIndex);
     setShowUpdateKeyValuesDialog(true);
   }
 
   function setDialogData(_keyIndex: number) {
     const array = new ArrayHelpers();
-    const dialogData = array.getHeaderValuesByIndex(outputData, _keyIndex);
+    const dialogData = array.getHeaderValuesByNameIndex(outputData, value, _keyIndex);
     setDialogKeyValueData(dialogData);
   }
 
   return (
-    <div style={{height: "30px"}}>
+    <div style={{height: "35px", display: "flex"}}>
       <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
-        <p>({index})</p>
-        <input type="checkbox" checked={checked} onChange={handleChecked}/>
-        <input type="text" value={value} onChange={handleInputChange}/>
-        <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center"}}>
-          <Button sx={{height: "20px"}} size={"small"} onClick={() => showDialog(index)} variant={"outlined"} key={index}>Edit Values</Button>
+
+        <p style={{flex: 1}}>({index})</p>
+
+        {/*<input type="checkbox" checked={checked} onChange={handleChecked}/>*/}
+        {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
+
+        <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
+          {/*<Button startIcon={<EditIcon/>} sx={{height: "20px"}} size={"small"} onClick={() => showDialog(index)} variant={"outlined"} key={index}/>*/}
+          <IconButton variant={"soft"} onClick={() => showDialog(index)} key={index}>
+            <EditIcon/>
+          </IconButton>
         </div>
+
+        <Input sx={{flex: 4}} size={"sm"} variant={"outlined"} type="text" value={value} onChange={handleInputChange}/>
+
       </div>
     </div>
 

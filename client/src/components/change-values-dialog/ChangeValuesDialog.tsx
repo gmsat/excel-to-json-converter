@@ -1,16 +1,18 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Dialog, DialogTitle, IconButton } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
 import SaveIcon from '@mui/icons-material/Save';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { Input } from "@mui/joy";
+import { Input, Grid } from "@mui/joy";
+import { Select } from "@mui/joy";
+import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 
 // get values for each object based on header index
-// TODO: apply new value to object on save button click
+// TODO: Create a component to change the values for objects based on their index [new value input, object indices]
 
-interface ChangeValuesDialogProps {
-  headerIndex: number
-}
+// interface ChangeValuesDialogProps {
+//   headerIndex: number
+// }
 
 export type TableObject = {index: number, keyIndex: number, key: string, value: number | string }
 
@@ -18,48 +20,127 @@ export interface TableData {
   data: TableObject[]
 }
 
-const KeyValuesTableDataRows: React.FC<TableData> = ({data}) => {
+interface KeyValueRow {
+  obj: TableObject
+}
+
+const MultiChangeValuesInput = () => {
+
+
+  return (
+    <Grid>
+      <Input placeholder={"Object index numbers"}/>
+      <Input placeholder={"Enter value"}/>
+    </Grid>
+  )
+}
+
+const KeyValueRow: React.FC<KeyValueRow> = ({obj}) => {
+  const [newValue, setNewValue] = useState<string | number>("");
+  const [rowData, setRowData] = useState<TableObject>(obj);
+  const [applyClicked, setApplyClicked] = useState(false);
+
+  // const {dialogKeyValueData} = useContext(MyContext);
+
+  // TODO: set value type of the input [string or number or date]
+
+  const {outputData, setOutputData} = useContext(MyContext);
+  // const {newData, setNewData} = useContext(MyContext);
+  const {setPreview} = useContext(MyContext);
+  const {downloadLink, setDownloadLink} = useContext(MyContext);
+  const {file, setFile} = useContext(MyContext);
 
   useEffect(() => {
-    console.log("Table Data:", data)
-  }, [data]);
+    setRowData(obj);
+  }, [applyClicked]);
 
-  // const {headers} = useContext(MyContext);
+  const handleValueChange = (e: any) => {
+    const targetVal = e.target.value;
+    setNewValue(targetVal);
+    console.log(targetVal);
+  }
+
+  const handleSave = (_obj: any, _newValue: string | number) => {
+    const array = new ArrayHelpers();
+    const objectIndex = _obj.index;
+    const keyIndex = _obj.keyIndex;
+    const changedValues = array.updateObjectValuesByIndex(outputData, _newValue, keyIndex, [objectIndex]);
+
+    setTimeout(() => {
+      setPreview(changedValues);
+      setOutputData(changedValues);
+
+      setRowData({
+        value: newValue,
+        keyIndex: rowData.keyIndex,
+        key: rowData.key,
+        index: rowData.index
+      });
+
+      // setDownload(changedValues);
+    }, 100);
+  }
+
+  function setDownload(_newData: any) {
+    if (!file) {
+      return;
+    }
+
+    const data = JSON.stringify(_newData, null, 2);
+    const fileBlob = new Blob([data], {type: "text/plain"});
+    const url = URL.createObjectURL(fileBlob);
+
+    setDownloadLink(url);
+  }
+
+  return (
+    <tr>
+      {/*<th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>*/}
+      {/*  <IconButton>*/}
+      {/*    <RestartAltIcon/>*/}
+      {/*  </IconButton>*/}
+      {/*</th>*/}
+      <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.index}</th>
+      <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.key}</th>
+      <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.value}</th>
+      <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>
+        <Input onChange={handleValueChange} size={"sm"} variant={"plain"} type="text" placeholder={"enter new value"} value={newValue}/>
+      </th>
+      <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>
+        <IconButton onClick={() => handleSave(rowData, newValue)}>
+          <SaveIcon/>
+        </IconButton>
+      </th>
+    </tr>
+  )
+}
+
+const KeyValuesTableDataRows: React.FC<TableData> = ({data}) => {
+  // useEffect(() => {
+  //   console.log("Table Data : useEffect() [ChangeValuesDialog]", data);
+  // }, [data]);
 
   const mapData =
-  <>
-    <DialogTitle>{data[0].key}</DialogTitle>
-    <table align={"left"} style={{borderCollapse: "collapse", border: "solid lightgrey 1px"}}>
-      <tr>
-        <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}>Reset</th>
-        <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}>Index</th>
-        <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Key</th>
-        <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Value</th>
-        <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Set Value</th>
-        <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}>Save</th>
-      </tr>
-      {data.map((obj, index) => (
+    <div>
+      <Grid display={"flex"} flexDirection={"row"} width={"100%"}>
+        <DialogTitle>{data[0]?.key}</DialogTitle>
+        {/*<Select size={"sm"} variant={"outlined"}/>*/}
+      </Grid>
+
+      <table align={"left"} style={{borderCollapse: "collapse", border: "solid lightgrey 1px", margin: 30}}>
         <tr>
-          <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>
-            <IconButton>
-              <RestartAltIcon/>
-            </IconButton>
-          </th>
-          <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>{obj.index}</th>
-          <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>{obj.key}</th>
-          <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>{obj.value}</th>
-          <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>
-            <Input size={"sm"} variant={"outlined"} type="text" placeholder={"enter new value"}/>
-          </th>
-          <th style={{padding: "2px", border: "solid lightgrey 1px"}} align={"left"}>
-            <IconButton>
-              <SaveIcon/>
-            </IconButton>
-          </th>
+          {/*<th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}>Reset</th>*/}
+          <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}>Index</th>
+          <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Key</th>
+          <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Value</th>
+          <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Set Value</th>
+          <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}>Save</th>
         </tr>
-      ))}
-    </table>
-  </>
+        {data.map((obj, index) => (
+          <KeyValueRow obj={obj}/>
+        ))}
+      </table>
+    </div>
 
   return (
     <>
@@ -72,6 +153,10 @@ export const ChangeValuesTable = () => {
 
   const {dialogKeyValueData} = useContext(MyContext);
 
+  useEffect(() => {
+    console.log("dialog key value data [ChangeValuesDialog]", dialogKeyValueData);
+  }, [dialogKeyValueData])
+
   // useEffect(() => {
   //   // console.log("dialog data", dialogKeyValueData);
   //   // TODO: log data
@@ -79,7 +164,7 @@ export const ChangeValuesTable = () => {
   //     Object.entries(obj).map(([key, val]) => {
   //       // console.log("dialog key val", key, val);
   //       // console.log("dialog key val", obj.index);
-  //       // console.log(obj);
+  //       console.log("USE EFFECT [ChangeValuesDialog]", obj);
   //     });
   //   });
   // }, [dialogKeyValueData]);
@@ -91,7 +176,7 @@ export const ChangeValuesTable = () => {
   );
 };
 
-const ChangeValuesDialog: React.FC<ChangeValuesDialogProps> = ({headerIndex}) => {
+const ChangeValuesDialog: React.FC = () => {
   // const [open, setOpen] = useState(true);
   const {outputData, setOutputData} = useContext(MyContext);
   const {showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog} = useContext(MyContext);
@@ -113,8 +198,7 @@ const ChangeValuesDialog: React.FC<ChangeValuesDialogProps> = ({headerIndex}) =>
   // TODO: Table [object index, key name, value, reset original]
 
   return (
-    <Dialog fullWidth maxWidth={"lg"} sx={{margin: "auto", maxWidth: "100%"}} open={showUpdateKeyValuesDialog}
-            onClose={hideDialog}>
+    <Dialog fullWidth maxWidth={"lg"} sx={{margin: "auto", maxWidth: "100%"}} open={showUpdateKeyValuesDialog} onClose={hideDialog}>
       {/*<DialogTitle>Update key values</DialogTitle>*/}
       <ChangeValuesTable/>
     </Dialog>
