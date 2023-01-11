@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dialog, DialogTitle, IconButton } from "@mui/material";
+import { Dialog, DialogTitle, IconButton,  } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
 import SaveIcon from '@mui/icons-material/Save';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { Input, Grid } from "@mui/joy";
+import { Input, Grid, Button } from "@mui/joy";
 import { Select } from "@mui/joy";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 
@@ -24,15 +24,15 @@ interface KeyValueRow {
   obj: TableObject
 }
 
-const MultiChangeValuesInput = () => {
-
-
+export const MultiChangeValuesInput = () => {
   return (
-    <Grid>
-      <Input placeholder={"Object index numbers"}/>
-      <Input placeholder={"Enter value"}/>
+    <Grid display={"flex"} gap={1} sx={{margin: "auto", flex: 1, padding: 3}}>
+      <Input sx={{flex: 3}} placeholder={"index numbers"}/>
+      <Input sx={{flex: 1}} placeholder={"new value"}/>
+      <Button variant={"outlined"} sx={{flex: 0.5, backgroundColor: "skyblue"}}>Apply</Button>
     </Grid>
-  )
+  );
+
 }
 
 const KeyValueRow: React.FC<KeyValueRow> = ({obj}) => {
@@ -77,6 +77,7 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj}) => {
         index: rowData.index
       });
 
+      setNewValue("");
       // setDownload(changedValues);
     }, 100);
   }
@@ -122,8 +123,10 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data}) => {
 
   const mapData =
     <div>
-      <Grid display={"flex"} flexDirection={"row"} width={"100%"}>
-        <DialogTitle>{data[0]?.key}</DialogTitle>
+
+      <Grid display={"flex"} flexDirection={"row"} justifyContent={"space-between"}>
+        <DialogTitle sx={{flex: 1}}>{data[0]?.key}</DialogTitle>
+        <MultiChangeValuesInput/>
         {/*<Select size={"sm"} variant={"outlined"}/>*/}
       </Grid>
 

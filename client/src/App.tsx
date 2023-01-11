@@ -4,7 +4,10 @@ import ExcelToJson from "./modules/excel-to-json";
 import { UploadDownload, DataPreview, DataOptions } from "./components";
 import MyContext from "./context/my-context/MyContext";
 import { ArrayHelpers } from "./modules/json-data-options/ArrayHelpers";
-import ChangeValuesDialog, { ChangeValuesTable } from "./components/change-values-dialog/ChangeValuesDialog";
+import ChangeValuesDialog, {
+  ChangeValuesTable,
+  MultiChangeValuesInput
+} from "./components/change-values-dialog/ChangeValuesDialog";
 
 // TODO: feature to change header values based on their index, choose for which objects to change values for
 // TODO: enable / disable header feature, choose which keys and values to show and update all objects
@@ -122,6 +125,8 @@ function App() {
           <DataPreview preview={preview}/>
 
           <ChangeValuesDialog/>
+
+          {/*<MultiChangeValuesInput/>*/}
 
         </div>
       </form>

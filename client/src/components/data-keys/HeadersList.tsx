@@ -74,8 +74,7 @@ export const HeadersList: React.FC<HeadersListProps> = ({
         <div key={index} style={{display: "flex", flexFlow: "column", alignItems: "flex-start"}}>
 
           <div>
-            {index === 0 ? <button style={{margin: 12, backgroundColor: "aquamarine"}} onClick={handleApply}>Apply
-              Changes</button> : null}
+            {index === 0 ? <button style={{margin: 12, backgroundColor: "aquamarine"}} onClick={handleApply}>Apply Changes</button> : null}
           </div>
 
           <div style={{display: "flex", gap: 10}}>

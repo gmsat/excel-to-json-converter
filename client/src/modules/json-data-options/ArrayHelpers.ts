@@ -57,14 +57,6 @@ export class ArrayHelpers {
     return updatedArray;
   }
 
-  // updateSingleObjectValuesByIndex(_object: any, _key: string, _newValue: string | number) {
-  //   return {
-  //     ..._object,
-  //     [key]: value
-  //   };
-  //
-  // }
-
   getDataTypes(_objects: any[]) {
     const values = Object.values(_objects[0]);
     const types: string[] = [];
