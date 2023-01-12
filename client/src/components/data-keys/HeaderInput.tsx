@@ -4,6 +4,7 @@ import MyContext from "../../context/my-context/MyContext";
 import Button from "@mui/material/Button";
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Input } from "@mui/joy";
+import { Input as MuiInput, TextField } from "@mui/material"
 
 export interface HeaderInputProps {
   itemData: string,
@@ -68,19 +69,19 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     setOutputData(newData);
   }
 
-  const testValueChanges = () => {
-    const ah = new ArrayHelpers();
-    const changedValues = ah.updateObjectValuesByIndex(outputData, 5000, 5, [0, 2, 5]);
-
-    setNewData(changedValues);
-    setOutputData(newData);
-
-    setTimeout(() => {
-      // console.log("timeout executed");
-      setPreview(changedValues);
-      setDownload(changedValues);
-    }, 100);
-  }
+  // const testValueChanges = () => {
+  //   const ah = new ArrayHelpers();
+  //   const changedValues = ah.updateObjectValuesByIndex(outputData, 5000, 5, [0, 2, 5]);
+  //
+  //   setNewData(changedValues);
+  //   setOutputData(newData);
+  //
+  //   setTimeout(() => {
+  //     // console.log("timeout executed");
+  //     setPreview(changedValues);
+  //     setDownload(changedValues);
+  //   }, 100);
+  // }
 
   function setDownload(_newData: any) {
     if (!file) {
@@ -121,12 +122,12 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
 
         <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
           {/*<Button startIcon={<EditIcon/>} sx={{height: "20px"}} size={"small"} onClick={() => showDialog(index)} variant={"outlined"} key={index}/>*/}
-          <IconButton variant={"soft"} onClick={() => showDialog(index)} key={index}>
+          <IconButton size={"sm"} variant={"soft"} onClick={() => showDialog(index)} key={index}>
             <EditIcon/>
           </IconButton>
         </div>
 
-        <Input sx={{flex: 4}} size={"sm"} variant={"outlined"} type="text" value={value} onChange={handleInputChange}/>
+        <TextField variant={"standard"} sx={{flex: 4}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
 
       </div>
     </div>
