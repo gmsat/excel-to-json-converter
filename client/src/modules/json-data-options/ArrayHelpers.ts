@@ -43,27 +43,48 @@ export class ArrayHelpers {
     return _array[0].hasOwnProperty(_keyToCheck);
   }
 
-  updateObjectValuesByIndex(_objects: any[], _newValue: string | number, _keyNameIndex: number, _indexNumbers: number[]) {
+  // original method
+  // updateObjectValuesByIndex(_objects: any[], _newValue: string | number, _keyNameIndex: number, _indexNumbers: number[]) {
+  //   let keyToUpdate = Object.keys(_objects[0])[_keyNameIndex];
+  //   let updatedArray = [..._objects];
+  //
+  //   for (let i of _indexNumbers) {
+  //     updatedArray[i] = {
+  //       ...updatedArray[i],
+  //       [keyToUpdate]: _newValue
+  //     };
+  //   }
+  //
+  //   return updatedArray;
+  // }
+
+  updateObjectValues(_objects: any[],
+                     _newValue: string | number,
+                     _keyNameIndex: number,
+                     _indexNumbers: number[],
+                     _dataType: "string" | "number") {
     let keyToUpdate = Object.keys(_objects[0])[_keyNameIndex];
     let updatedArray = [..._objects];
+    let newValue: string | number;
+
+    if (typeof _newValue === "string" && _dataType === "number") {
+      newValue = parseFloat(_newValue);
+      if (newValue % 1 === 0) {
+        newValue = parseFloat(newValue.toFixed(2));
+      }
+    } else {
+      newValue = _newValue.toString();
+    }
 
     for (let i of _indexNumbers) {
       updatedArray[i] = {
         ...updatedArray[i],
-        [keyToUpdate]: _newValue
+        [keyToUpdate]: newValue
       };
     }
 
     return updatedArray;
   }
-
-  // updateSingleObjectValuesByIndex(_object: any, _key: string, _newValue: string | number) {
-  //   return {
-  //     ..._object,
-  //     [key]: value
-  //   };
-  //
-  // }
 
   getDataTypes(_objects: any[]) {
     const values = Object.values(_objects[0]);

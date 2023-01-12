@@ -1,27 +1,26 @@
 import React, { useContext } from 'react';
 import './App.css';
 import ExcelToJson from "./modules/excel-to-json";
-import { UploadDownload, DataPreview, DataOptions } from "./components";
+import { DataOptions, DataPreview, UploadDownload } from "./components";
 import MyContext from "./context/my-context/MyContext";
-import { ArrayHelpers } from "./modules/json-data-options/ArrayHelpers";
-import ChangeValuesDialog, { ChangeValuesTable } from "./components/change-values-dialog/ChangeValuesDialog";
+import ChangeValuesDialog from "./components/change-values-dialog/ChangeValuesDialog";
 
 // TODO: feature to change header values based on their index, choose for which objects to change values for
 // TODO: enable / disable header feature, choose which keys and values to show and update all objects
 
-// TODO: logic improvements
-// TODO: after importing file, make the logic to manipulate json data separately, and set download file after manipulating the data
+// logic improvements
+// after importing file, make the logic to manipulate json data separately, and set download file after manipulating the data
 //  - don't run the the convert button logic, make separate logic for options (Apply Changes)
 //  - set json data
 //  - manipulate data with options
 //  - apply button applies changes to data and sets new download file with the data
 //  - setting headers will rerun the conversion from .xlsx file and reset the options (because headers will be different)
 
-// TODO: implement logic to change key values based on the index of the object (change based on selection)
+// implement logic to change key values based on the index of the object (change based on selection)
 
-// TODO: data manipulation should only happen to json object after importing file
+// data manipulation should only happen to json object after importing file
 
-// TODO: workflow
+// workflow
 //  - choose .xlsx file to upload
 //  - press convert button
 //  - convert input to json (with selected header)
@@ -30,16 +29,16 @@ import ChangeValuesDialog, { ChangeValuesTable } from "./components/change-value
 //  - set new output file data
 //  - download (Download btn)
 
-// TODO: refactoring tasks
-// TODO: refactor prop drilling from components
+// refactoring tasks
+// refactor prop drilling from components
 
-// TODO: Requirements
-// TODO: change values by index
+// Requirements
+// change values by index
 // TODO: detect value types
 // TODO: create executable
 
 // TODO: Current
-// TODO: Make a separate function to save file for manipulated data
+// Make a separate function to save file for manipulated data
 // TODO: Setting headers uses .xlsx file and resets the options
 // TODO: implement feature to change the value of key based on index (enter index numbers / choose objects)
 
