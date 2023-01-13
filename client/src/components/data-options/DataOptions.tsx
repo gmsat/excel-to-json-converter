@@ -11,8 +11,6 @@ interface DataOptionsProps {
   outputExists: boolean
 }
 
-
-
 const DataOptions: React.FC<DataOptionsProps> = ({
                                                    headerKeys,
                                                    newKeys,
@@ -33,8 +31,6 @@ const DataOptions: React.FC<DataOptionsProps> = ({
           width: "100%",
           alignItems: "flex-start",
           padding: 7,
-          border: "solid lightgrey 1px",
-          borderRadius: 6
         }}>
 
           {outputExists ?

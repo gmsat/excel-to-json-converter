@@ -7,7 +7,7 @@ interface DataPreviewProps {
 
 const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
   return (
-    <div style={{display: "flex", flexFlow: "column", border: "solid lightgrey 1px", borderRadius: 6, minHeight: "100%"}}>
+    <div style={{display: "flex", flexFlow: "column", borderRadius: 6, minHeight: "100%"}}>
 
       <div style={{display: "flex", flexFlow: "column", minHeight: "100%"}} className={"card"}>
         <label style={{textAlign: "left"}} htmlFor="preview">Preview</label>

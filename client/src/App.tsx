@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import './App.css';
 import ExcelToJson from "./modules/excel-to-json";
 import { DataOptions, DataPreview, UploadDownload } from "./components";
 import MyContext from "./context/my-context/MyContext";
 import ChangeValuesDialog from "./components/change-values-dialog/ChangeValuesDialog";
+import { AppBar, Grid, FormControl } from "@mui/material";
 
 // TODO: feature to change header values based on their index, choose for which objects to change values for
 // TODO: enable / disable header feature, choose which keys and values to show and update all objects
@@ -99,17 +99,18 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <Grid sx={{width: "100%"}}>
+      <FormControl onSubmit={handleSubmit} sx={{minWidth: "100vw"}}>
 
-      <form onSubmit={handleSubmit}>
-        <div style={{display: "flex", gap: 20}}>
-
+        <AppBar position={"sticky"} sx={{backgroundColor: "blueGrey"}} variant={"elevation"}>
           <UploadDownload handleChange={handleChange}
                           outputExists={outputExists}
                           downloadEnabled={downloadEnabled}
                           setDownloadEnabled={setDownloadEnabled}
                           downloadLink={downloadLink!}/>
+        </AppBar>
 
+        <Grid display={"flex"} flexDirection={"row"} gap={4} padding={4}>
           <DataOptions headerKeys={headerKeys}
                        oldKeys={oldKeys}
                        setOldKeys={setOldKeys}
@@ -119,12 +120,12 @@ function App() {
                        outputExists={outputExists}/>
 
           <DataPreview preview={preview}/>
+        </Grid>
 
-          <ChangeValuesDialog/>
+        <ChangeValuesDialog/>
 
-        </div>
-      </form>
-    </div>
+      </FormControl>
+    </Grid>
   );
 }
 
