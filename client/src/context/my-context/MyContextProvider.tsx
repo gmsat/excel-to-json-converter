@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import MyContext from "./MyContext";
-import { TableData, TableObject } from "../../components/change-values-dialog/ChangeValuesDialog";
+import { TableObject } from "../../components/change-values-dialog/ChangeValuesDialog";
 
 interface MyContextProviderProps {
   children: React.ReactNode
@@ -17,7 +17,6 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
   const [downloadEnabled, setDownloadEnabled] = useState(false);
 
   // data options
-  const [options, setOptions] = useState<boolean>(false);
   const [header, setHeader] = useState("A12");
   const [headerKeys, setHeaderKeys] = useState<string[]>([]);
   const [oldKeys, setOldKeys] = useState<string[]>([]);
