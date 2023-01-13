@@ -34,7 +34,10 @@ interface KeyValueRow {
 
 interface DataTypeSelectorProps {
   dataType: SelectorDataTypes,
-  setDataType: (_type: SelectorDataTypes) => void
+  setDataType: (_type: SelectorDataTypes) => void,
+  disabled?: boolean,
+  onFocus?: React.FocusEventHandler<HTMLInputElement> | undefined
+  onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined
 }
 
 interface ChangeAllValuesControlProps {
@@ -44,7 +47,7 @@ interface ChangeAllValuesControlProps {
   data: TableObject[]
 }
 
-const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataType}) => {
+const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataType, disabled, onFocus, onBlur}) => {
 
   const [value, setValue] = useState<SelectorDataTypes>("string");
 
@@ -59,7 +62,7 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataTyp
   return (
     <>
       <FormControl variant={"outlined"} fullWidth>
-        <Select size={"small"} value={dataType} onChange={handleChange}>
+        <Select onFocus={onFocus} onBlur={onBlur} disabled={disabled} size={"small"} value={dataType} onChange={handleChange}>
           <MenuItem value={"string"}>String</MenuItem>
           <MenuItem value={"number"}>Number</MenuItem>
         </Select>
@@ -116,7 +119,7 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
           <Grid item>
             <DataTypeSelector dataType={dataType} setDataType={setDataType}/>
           </Grid>
-          <Button onClick={handleSave} sx={{borderRadius: 0}} variant={"outlined"}>Save</Button>
+          <Button onClick={handleSave} sx={{borderRadius: 0}} variant={"outlined"}>Save All</Button>
         </Grid>
       </FormControl>
     </Grid>
@@ -145,6 +148,7 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data}) => {
   const {dialogKeyValueData} = useContext(MyContext);
 
   // TODO: set value type of the input [string or number or date]
+  // allow to save only when the new value is different from the previous value
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {setPreview} = useContext(MyContext);
@@ -160,7 +164,12 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data}) => {
   const handleValueChange = (e: any) => {
     const targetVal = e.target.value;
     setNewValue(targetVal);
-    console.log(targetVal);
+
+    if (targetVal !== "" && targetVal !== obj.value) {
+      setSaveDisabled(false);
+    } else {
+      setSaveDisabled(true);
+    }
   }
 
   const handleSave = (_obj: any, _newValue: string | number) => {
@@ -181,6 +190,7 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data}) => {
       });
 
       setNewValue("");
+      setSaveDisabled(true);
       // setDownload(changedValues);
     }, 100);
   }
@@ -205,18 +215,16 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data}) => {
 
   return (
     <>
-      <tr>
+      <tr tabIndex={0}>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"right"}><Typography
           variant={"plain"}>{rowData.index}</Typography></th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.key}</th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.value}</th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>
-          <Input onBlur={() => setSaveDisabledDebounced(true, 100)} onFocus={() => setSaveDisabled(false)}
-                 onChange={handleValueChange} size={"sm"} variant={"plain"} type="text" placeholder={"enter new value"}
-                 value={newValue}/>
+          <Input onChange={handleValueChange} size={"sm"} variant={"plain"} type="text" placeholder={"enter new value"} value={newValue}/>
         </th>
-        <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}><DataTypeSelector dataType={dataType}
-                                                                                                     setDataType={setDataType}/>
+        <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>
+          <DataTypeSelector dataType={dataType} setDataType={setDataType}/>
         </th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"center"}>
           <Button disabled={saveDisabled} sx={{borderRadius: 0}} variant={"outlined"}
@@ -322,6 +330,7 @@ const ChangeValuesDialog: React.FC = () => {
     <Dialog fullWidth maxWidth={"lg"} sx={{margin: "auto", maxWidth: "100%"}} open={showUpdateKeyValuesDialog}
             onClose={hideDialog}>
       <Grid item padding={5}>
+        {/*<ChangeAllValuesControl indexNumbers={[1,2,3]} keyIndex={2} key={"AMOUNT"} data={}/>*/}
         <ChangeValuesTable/>
       </Grid>
     </Dialog>
