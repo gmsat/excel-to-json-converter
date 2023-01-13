@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useDeferredValue, useEffect, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -29,7 +29,10 @@ export interface TableData {
 interface KeyValueRow {
   obj: TableObject,
   index: number,
-  data: TableObject[]
+  data: TableObject[],
+  allValues: string | number,
+  saveAllClicked: boolean,
+  setSaveAllClicked: (_val: boolean) => void
 }
 
 interface DataTypeSelectorProps {
@@ -44,7 +47,10 @@ interface ChangeAllValuesControlProps {
   indexNumbers: number[],
   keyIndex: number,
   key: string,
-  data: TableObject[]
+  data: TableObject[],
+  setAllValues: (_newVal: string | number) => void,
+  allValues: string | number,
+  setSaveAllClicked: (_val: boolean) => void
 }
 
 const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataType, disabled, onFocus, onBlur}) => {
@@ -71,12 +77,10 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataTyp
   )
 }
 
-const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, keyIndex, indexNumbers, data}) => {
-  // create a control to change all values at once for selected field
-  // TODO: create a button to save all entered values
-
+const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, keyIndex, indexNumbers, data, setAllValues, allValues, setSaveAllClicked}) => {
   const [dataType, setDataType] = useState<"string" | "number">("string");
   const [newValue, setNewValue] = useState<string | number>("");
+  const [saveAllActive, setSaveAllActive] = useState(false);
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {setPreview} = useContext(MyContext);
@@ -87,26 +91,46 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
     console.log("ChangeAllValuesControl [data]:", data);
   }, [data]);
 
+  useEffect(() => {
+    if (allValues !== "") {
+      setSaveAllActive(true);
+    } else {
+      setSaveAllActive(false);
+    }
+  }, [allValues]);
+
   const handleSave = () => {
     // get indices for all objects
     // use updateObject values with all object indices to change values for all
     // set the data for download
-
+    setSaveAllClicked(true);
     // TODO: re-render row data to show that it has changed
 
     // setDialogKeyValueData([""]);
     const array = new ArrayHelpers();
-    const newData = array.updateObjectValues(outputData, newValue, keyIndex, indexNumbers, dataType);
+    const newData = array.updateObjectValues(outputData, allValues, keyIndex, indexNumbers, dataType);
 
     setPreview(newData);
     setOutputData(newData);
-    setDialogKeyValueData(newData);
-    setNewValue("");
+    // setDialogKeyValueData(newData);
+    // setDialogData(keyIndex);
+
+    setAllValues("");
+    // setSaveAllClicked(false);
+  }
+
+  function setDialogData(_keyIndex: number) {
+    const array = new ArrayHelpers();
+    const dialogData = array.getHeaderValuesByNameIndex(outputData, "AMOUNT", _keyIndex);
+
+    console.log("DIALOG DATA <><><><>", dialogData);
+
+    setDialogKeyValueData(dialogData);
   }
 
   const handleNewValueChange = (e: any) => {
     const targetVal = e.target.value;
-    setNewValue(targetVal);
+    setAllValues(targetVal);
   }
 
   return (
@@ -114,12 +138,12 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
       <FormControl>
         <FormLabel>Change all values</FormLabel>
         <Grid display={"flex"} flexDirection={"row"} gap={2}>
-          <TextField size={"small"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"} value={newValue}
+          <TextField size={"small"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"} value={allValues}
                      onChange={handleNewValueChange}/>
           <Grid item>
             <DataTypeSelector dataType={dataType} setDataType={setDataType}/>
           </Grid>
-          <Button onClick={handleSave} sx={{borderRadius: 0}} variant={"outlined"}>Save All</Button>
+          <Button disabled={!saveAllActive} onClick={handleSave} sx={{borderRadius: 0}} variant={"outlined"}>Save All</Button>
         </Grid>
       </FormControl>
     </Grid>
@@ -136,30 +160,18 @@ export const MultiChangeValuesInput = () => {
   );
 }
 
-const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data}) => {
+const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAllClicked, setSaveAllClicked}) => {
   const [newValue, setNewValue] = useState<string | number>("");
   const [rowData, setRowData] = useState<TableObject>(obj);
-  const [applyClicked, setApplyClicked] = useState(false);
   const [saveDisabled, setSaveDisabled] = useState(true);
   const [dataType, setDataType] = useState<"string" | "number">("string");
-
-  // const [row, setRow] = useState<TableObject>(obj);
-
-  const {dialogKeyValueData} = useContext(MyContext);
-
-  // TODO: set value type of the input [string or number or date]
-  // allow to save only when the new value is different from the previous value
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {setPreview} = useContext(MyContext);
   const {downloadLink, setDownloadLink} = useContext(MyContext);
   const {file, setFile} = useContext(MyContext);
 
-  // these get returned as undefined after clicking save
-  const i = obj.index;
-  const keyIndex = obj.keyIndex;
-  const key = obj.key;
-  const value = obj.value;
+  const deferred = useDeferredValue(allValues);
 
   const handleValueChange = (e: any) => {
     const targetVal = e.target.value;
@@ -171,6 +183,23 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data}) => {
       setSaveDisabled(true);
     }
   }
+
+  useEffect(() => {
+    if (allValues !== "") {
+      setSaveDisabled(false);
+    }
+  }, [allValues])
+
+  useEffect(() => {
+    setNewValue(allValues);
+  }, [deferred]);
+
+  useEffect(() => {
+    if (saveAllClicked) {
+      handleSave(rowData, allValues);
+      setSaveAllClicked(false);
+    }
+  }, [saveAllClicked]);
 
   const handleSave = (_obj: any, _newValue: string | number) => {
     const array = new ArrayHelpers();
@@ -237,14 +266,17 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data}) => {
 }
 
 const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
-  const {dialogKeyValueData, setDialogKeyValueData} = useContext(MyContext);
-
   const [objectsIndicesArr, setObjectIndicesArr] = useState<number[]>([]);
   const [tableData, setTableData] = useState(data);
+  const [allValues, setAllValues] = useState<string | number>("");
+  const [saveAllClicked, setSaveAllClicked] = useState(false);
 
   useEffect(() => {
     setObjectIndicesArr(setIndexNumbers(data));
     setTableData(data);
+
+    console.log("TABLE DATA [KeyValuesTableDataRows]", tableData);
+
   }, [data]);
 
   function setIndexNumbers(_array: object[]): number[] {
@@ -269,7 +301,12 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
 
         <DialogTitle sx={{flex: 1}}>{tableData[0]?.key}</DialogTitle>
 
-        <ChangeAllValuesControl data={tableData} key={tableData[0]?.key} keyIndex={tableData[0]?.keyIndex}
+        <ChangeAllValuesControl data={tableData}
+                                key={tableData[0]?.key}
+                                keyIndex={tableData[0]?.keyIndex}
+                                setAllValues={setAllValues}
+                                allValues={allValues}
+                                setSaveAllClicked={setSaveAllClicked}
                                 indexNumbers={objectsIndicesArr}/>
       </Grid>
 
@@ -284,7 +321,7 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
           <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}></th>
         </tr>
         {tableData.map((obj, index) => (
-          <KeyValueRow data={tableData} obj={obj} index={index}/>
+          <KeyValueRow allValues={allValues} data={tableData} obj={obj} index={index} saveAllClicked={saveAllClicked} setSaveAllClicked={setSaveAllClicked}/>
         ))}
       </table>
 
