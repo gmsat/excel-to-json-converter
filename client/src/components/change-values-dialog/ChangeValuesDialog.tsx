@@ -15,9 +15,6 @@ import MyContext from "../../context/my-context/MyContext";
 import { Input, Typography } from "@mui/joy";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 
-// get values for each object based on header index
-// TODO: Create a component to change the values for objects based on their index [new value input, object indices]
-
 export type TableObject = { index: number, keyIndex: number, key: string, value: number | string };
 type SelectorDataTypes = "string" | "number";
 
@@ -54,7 +51,6 @@ interface ChangeAllValuesControlProps {
 }
 
 const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataType, disabled, onFocus, onBlur}) => {
-
   const [value, setValue] = useState<SelectorDataTypes>("string");
 
   useEffect(() => {
@@ -79,17 +75,10 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataTyp
 
 const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, keyIndex, indexNumbers, data, setAllValues, allValues, setSaveAllClicked}) => {
   const [dataType, setDataType] = useState<"string" | "number">("string");
-  const [newValue, setNewValue] = useState<string | number>("");
   const [saveAllActive, setSaveAllActive] = useState(false);
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {setPreview} = useContext(MyContext);
-
-  const {dialogKeyValueData, setDialogKeyValueData} = useContext(MyContext);
-
-  useEffect(() => {
-    console.log("ChangeAllValuesControl [data]:", data);
-  }, [data]);
 
   useEffect(() => {
     if (allValues !== "") {
@@ -100,32 +89,14 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
   }, [allValues]);
 
   const handleSave = () => {
-    // get indices for all objects
-    // use updateObject values with all object indices to change values for all
-    // set the data for download
     setSaveAllClicked(true);
-    // TODO: re-render row data to show that it has changed
-
-    // setDialogKeyValueData([""]);
     const array = new ArrayHelpers();
     const newData = array.updateObjectValues(outputData, allValues, keyIndex, indexNumbers, dataType);
 
     setPreview(newData);
     setOutputData(newData);
-    // setDialogKeyValueData(newData);
-    // setDialogData(keyIndex);
 
     setAllValues("");
-    // setSaveAllClicked(false);
-  }
-
-  function setDialogData(_keyIndex: number) {
-    const array = new ArrayHelpers();
-    const dialogData = array.getHeaderValuesByNameIndex(outputData, "AMOUNT", _keyIndex);
-
-    console.log("DIALOG DATA <><><><>", dialogData);
-
-    setDialogKeyValueData(dialogData);
   }
 
   const handleNewValueChange = (e: any) => {
@@ -150,16 +121,6 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
   );
 }
 
-export const MultiChangeValuesInput = () => {
-  return (
-    <Grid display={"flex"} gap={1} sx={{margin: "auto", flex: 1, padding: 3}}>
-      <Input sx={{flex: 3}} placeholder={"index numbers"}/>
-      <Input sx={{flex: 1}} placeholder={"new value"}/>
-      <Button variant={"outlined"} sx={{flex: 0.5, backgroundColor: "skyblue"}}>Apply</Button>
-    </Grid>
-  );
-}
-
 const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAllClicked, setSaveAllClicked}) => {
   const [newValue, setNewValue] = useState<string | number>("");
   const [rowData, setRowData] = useState<TableObject>(obj);
@@ -168,8 +129,6 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAl
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {setPreview} = useContext(MyContext);
-  const {downloadLink, setDownloadLink} = useContext(MyContext);
-  const {file, setFile} = useContext(MyContext);
 
   const deferred = useDeferredValue(allValues);
 
@@ -177,7 +136,7 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAl
     const targetVal = e.target.value;
     setNewValue(targetVal);
 
-    if (targetVal !== "" && targetVal !== obj.value) {
+    if (targetVal !== "") {
       setSaveDisabled(false);
     } else {
       setSaveDisabled(true);
@@ -222,24 +181,6 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAl
       setSaveDisabled(true);
       // setDownload(changedValues);
     }, 100);
-  }
-
-  // function setDownload(_newData: any) {
-  //   if (!file) {
-  //     return;
-  //   }
-  //
-  //   const data = JSON.stringify(_newData, null, 2);
-  //   const fileBlob = new Blob([data], {type: "text/plain"});
-  //   const url = URL.createObjectURL(fileBlob);
-  //
-  //   setDownloadLink(url);
-  // }
-
-  function setSaveDisabledDebounced(_val: boolean, _ms: number) {
-    setTimeout(() => {
-      setSaveDisabled(_val);
-    }, _ms);
   }
 
   return (
@@ -287,12 +228,6 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
 
     return numArr;
   }
-
-  // function setDialogData(_keyIndex: number) {
-  //   const array = new ArrayHelpers();
-  //   const dialogData = array.getHeaderValuesByNameIndex(outputData, value, _keyIndex);
-  //   setDialogKeyValueData(dialogData);
-  // }
 
   const mapData =
     <Grid display={"flex"} flexDirection={"column"} gap={2}>
@@ -356,18 +291,10 @@ const ChangeValuesDialog: React.FC = () => {
     setShowUpdateKeyValuesDialog(false);
   }
 
-  // data and UI to show in dialog
-  // Header text
-  // TODO: Selector to change header / or list of headers and show currently selected header
-  // TODO: Input field to enter index numbers (apply changes only to objects with index)
-  // TODO: [all objects / custom selection / enter index]
-  // Table [object index, key name, value, reset original]
-
   return (
     <Dialog fullWidth maxWidth={"lg"} sx={{margin: "auto", maxWidth: "100%"}} open={showUpdateKeyValuesDialog}
             onClose={hideDialog}>
       <Grid item padding={5}>
-        {/*<ChangeAllValuesControl indexNumbers={[1,2,3]} keyIndex={2} key={"AMOUNT"} data={}/>*/}
         <ChangeValuesTable/>
       </Grid>
     </Dialog>

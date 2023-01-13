@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { HeaderInput } from "./HeaderInput";
-import ExcelToJson from "../../modules/excel-to-json";
 import MyContext from "../../context/my-context/MyContext";
-import ChangeValuesDialog from "../change-values-dialog/ChangeValuesDialog";
 
 export interface HeadersListProps {
   headers: string[],
@@ -13,10 +11,6 @@ export interface HeadersListProps {
   resetClicked: boolean,
   setResetClicked: (state: boolean) => void
 }
-
-// fix apply button not working on first click (options don't get applied on first button click)
-// TODO: keep the state of changed headers, don't reset to old ones after clicking apply button
-// TODO: update headers to new values after changing the header option
 
 export const HeadersList: React.FC<HeadersListProps> = ({
                                                           oldKeys,
@@ -41,18 +35,6 @@ export const HeadersList: React.FC<HeadersListProps> = ({
   const {file, setFile} = useContext(MyContext);
   const {outputData, setOutputData} = useContext(MyContext);
   const {setDownloadLink} = useContext(MyContext);
-
-  function setDownload() {
-    if (!file) {
-      return;
-    }
-
-    const data = JSON.stringify(outputData, null, 2);
-    const fileBlob = new Blob([data], {type: "text/plain"});
-    const url = URL.createObjectURL(fileBlob);
-
-    setDownloadLink(url);
-  }
 
   const handleApply = (e: any) => {
     e.preventDefault();

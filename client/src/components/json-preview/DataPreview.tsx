@@ -1,6 +1,5 @@
 import React from 'react';
 import { TextField } from "@mui/material";
-import { fontSize } from "@mui/system";
 
 interface DataPreviewProps {
   preview: any

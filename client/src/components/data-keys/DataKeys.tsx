@@ -11,10 +11,7 @@ export interface DataKeysProps {
 }
 
 const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys}) => {
-  // const [headers, setHeaders] = useState<string[] | null>(null);
-  // const [updatedKeys, setUpdatedKeys] = useState(oldKeys);
   const [headers, setHeaders] = useState<string[]>(data!);
-
   const [resetClicked, setResetClicked] = useState(false);
 
   useEffect(() => {

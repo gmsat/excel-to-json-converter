@@ -1,5 +1,3 @@
-import validator from "is-my-json-valid";
-
 export class ArrayHelpers {
   private data: any[] = [];
 
@@ -43,20 +41,19 @@ export class ArrayHelpers {
     return _array[0].hasOwnProperty(_keyToCheck);
   }
 
-  // original method
-  // updateObjectValuesByIndex(_objects: any[], _newValue: string | number, _keyNameIndex: number, _indexNumbers: number[]) {
-  //   let keyToUpdate = Object.keys(_objects[0])[_keyNameIndex];
-  //   let updatedArray = [..._objects];
-  //
-  //   for (let i of _indexNumbers) {
-  //     updatedArray[i] = {
-  //       ...updatedArray[i],
-  //       [keyToUpdate]: _newValue
-  //     };
-  //   }
-  //
-  //   return updatedArray;
-  // }
+  updateObjectValuesByIndex(_objects: any[], _newValue: string | number, _keyNameIndex: number, _indexNumbers: number[]) {
+    let keyToUpdate = Object.keys(_objects[0])[_keyNameIndex];
+    let updatedArray = [..._objects];
+
+    for (let i of _indexNumbers) {
+      updatedArray[i] = {
+        ...updatedArray[i],
+        [keyToUpdate]: _newValue
+      };
+    }
+
+    return updatedArray;
+  }
 
   updateObjectValues(_objects: any[],
                      _newValue: string | number,
@@ -112,12 +109,8 @@ export class ArrayHelpers {
         key: key,
         value: val
       }
-
-      // console.log(returnObject.index, returnObject.key, returnObject.value);
-
       return returnObject;
     });
-    // console.log([...arr]);
     return [...arr];
   }
 
@@ -150,6 +143,4 @@ export class ArrayHelpers {
     });
     return arr.filter(val => val !== null)
   }
-
-
 }
