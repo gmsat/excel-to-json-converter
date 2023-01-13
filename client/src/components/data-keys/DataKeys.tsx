@@ -14,13 +14,13 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
   const [headers, setHeaders] = useState<string[]>(data!);
   const [resetClicked, setResetClicked] = useState(false);
 
-  useEffect(() => {
-    setHeaders(data!);
-  }, [data]);
-
   const handleReset = () => {
     setResetClicked(!resetClicked);
   }
+
+  useEffect(() => {
+    setHeaders(data!);
+  }, [data]);
 
   return (
     <div style={{display: "flex", flexFlow: "column", gap: 5}}>

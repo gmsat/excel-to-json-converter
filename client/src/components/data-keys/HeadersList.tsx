@@ -22,16 +22,6 @@ export const HeadersList: React.FC<HeadersListProps> = ({
   const [oldLocal, setOldLocal] = useState(oldKeys);
   const [updatedKeys, setUpdatedKeys] = useState(oldKeys);
 
-  useEffect(() => {
-    setOldLocal(oldKeys);
-    setUpdatedKeys(oldKeys);
-    setNewKeys(headers);
-  }, [oldKeys]);
-
-  useEffect(() => {
-    setNewKeys(updatedKeys);
-  }, [updatedKeys]);
-
   const {file, setFile} = useContext(MyContext);
   const {outputData, setOutputData} = useContext(MyContext);
   const {setDownloadLink} = useContext(MyContext);
@@ -49,6 +39,16 @@ export const HeadersList: React.FC<HeadersListProps> = ({
 
     setDownloadLink(url);
   }
+
+  useEffect(() => {
+    setOldLocal(oldKeys);
+    setUpdatedKeys(oldKeys);
+    setNewKeys(headers);
+  }, [oldKeys]);
+
+  useEffect(() => {
+    setNewKeys(updatedKeys);
+  }, [updatedKeys]);
 
   return (
     <>

@@ -53,13 +53,13 @@ interface ChangeAllValuesControlProps {
 const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataType, disabled, onFocus, onBlur}) => {
   const [value, setValue] = useState<SelectorDataTypes>("string");
 
-  useEffect(() => {
-    setDataType(value);
-  }, [value]);
-
   const handleChange = (e: SelectChangeEvent) => {
     setValue(e.target.value as SelectorDataTypes);
   }
+
+  useEffect(() => {
+    setDataType(value);
+  }, [value]);
 
   return (
     <>
@@ -80,14 +80,6 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
   const {outputData, setOutputData} = useContext(MyContext);
   const {setPreview} = useContext(MyContext);
 
-  useEffect(() => {
-    if (allValues !== "") {
-      setSaveAllActive(true);
-    } else {
-      setSaveAllActive(false);
-    }
-  }, [allValues]);
-
   const handleSave = () => {
     setSaveAllClicked(true);
     const array = new ArrayHelpers();
@@ -104,12 +96,20 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
     setAllValues(targetVal);
   }
 
+  useEffect(() => {
+    if (allValues !== "") {
+      setSaveAllActive(true);
+    } else {
+      setSaveAllActive(false);
+    }
+  }, [allValues]);
+
   return (
     <Grid padding={2} sx={{border: "solid lightgrey 1px"}}>
       <FormControl>
         <FormLabel>Change all values</FormLabel>
         <Grid display={"flex"} flexDirection={"row"} gap={2}>
-          <TextField size={"small"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"} value={allValues}
+          <TextField type={"number"} size={"small"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"} value={allValues}
                      onChange={handleNewValueChange}/>
           <Grid item>
             <DataTypeSelector dataType={dataType} setDataType={setDataType}/>
@@ -143,23 +143,6 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAl
     }
   }
 
-  useEffect(() => {
-    if (allValues !== "") {
-      setSaveDisabled(false);
-    }
-  }, [allValues])
-
-  useEffect(() => {
-    setNewValue(allValues);
-  }, [deferred]);
-
-  useEffect(() => {
-    if (saveAllClicked) {
-      handleSave(rowData, allValues);
-      setSaveAllClicked(false);
-    }
-  }, [saveAllClicked]);
-
   const handleSave = (_obj: any, _newValue: string | number) => {
     const array = new ArrayHelpers();
     const objectIndex = _obj.index;
@@ -182,6 +165,23 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAl
       // setDownload(changedValues);
     }, 100);
   }
+
+  useEffect(() => {
+    if (allValues !== "") {
+      setSaveDisabled(false);
+    }
+  }, [allValues])
+
+  useEffect(() => {
+    setNewValue(allValues);
+  }, [deferred]);
+
+  useEffect(() => {
+    if (saveAllClicked) {
+      handleSave(rowData, allValues);
+      setSaveAllClicked(false);
+    }
+  }, [saveAllClicked]);
 
   return (
     <>
@@ -212,14 +212,6 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
   const [allValues, setAllValues] = useState<string | number>("");
   const [saveAllClicked, setSaveAllClicked] = useState(false);
 
-  useEffect(() => {
-    setObjectIndicesArr(setIndexNumbers(data));
-    setTableData(data);
-
-    console.log("TABLE DATA [KeyValuesTableDataRows]", tableData);
-
-  }, [data]);
-
   function setIndexNumbers(_array: object[]): number[] {
     const numArr: number[] = [];
     _array.map((obj, index) => {
@@ -228,6 +220,14 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
 
     return numArr;
   }
+
+  useEffect(() => {
+    setObjectIndicesArr(setIndexNumbers(data));
+    setTableData(data);
+
+    console.log("TABLE DATA [KeyValuesTableDataRows]", tableData);
+
+  }, [data]);
 
   const mapData =
     <Grid display={"flex"} flexDirection={"column"} gap={2}>

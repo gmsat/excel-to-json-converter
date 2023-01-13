@@ -11,7 +11,6 @@ interface UploadDownloadProps {
 }
 
 const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink, setDownloadEnabled, downloadEnabled, outputExists, handleChange}) => {
-
   const {header, setHeader} = useContext(MyContext);
 
   const changeHeader = (e: any) => {

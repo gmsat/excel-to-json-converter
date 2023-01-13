@@ -30,17 +30,6 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
 
   const [newData, setNewData] = useState<any[]>(outputData);
 
-  // reset inputs to original values on reset button click
-  useEffect(() => {
-    setValue(originalVal);
-  }, [resetClicked]);
-
-  // updates data preview based when changing fields
-  useEffect(() => {
-    setOutputData(newData);
-    setPreview(newData);
-  }, [value]);
-
   const handleInputChange = (e: any) => {
     const array = new ArrayHelpers();
     const targetVal = e.target.value;
@@ -76,6 +65,17 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     const dialogData = array.getHeaderValuesByNameIndex(outputData, value, _keyIndex);
     setDialogKeyValueData(dialogData);
   }
+
+  // reset inputs to original values on reset button click
+  useEffect(() => {
+    setValue(originalVal);
+  }, [resetClicked]);
+
+  // updates data preview based when changing fields
+  useEffect(() => {
+    setOutputData(newData);
+    setPreview(newData);
+  }, [value]);
 
   return (
     <div style={{height: "35px", display: "flex"}}>
