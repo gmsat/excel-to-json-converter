@@ -22,13 +22,14 @@ const hideUpload = {
 
 const uploadButtonBoxStyle = {
   border: "solid white 1px",
+  width: "120px",
+  backgroundColor: "black",
   borderRadius: 4,
   display: "flex",
   justifyContent: "center",
   alightItems: "center",
-  backgroundColor: "green",
   '&:hover': {
-    backgroundColor: "lightGreen",
+    backgroundColor: "#00a10f",
   }
 }
 

@@ -3,7 +3,8 @@ import ExcelToJson from "./modules/excel-to-json";
 import { DataOptions, DataPreview, UploadDownload } from "./components";
 import MyContext from "./context/my-context/MyContext";
 import ChangeValuesDialog from "./components/change-values-dialog/ChangeValuesDialog";
-import { AppBar, Grid, FormControl } from "@mui/material";
+import { AppBar, Grid, Box } from "@mui/material";
+import "./app.css";
 
 // TODO: feature to change header values based on their index, choose for which objects to change values for
 // TODO: enable / disable header feature, choose which keys and values to show and update all objects
@@ -99,32 +100,62 @@ function App() {
   }
 
   return (
-    <Grid sx={{width: "100%"}}>
-      <FormControl onSubmit={handleSubmit} sx={{minWidth: "100vw"}}>
 
-        <AppBar position={"sticky"} sx={{backgroundColor: "blueGrey"}} variant={"elevation"}>
-          <UploadDownload handleChange={handleChange}
-                          outputExists={outputExists}
-                          downloadEnabled={downloadEnabled}
-                          setDownloadEnabled={setDownloadEnabled}
-                          downloadLink={downloadLink!}/>
-        </AppBar>
+    <Grid display={"flex"}
+          flexDirection={"column"}
+          margin={"auto"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          width={"100%"}
+    >
 
-        <Grid display={"flex"} flexDirection={"row"} gap={4} padding={4}>
-          <DataOptions headerKeys={headerKeys}
-                       oldKeys={oldKeys}
-                       setOldKeys={setOldKeys}
-                       newKeys={newKeys}
-                       setNewKeys={setNewKeys}
-                       handleSubmit={handleSubmit}
-                       outputExists={outputExists}/>
+      <Box component={"form"}
+           onSubmit={handleSubmit}
+           sx={{
+             display: "flex",
+             flexFlow: "column",
+             justifyContent: "space-between",
+             width: "100vw",
+             margin: "auto"
+           }}>
 
-          <DataPreview preview={preview}/>
-        </Grid>
+        {/*<Grid display={"flex"} flexDirection={"column"}>*/}
+
+          <AppBar position={"static"} variant={"outlined"}>
+
+            <UploadDownload handleChange={handleChange}
+                            outputExists={outputExists}
+                            downloadEnabled={downloadEnabled}
+                            setDownloadEnabled={setDownloadEnabled}
+                            downloadLink={downloadLink!}/>
+
+          </AppBar>
+
+
+          <Grid item display={"flex"}>
+
+            <Grid item display={"flex"} flexDirection={"row"} gap={4} padding={4} flex={1}>
+              <DataOptions headerKeys={headerKeys}
+                           oldKeys={oldKeys}
+                           setOldKeys={setOldKeys}
+                           newKeys={newKeys}
+                           setNewKeys={setNewKeys}
+                           handleSubmit={handleSubmit}
+                           outputExists={outputExists}/>
+            </Grid>
+
+            <Grid item flex={4}>
+              <DataPreview preview={preview}/>
+            </Grid>
+
+          </Grid>
+
+        {/*</Grid>*/}
 
         <ChangeValuesDialog/>
 
-      </FormControl>
+      </Box>
+
     </Grid>
   );
 }

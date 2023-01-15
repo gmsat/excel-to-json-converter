@@ -14,6 +14,8 @@ export interface HeaderInputProps {
   setResetClicked: (state: boolean) => void
 }
 
+// TODO: fix headers resetting when changing state too quickly for inputs
+
 export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetClicked}) => {
   const [originalVal, setOriginalVal] = useState(itemData);
   const [value, setValue] = useState(itemData);
@@ -78,7 +80,7 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   }, [value]);
 
   return (
-    <div style={{height: "35px", display: "flex"}}>
+    <div style={{height: "25px", display: "flex"}}>
       <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
 
         <p style={{flex: 1}}>({index})</p>
@@ -92,7 +94,7 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
           </IconButton>
         </div>
 
-        <TextField variant={"standard"} sx={{flex: 4}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
+        <TextField variant={"standard"} sx={{flex: 6}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
 
       </div>
     </div>

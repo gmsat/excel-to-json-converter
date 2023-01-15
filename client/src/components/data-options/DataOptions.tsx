@@ -21,35 +21,22 @@ const DataOptions: React.FC<DataOptionsProps> = ({
                                                    outputExists
                                                  }) => {
   return (
-    <div>
-      <div style={{display: "flex", flexFlow: "column", width: "100%", gap: 20}}>
+    <>
 
-        <div style={{
-          display: "flex",
-          flexFlow: "column",
-          gap: 10,
-          width: "100%",
-          alignItems: "flex-start",
-          padding: 7,
-        }}>
+      {outputExists ?
+        <DataKeys
+          data={headerKeys}
+          oldKeys={oldKeys}
+          newKeys={newKeys && newKeys}
+          setNewKeys={setNewKeys}
+          setOldKeys={setOldKeys}
+          handleSubmit={handleSubmit}
+        />
 
-          {outputExists ?
-            <DataKeys
-              data={headerKeys}
-              oldKeys={oldKeys}
-              newKeys={newKeys && newKeys}
-              setNewKeys={setNewKeys}
-              setOldKeys={setOldKeys}
-              handleSubmit={handleSubmit}
-            />
+        : null
+      }
 
-            : null
-          }
-
-        </div>
-
-      </div>
-    </div>
+    </>
   );
 };
 
