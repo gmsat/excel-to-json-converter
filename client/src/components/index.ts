@@ -5,6 +5,7 @@ import UploadDownload from "./upload-download/UploadDownload";
 import DataPreview from "./json-preview/DataPreview";
 import DataOptions from "./data-options/DataOptions";
 import ChangeValuesDialog from "./change-values-dialog/ChangeValuesDialog";
+import Loading from "./loading/Loading";
 
 
-export {DataKeys, HeadersList, HeaderInput, UploadDownload, DataPreview, DataOptions, ChangeValuesDialog}
+export {DataKeys, HeadersList, HeaderInput, UploadDownload, DataPreview, DataOptions, ChangeValuesDialog, Loading}

@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import ExcelToJson from "./modules/excel-to-json";
-import { DataOptions, DataPreview, UploadDownload } from "./components";
+import { DataOptions, DataPreview, UploadDownload, Loading } from "./components";
 import MyContext from "./context/my-context/MyContext";
 import ChangeValuesDialog from "./components/change-values-dialog/ChangeValuesDialog";
-import { AppBar, Grid, Box } from "@mui/material";
+import { AppBar, Grid, Box, Drawer, Grow } from "@mui/material";
 import "./app.css";
+import { ArrayHelpers } from "./modules/json-data-options/ArrayHelpers";
 
 // TODO: feature to change header values based on their index, choose for which objects to change values for
 // TODO: enable / disable header feature, choose which keys and values to show and update all objects
@@ -56,8 +57,18 @@ function App() {
   const {newKeys, setNewKeys} = useContext(MyContext);
 
   const handleChange = (e: any) => {
-    setFile(e.target.files?.[0]);
+    const files = e.target.files;
+    const file = e.target.files?.[0];
+
+    console.log("FILE FILE FIEL", file)
+
+    // setFile(e.target.files?.[0]);
+    setFile(file);
     setOutputExists(true);
+
+    // e.target.value = "";
+
+    console.log("\nFILES:", files);
   }
 
   const changeHeader = (e: any) => {
@@ -69,11 +80,13 @@ function App() {
     e.preventDefault();
 
     if (!file) {
+      console.log("NO FILE! return;");
       return;
     }
 
     const reader = new FileReader();
     const etj = new ExcelToJson();
+    const array = new ArrayHelpers();
 
     reader.onload = (evt) => {
       if (evt.target) {
@@ -93,35 +106,57 @@ function App() {
         setOutputData(parsed);
         setOutputExists(true);
         setPreview(parsed);
+
+
+        array.getDataTypes(parsed);
       }
     };
 
     reader.readAsArrayBuffer(file);
   }
 
+  // useEffect(() => {
+  //   console.log("DOWNLOAD ENABLED:", downloadEnabled)}, [downloadEnabled]);
+  // useEffect(() => {
+  //   console.log("DOWNLOAD ENABLED:", downloadEnabled)}, []);
+
   return (
 
     <Grid display={"flex"}
-          flexDirection={"column"}
-          margin={"auto"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          width={"100%"}
+          sx={{
+            boxSizing: "content-box",
+            margin: "auto",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "black"
+          }}
     >
 
       <Box component={"form"}
            onSubmit={handleSubmit}
            sx={{
              display: "flex",
-             flexFlow: "column",
-             justifyContent: "space-between",
-             width: "100vw",
-             margin: "auto"
+             flexFlow: "row",
+             justifyContent: "center",
+             alignItems: "center",
+             width: "100%",
+             margin: "auto",
+             padding: 3,
+             boxSizing: "border-box",
+             backgroundColor: "#FFB600"
            }}>
 
-        {/*<Grid display={"flex"} flexDirection={"column"}>*/}
+        <Grid container display={"flex"} flexDirection={"row"}>
 
-          <AppBar position={"static"} variant={"outlined"}>
+          <Grid item sx={{
+            display: "flex",
+            margin: "auto",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 1
+          }}>
 
             <UploadDownload handleChange={handleChange}
                             outputExists={outputExists}
@@ -129,28 +164,37 @@ function App() {
                             setDownloadEnabled={setDownloadEnabled}
                             downloadLink={downloadLink!}/>
 
-          </AppBar>
-
-
-          <Grid item display={"flex"}>
-
-            <Grid item display={"flex"} flexDirection={"row"} gap={4} padding={4} flex={1}>
-              <DataOptions headerKeys={headerKeys}
-                           oldKeys={oldKeys}
-                           setOldKeys={setOldKeys}
-                           newKeys={newKeys}
-                           setNewKeys={setNewKeys}
-                           handleSubmit={handleSubmit}
-                           outputExists={outputExists}/>
-            </Grid>
-
-            <Grid item flex={4}>
-              <DataPreview preview={preview}/>
-            </Grid>
-
           </Grid>
 
-        {/*</Grid>*/}
+          {preview &&
+            <Grow in={outputExists}>
+              <Grid item display={"flex"} sx={{
+                border: "solid white 1px",
+                padding: 2,
+                borderRadius: 2,
+                backgroundColor: "white"
+              }}>
+
+                <Grid item display={"flex"} flexDirection={"row"} gap={4} padding={4}>
+                  <DataOptions headerKeys={headerKeys}
+                               oldKeys={oldKeys}
+                               setOldKeys={setOldKeys}
+                               newKeys={newKeys}
+                               setNewKeys={setNewKeys}
+                               handleSubmit={handleSubmit}
+                               outputExists={outputExists}/>
+                </Grid>
+
+                <Grid item flex={1}>
+                  <DataPreview preview={preview}/>
+                </Grid>
+
+              </Grid>
+            </Grow>
+
+          }
+
+        </Grid>
 
         <ChangeValuesDialog/>
 

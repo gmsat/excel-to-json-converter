@@ -4,6 +4,7 @@ import MyContext from "../../context/my-context/MyContext";
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton } from "@mui/joy";
 import { TextField } from "@mui/material"
+import { ListItem } from "@mui/material";
 
 export interface HeaderInputProps {
   itemData: string,
@@ -15,6 +16,12 @@ export interface HeaderInputProps {
 }
 
 // TODO: fix headers resetting when changing state too quickly for inputs
+
+const HeaderInputProps = {
+  style: {
+    fontSize: "0.7rem"
+  }
+}
 
 export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetClicked}) => {
   const [originalVal, setOriginalVal] = useState(itemData);
@@ -80,7 +87,27 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   }, [value]);
 
   return (
-    <div style={{height: "25px", display: "flex"}}>
+    // <ListItem style={{height: "30px", display: "flex"}}>
+    //   <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
+    //
+    //     <p style={{flex: 1}}>({index})</p>
+    //
+    //     {/*<input type="checkbox" checked={checked} onChange={handleChecked}/>*/}
+    //     {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
+    //
+    //     <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
+    //       <IconButton size={"sm"} variant={"outlined"} onClick={() => showDialog(index)} key={index}>
+    //         <EditIcon/>
+    //       </IconButton>
+    //     </div>
+    //
+    //     <TextField InputProps={HeaderInputProps} variant={"outlined"} sx={{flex: 6}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
+    //
+    //   </div>
+    // </ListItem>
+
+
+    <ListItem style={{height: "30px", display: "flex"}}>
       <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
 
         <p style={{flex: 1}}>({index})</p>
@@ -89,15 +116,15 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
         {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
 
         <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
-          <IconButton size={"sm"} variant={"soft"} onClick={() => showDialog(index)} key={index}>
+          <IconButton size={"sm"} variant={"outlined"} onClick={() => showDialog(index)} key={index}>
             <EditIcon/>
           </IconButton>
         </div>
 
-        <TextField variant={"standard"} sx={{flex: 6}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
+        <TextField InputProps={HeaderInputProps} variant={"outlined"} sx={{flex: 6}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
 
       </div>
-    </div>
+    </ListItem>
 
   );
 }

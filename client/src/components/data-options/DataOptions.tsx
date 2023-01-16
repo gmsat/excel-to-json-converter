@@ -1,5 +1,6 @@
 import React from 'react';
 import DataKeys from "../data-keys/DataKeys";
+import { Grid } from "@mui/material";
 
 interface DataOptionsProps {
   headerKeys: string[] | null,
@@ -21,7 +22,7 @@ const DataOptions: React.FC<DataOptionsProps> = ({
                                                    outputExists
                                                  }) => {
   return (
-    <>
+    <Grid sx={{overflow: "auto", maxHeight: "80vh"}}>
 
       {outputExists ?
         <DataKeys
@@ -36,7 +37,7 @@ const DataOptions: React.FC<DataOptionsProps> = ({
         : null
       }
 
-    </>
+    </Grid>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useContext, useDeferredValue, useEffect, useState } from 'react';
+import React, { useContext, useDeferredValue, useEffect, useRef, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -29,7 +29,8 @@ interface KeyValueRow {
   data: TableObject[],
   allValues: string | number,
   saveAllClicked: boolean,
-  setSaveAllClicked: (_val: boolean) => void
+  setSaveAllClicked: (_val: boolean) => void,
+  indexNumbers: number[]
 }
 
 interface DataTypeSelectorProps {
@@ -121,7 +122,15 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
   );
 }
 
-const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAllClicked, setSaveAllClicked}) => {
+const KeyValueRow: React.FC<KeyValueRow> = ({
+                                              obj,
+                                              index,
+                                              data,
+                                              allValues,
+                                              saveAllClicked,
+                                              setSaveAllClicked,
+                                              indexNumbers
+}) => {
   const [newValue, setNewValue] = useState<string | number>("");
   const [rowData, setRowData] = useState<TableObject>(obj);
   const [saveDisabled, setSaveDisabled] = useState(true);
@@ -131,6 +140,8 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAl
   const {setPreview} = useContext(MyContext);
 
   const deferred = useDeferredValue(allValues);
+
+  const saveButtonRef = useRef<any>(null);
 
   const handleValueChange = (e: any) => {
     const targetVal = e.target.value;
@@ -166,6 +177,15 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAl
     }, 100);
   }
 
+  // // TODO: if value not empty for index number, add index number to array
+  const handleSaveAllIndividual = () => {
+    console.log("REFERENCE:", saveButtonRef);
+    saveButtonRef.current.click();
+    // if (saveButtonRef.current!.attribute.disabled === false) {
+    //   saveButtonRef.current.click();
+    // }
+  }
+
   useEffect(() => {
     if (allValues !== "") {
       setSaveDisabled(false);
@@ -185,6 +205,7 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAl
 
   return (
     <>
+      {index === 0 ? <button onClick={handleSaveAllIndividual}>Save All</button> : null}
       <tr tabIndex={0}>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"right"}><Typography
           variant={"plain"}>{rowData.index}</Typography></th>
@@ -197,8 +218,10 @@ const KeyValueRow: React.FC<KeyValueRow> = ({obj, index, data, allValues, saveAl
           <DataTypeSelector dataType={dataType} setDataType={setDataType}/>
         </th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"center"}>
-          <Button disabled={saveDisabled} sx={{borderRadius: 0}} variant={"outlined"}
-                  onClick={() => handleSave(rowData, newValue)}>Save</Button>
+          <button ref={saveButtonRef} disabled={saveDisabled}
+                  onClick={() => handleSave(rowData, newValue)}>Save</button>
+          {/*<Button disabled={saveDisabled} sx={{borderRadius: 0}} variant={"outlined"}*/}
+          {/*        onClick={() => handleSave(rowData, newValue)}>Save</Button>*/}
         </th>
       </tr>
     </>
@@ -256,7 +279,15 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
           <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}></th>
         </tr>
         {tableData.map((obj, index) => (
-          <KeyValueRow allValues={allValues} data={tableData} obj={obj} index={index} saveAllClicked={saveAllClicked} setSaveAllClicked={setSaveAllClicked}/>
+          <KeyValueRow
+            key={index}
+            indexNumbers={objectsIndicesArr}
+            allValues={allValues}
+            data={tableData}
+            obj={obj}
+            index={index}
+            saveAllClicked={saveAllClicked}
+            setSaveAllClicked={setSaveAllClicked}/>
         ))}
       </table>
 

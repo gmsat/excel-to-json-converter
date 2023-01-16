@@ -89,10 +89,27 @@ export class ArrayHelpers {
 
     for (const value of values) {
       // TODO: check for date
-      // TODO: check for number
+      if (typeof value === "string") {
+        types.push("STRING");
+      }
+
+      if (typeof value === "number") {
+        types.push("NUMBER");
+      }
+
+      // TODO: check for number (int / float)
+
+
       // TODO: check for string
-      console.log("value:", value);
+
+
+      // TODO: check for GUID
+
+
+      // console.log("value:", value);
     }
+
+    console.log(types);
   }
 
   /**
