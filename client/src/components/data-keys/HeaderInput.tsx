@@ -4,6 +4,7 @@ import MyContext from "../../context/my-context/MyContext";
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton } from "@mui/joy";
 import { TextField } from "@mui/material"
+import { ListItem } from "@mui/material";
 
 export interface HeaderInputProps {
   itemData: string,
@@ -12,6 +13,14 @@ export interface HeaderInputProps {
   updatedKeys: string[],
   resetClicked: boolean,
   setResetClicked: (state: boolean) => void
+}
+
+// TODO: fix headers resetting when changing state too quickly for inputs
+
+const HeaderInputProps = {
+  style: {
+    fontSize: "0.7rem"
+  }
 }
 
 export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetClicked}) => {
@@ -32,6 +41,7 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
 
   const handleInputChange = (e: any) => {
     const array = new ArrayHelpers();
+    const originalKey = value;
     const targetVal = e.target.value;
 
     if (array.keyExists(outputData, targetVal)) {
@@ -44,7 +54,11 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     const updated = array.getNewKeys(newKeys, index, targetVal);
     setNewKeys(updated);
 
-    const data = array.renameKeysByIndex(outputData, index, targetVal);
+    // renames by key index
+    // const data = array.renameKeysByIndex(outputData, index, targetVal);
+
+    // renames by key name
+    const data = array.renameKeysByKeyName(outputData, originalKey, targetVal);
 
     setNewData(data);
     setOutputData(newData);
@@ -78,7 +92,27 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   }, [value]);
 
   return (
-    <div style={{height: "35px", display: "flex"}}>
+    // <ListItem style={{height: "30px", display: "flex"}}>
+    //   <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
+    //
+    //     <p style={{flex: 1}}>({index})</p>
+    //
+    //     {/*<input type="checkbox" checked={checked} onChange={handleChecked}/>*/}
+    //     {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
+    //
+    //     <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
+    //       <IconButton size={"sm"} variant={"outlined"} onClick={() => showDialog(index)} key={index}>
+    //         <EditIcon/>
+    //       </IconButton>
+    //     </div>
+    //
+    //     <TextField InputProps={HeaderInputProps} variant={"outlined"} sx={{flex: 6}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
+    //
+    //   </div>
+    // </ListItem>
+
+
+    <ListItem style={{height: "30px", display: "flex"}}>
       <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
 
         <p style={{flex: 1}}>({index})</p>
@@ -87,15 +121,15 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
         {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
 
         <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
-          <IconButton size={"sm"} variant={"soft"} onClick={() => showDialog(index)} key={index}>
+          <IconButton size={"sm"} variant={"outlined"} onClick={() => showDialog(index)} key={index}>
             <EditIcon/>
           </IconButton>
         </div>
 
-        <TextField variant={"standard"} sx={{flex: 4}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
+        <TextField InputProps={HeaderInputProps} variant={"outlined"} sx={{flex: 6}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
 
       </div>
-    </div>
+    </ListItem>
 
   );
 }

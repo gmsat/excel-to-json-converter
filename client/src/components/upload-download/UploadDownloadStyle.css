@@ -1,0 +1,9 @@
+.upload-button {
+    height: 100px;
+}
+
+.upload-button::file-selector-button {
+    opacity: 0;
+    height: 300px;
+
+}

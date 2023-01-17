@@ -1,5 +1,6 @@
 import React from 'react';
 import DataKeys from "../data-keys/DataKeys";
+import { Grid } from "@mui/material";
 
 interface DataOptionsProps {
   headerKeys: string[] | null,
@@ -11,8 +12,6 @@ interface DataOptionsProps {
   outputExists: boolean
 }
 
-
-
 const DataOptions: React.FC<DataOptionsProps> = ({
                                                    headerKeys,
                                                    newKeys,
@@ -23,37 +22,22 @@ const DataOptions: React.FC<DataOptionsProps> = ({
                                                    outputExists
                                                  }) => {
   return (
-    <div>
-      <div style={{display: "flex", flexFlow: "column", width: "100%", gap: 20}}>
+    <Grid sx={{overflow: "auto", maxHeight: "80vh"}}>
 
-        <div style={{
-          display: "flex",
-          flexFlow: "column",
-          gap: 10,
-          width: "100%",
-          alignItems: "flex-start",
-          padding: 7,
-          border: "solid lightgrey 1px",
-          borderRadius: 6
-        }}>
+      {outputExists ?
+        <DataKeys
+          data={headerKeys}
+          oldKeys={oldKeys}
+          newKeys={newKeys && newKeys}
+          setNewKeys={setNewKeys}
+          setOldKeys={setOldKeys}
+          handleSubmit={handleSubmit}
+        />
 
-          {outputExists ?
-            <DataKeys
-              data={headerKeys}
-              oldKeys={oldKeys}
-              newKeys={newKeys && newKeys}
-              setNewKeys={setNewKeys}
-              setOldKeys={setOldKeys}
-              handleSubmit={handleSubmit}
-            />
+        : null
+      }
 
-            : null
-          }
-
-        </div>
-
-      </div>
-    </div>
+    </Grid>
   );
 };
 

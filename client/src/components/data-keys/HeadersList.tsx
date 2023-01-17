@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { HeaderInput } from "./HeaderInput";
 import MyContext from "../../context/my-context/MyContext";
+import { Box, Grid, List } from "@mui/material";
 
 export interface HeadersListProps {
   headers: string[],
@@ -53,11 +54,7 @@ export const HeadersList: React.FC<HeadersListProps> = ({
   return (
     <>
       {headers.map((item, index) =>
-        <div key={index} style={{display: "flex", flexFlow: "column", alignItems: "flex-start"}}>
-
-          <div>
-            {index === 0 ? <button style={{margin: 12, backgroundColor: "aquamarine"}} onClick={handleApply}>Apply Changes</button> : null}
-          </div>
+        <Grid key={index} style={{display: "flex", flexFlow: "column", alignItems: "flex-start"}}>
 
           <div style={{display: "flex", gap: 10}}>
             {index === 0 ? <text style={{fontSize: "0.8rem"}}>Edit headers</text> : null}
@@ -71,7 +68,7 @@ export const HeadersList: React.FC<HeadersListProps> = ({
                        itemData={item}
                        index={index}/>
 
-        </div>
+        </Grid>
       )}
     </>
   )

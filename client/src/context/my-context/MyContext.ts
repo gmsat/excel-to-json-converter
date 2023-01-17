@@ -30,7 +30,7 @@ interface MyContextType {
 
 const MyContext = createContext<MyContextType>({
 
-  downloadEnabled: false,
+  downloadEnabled: true,
   file: null,
   downloadLink: null,
   header: "A12",
