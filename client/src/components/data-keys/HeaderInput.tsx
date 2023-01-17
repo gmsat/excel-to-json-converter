@@ -41,6 +41,7 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
 
   const handleInputChange = (e: any) => {
     const array = new ArrayHelpers();
+    const originalKey = value;
     const targetVal = e.target.value;
 
     if (array.keyExists(outputData, targetVal)) {
@@ -53,7 +54,11 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     const updated = array.getNewKeys(newKeys, index, targetVal);
     setNewKeys(updated);
 
-    const data = array.renameKeysByIndex(outputData, index, targetVal);
+    // renames by key index
+    // const data = array.renameKeysByIndex(outputData, index, targetVal);
+
+    // renames by key name
+    const data = array.renameKeysByKeyName(outputData, originalKey, targetVal);
 
     setNewData(data);
     setOutputData(newData);

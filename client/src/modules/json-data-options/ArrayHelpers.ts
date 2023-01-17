@@ -1,3 +1,5 @@
+import TypeHelpers from "./TypeHelpers";
+
 export class ArrayHelpers {
   private data: any[] = [];
 
@@ -32,6 +34,15 @@ export class ArrayHelpers {
     return _array.map((obj, index) => {
       const newObj = Object.entries(obj).map(([key, value], objIndex) => {
         return [_keyIndex === objIndex ? _newKeyName : key, value];
+      })
+      return Object.fromEntries(newObj);
+    });
+  }
+
+  renameKeysByKeyName(_array: any[], _keyName: string, _newKeyName: string) {
+    return _array.map((obj, index) => {
+      const newObj = Object.entries(obj).map(([key, value], objIndex) => {
+        return [key === _keyName ? _newKeyName : key, value];
       })
       return Object.fromEntries(newObj);
     });
@@ -83,33 +94,108 @@ export class ArrayHelpers {
     return updatedArray;
   }
 
+  // TODO: loop through all objects and if one value is float, set type to float
+  // getDataTypes(_objects: any[]) {
+  //   const values = Object.values(_objects[1]);
+  //   const types: string[] = [];
+  //
+  //   values.map((val, i) => {
+  //     const result = _objects.some(obj => obj[i])
+  //   })
+  //
+  //   // const valuesArr = [];
+  //   // const valuesTypes: any[] = [];
+  //
+  //   for (const value of values) {
+  //
+  //     if (typeof value === "string") {
+  //
+  //       if (TypeHelpers.isDate(value)) {
+  //         types.push("DATE");
+  //
+  //         // valuesArr.push(value);
+  //         // const obj = {value, type: "DATE"};
+  //         // valuesTypes.push(obj);
+  //       }
+  //
+  //       if (!TypeHelpers.isDate(value)) {
+  //         types.push("STRING");
+  //
+  //         // valuesArr.push(value);
+  //         // const obj = {value, type: "STRING"};
+  //         // valuesTypes.push(obj);
+  //       }
+  //     }
+  //
+  //     if (typeof value === "number") {
+  //
+  //       if (TypeHelpers.isInt(value)) {
+  //         types.push("INT");
+  //
+  //         // valuesArr.push(value);
+  //         // const obj = {value, type: "INT"};
+  //         // valuesTypes.push(obj);
+  //
+  //       }
+  //
+  //       if (TypeHelpers.isFloat(value)) {
+  //         types.push("FLOAT");
+  //
+  //         // valuesArr.push(value);
+  //         // const obj = {value, type: "FLOAT"};
+  //         // valuesTypes.push(obj);
+  //
+  //       }
+  //     }
+  //   }
+  //
+  //   // console.log(valuesArr);
+  //   // console.log(types);
+  //   // console.log(valuesTypes);
+  //   return types;
+  // }
+
   getDataTypes(_objects: any[]) {
-    const values = Object.values(_objects[0]);
+    const values = Object.values(_objects[1]);
     const types: string[] = [];
 
+    // values.map((val, i) => {
+    //   const result = _objects.some(obj => obj[i])
+    // });
+
+    // _objects.some(obj => {
+    //   for (let key in obj) {
+    //
+    //     if (typeof obj[key] === "string") {
+    //       if (TypeHelpers.getDataType(obj[key]) === "DATE") {
+    //         types.push("DATE");
+    //       }
+    //       if (TypeHelpers.getDataType(obj[key]) === "STRING") {
+    //         types.push("STRING");
+    //       }
+    //     }
+    //
+    //     if (typeof obj[key] === "number") {
+    //       if (TypeHelpers.getDataType(obj[key]) === "INT") {
+    //         types.push("INT");
+    //       }
+    //       if (TypeHelpers.getDataType(obj[key]) === "FLOAT") {
+    //         types.push("FLOAT");
+    //       }
+    //     }
+    //
+    //   }
+    // });
+
     for (const value of values) {
-      // TODO: check for date
-      if (typeof value === "string") {
-        types.push("STRING");
-      }
-
-      if (typeof value === "number") {
-        types.push("NUMBER");
-      }
-
-      // TODO: check for number (int / float)
-
-
-      // TODO: check for string
-
-
-      // TODO: check for GUID
-
-
-      // console.log("value:", value);
+      types.push(TypeHelpers.getDataType(value));
     }
 
+    // console.log(types);
+    // TypeHelpers.getArrObjectTypes(_objects);
+    // console.log(TypeHelpers.getArrObjectTypes(_objects));
     console.log(types);
+    return types;
   }
 
   /**
