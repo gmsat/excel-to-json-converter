@@ -107,8 +107,8 @@ function App() {
         setOutputExists(true);
         setPreview(parsed);
 
-
-        array.getDataTypes(parsed);
+        // array.getDataTypes(parsed);
+        array.getDataTypes2(parsed);
       }
     };
 
@@ -155,7 +155,8 @@ function App() {
             margin: "auto",
             alignItems: "center",
             justifyContent: "center",
-            borderRadius: 1
+            borderRadius: 1,
+            flexShrink: 1
           }}>
 
             <UploadDownload handleChange={handleChange}
@@ -172,7 +173,8 @@ function App() {
                 border: "solid white 1px",
                 padding: 2,
                 borderRadius: 2,
-                backgroundColor: "white"
+                backgroundColor: "white",
+                flex: 4
               }}>
 
                 <Grid item display={"flex"} flexDirection={"row"} gap={4} padding={4}>

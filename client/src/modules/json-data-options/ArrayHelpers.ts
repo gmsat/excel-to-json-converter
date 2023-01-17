@@ -1,5 +1,7 @@
 import TypeHelpers from "./TypeHelpers";
 
+type SelectorDataTypes = "text" | "number" | "date";
+
 export class ArrayHelpers {
   private data: any[] = [];
 
@@ -70,7 +72,7 @@ export class ArrayHelpers {
                      _newValue: string | number,
                      _keyNameIndex: number,
                      _indexNumbers: number[],
-                     _dataType: "string" | "number") {
+                     _dataType: SelectorDataTypes) {
     let keyToUpdate = Object.keys(_objects[0])[_keyNameIndex];
     let updatedArray = [..._objects];
     let newValue: string | number;
@@ -195,6 +197,41 @@ export class ArrayHelpers {
     // TypeHelpers.getArrObjectTypes(_objects);
     // console.log(TypeHelpers.getArrObjectTypes(_objects));
     console.log(types);
+    return types;
+  }
+
+  getDataTypes2(_objects: any[]) {
+    const values = Object.values(_objects[1]);
+    const types: string[] = [];
+
+    for (let object of _objects) {
+      const objValues = Object.values(object);
+      const objValueTypes: object[] = [];
+
+      for (const value of objValues) {
+        objValueTypes.push({type: TypeHelpers.getDataType(value), value: value});
+      }
+
+      console.log("obj value types", objValueTypes);
+    }
+
+    // for (const value of values) {
+    //   types.push(TypeHelpers.getDataType(value));
+    // }
+
+    // console.log(types);
+    return types;
+  }
+
+  getDataFromArray(_objects: any[]) {
+    const values = Object.values(_objects[1]);
+    const types: string[] = [];
+
+    for (const value of values) {
+      types.push(TypeHelpers.getDataType(value));
+    }
+
+    console.log("obj value types", types);
     return types;
   }
 

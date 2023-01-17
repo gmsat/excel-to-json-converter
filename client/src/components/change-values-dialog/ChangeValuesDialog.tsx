@@ -16,7 +16,7 @@ import { Input, Typography } from "@mui/joy";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 
 export type TableObject = { index: number, keyIndex: number, key: string, value: number | string };
-type SelectorDataTypes = "string" | "number";
+type SelectorDataTypes = "text" | "number" | "date";
 
 export interface TableData {
   data: TableObject[],
@@ -52,7 +52,7 @@ interface ChangeAllValuesControlProps {
 }
 
 const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataType, disabled, onFocus, onBlur}) => {
-  const [value, setValue] = useState<SelectorDataTypes>("string");
+  const [value, setValue] = useState<SelectorDataTypes>("text");
 
   const handleChange = (e: SelectChangeEvent) => {
     setValue(e.target.value as SelectorDataTypes);
@@ -66,8 +66,9 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataTyp
     <>
       <FormControl variant={"outlined"} fullWidth>
         <Select onFocus={onFocus} onBlur={onBlur} disabled={disabled} size={"small"} value={dataType} onChange={handleChange}>
-          <MenuItem value={"string"}>String</MenuItem>
+          <MenuItem value={"text"}>String</MenuItem>
           <MenuItem value={"number"}>Number</MenuItem>
+          <MenuItem value={"date"}>Date</MenuItem>
         </Select>
       </FormControl>
     </>
@@ -75,7 +76,7 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataTyp
 }
 
 const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, keyIndex, indexNumbers, data, setAllValues, allValues, setSaveAllClicked}) => {
-  const [dataType, setDataType] = useState<"string" | "number">("string");
+  const [dataType, setDataType] = useState<SelectorDataTypes>("text");
   const [saveAllActive, setSaveAllActive] = useState(false);
 
   const {outputData, setOutputData} = useContext(MyContext);
@@ -110,7 +111,7 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
       <FormControl>
         <FormLabel>Change all values</FormLabel>
         <Grid display={"flex"} flexDirection={"row"} gap={2}>
-          <TextField type={"number"} size={"small"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"} value={allValues}
+          <TextField type={dataType} size={"small"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"} value={allValues}
                      onChange={handleNewValueChange}/>
           <Grid item>
             <DataTypeSelector dataType={dataType} setDataType={setDataType}/>
@@ -134,7 +135,7 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
   const [newValue, setNewValue] = useState<string | number>("");
   const [rowData, setRowData] = useState<TableObject>(obj);
   const [saveDisabled, setSaveDisabled] = useState(true);
-  const [dataType, setDataType] = useState<"string" | "number">("string");
+  const [dataType, setDataType] = useState<SelectorDataTypes>("text");
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {setPreview} = useContext(MyContext);
@@ -205,14 +206,14 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
 
   return (
     <>
-      {index === 0 ? <button onClick={handleSaveAllIndividual}>Save All</button> : null}
+      {/*{index === 0 ? <button onClick={handleSaveAllIndividual}>Save All</button> : null}*/}
       <tr tabIndex={0}>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"right"}><Typography
           variant={"plain"}>{rowData.index}</Typography></th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.key}</th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.value}</th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>
-          <Input onChange={handleValueChange} size={"sm"} variant={"plain"} type="text" placeholder={"enter new value"} value={newValue}/>
+          <Input onChange={handleValueChange} size={"sm"} variant={"plain"} type={dataType} placeholder={"enter new value"} value={newValue}/>
         </th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>
           <DataTypeSelector dataType={dataType} setDataType={setDataType}/>

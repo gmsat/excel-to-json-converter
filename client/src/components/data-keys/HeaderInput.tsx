@@ -4,7 +4,7 @@ import MyContext from "../../context/my-context/MyContext";
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton } from "@mui/joy";
 import { TextField } from "@mui/material"
-import { ListItem } from "@mui/material";
+import { ListItem, Chip } from "@mui/material";
 
 export interface HeaderInputProps {
   itemData: string,
@@ -16,6 +16,7 @@ export interface HeaderInputProps {
 }
 
 // TODO: fix headers resetting when changing state too quickly for inputs
+// TODO: get types of key values and set the chip value [STR, INT, FLOAT, DATE]
 
 const HeaderInputProps = {
   style: {
@@ -115,10 +116,12 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     <ListItem style={{height: "30px", display: "flex"}}>
       <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
 
-        <p style={{flex: 1}}>({index})</p>
+        <p style={{flex: 1, fontSize: "0.7rem"}}>({index})</p>
 
         {/*<input type="checkbox" checked={checked} onChange={handleChecked}/>*/}
         {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
+
+        <TextField InputProps={HeaderInputProps} variant={"outlined"} sx={{flex: 6}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
 
         <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
           <IconButton size={"sm"} variant={"outlined"} onClick={() => showDialog(index)} key={index}>
@@ -126,7 +129,7 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
           </IconButton>
         </div>
 
-        <TextField InputProps={HeaderInputProps} variant={"outlined"} sx={{flex: 6}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
+        <Chip label={"INT"} size={"small"} sx={{borderRadius: 1}} color={"default"}/>
 
       </div>
     </ListItem>

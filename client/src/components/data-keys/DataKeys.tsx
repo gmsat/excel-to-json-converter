@@ -56,6 +56,8 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
   const [resetClicked, setResetClicked] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
+  const [enableSaveChanges, setEnableSaveChanges] = useState(false);
+
   const {file, setFile} = useContext(MyContext);
   const {outputData, setOutputData} = useContext(MyContext);
   const {setDownloadLink} = useContext(MyContext);
@@ -83,15 +85,28 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
     setHeaders(data!);
   }, [data]);
 
+  // enable save changes button after changing data
+  // useEffect(() => {
+  //   console.log("OUTPUT DATA CHANGED!", outputData);
+  //   if (!enableSaveChanges) {
+  //     setEnableSaveChanges(true);
+  //   } else {
+  //     setEnableSaveChanges(false);
+  //   }
+  // }, [data]);
+
   return (
     <div style={{display: "flex", flexFlow: "column", gap: 5}}>
 
       <Grid>
+
         <button style={{margin: 12, backgroundColor: "orangered", color: "white"}} onClick={handleReset}>Reset</button>
-        <button style={{margin: 12, backgroundColor: "aquamarine"}} onClick={handleApply}>Apply Changes</button>
+        <button style={{margin: 12, backgroundColor: "aquamarine"}} onClick={handleApply}>Save Changes</button>
+
         <ApplyChangesSnackbar
           openSnackbar={openSnackbar}
           setOpenSnackbar={setOpenSnackbar}/>
+
       </Grid>
 
       {headers ? <HeadersList setResetClicked={setResetClicked}
