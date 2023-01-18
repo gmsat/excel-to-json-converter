@@ -33,7 +33,7 @@ const MyContext = createContext<MyContextType>({
   downloadEnabled: true,
   file: null,
   downloadLink: null,
-  header: "A12",
+  header: "A1",
   headerKeys: [],
   newKeys: [],
   outputData: [],
