@@ -25,6 +25,11 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
   const [showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog] = useState(false);
   const [dialogKeyValueData, setDialogKeyValueData] = useState<TableObject[]>([]);
 
+  const [linesData, setLinesData] = useState<any[]>([]);
+  const [headersData, setHeadersData] = useState<object>({});
+
+  const [outputDataNew, setOutputDataNew] = useState<object>({});
+
   return (
     <MyContext.Provider value={{
 
@@ -35,15 +40,19 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
       preview,
       outputExists,
       outputData,
+      outputDataNew,
       headerKeys,
       file,
       downloadLink,
       showUpdateKeyValuesDialog,
       dialogKeyValueData,
+      linesData,
+      headersData,
 
       setPreview,
       setOutputExists,
       setOutputData,
+      setOutputDataNew,
       setOldKeys,
       setHeader,
       setNewKeys,
@@ -52,7 +61,9 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
       setDownloadLink,
       setFile,
       setShowUpdateKeyValuesDialog,
-      setDialogKeyValueData
+      setDialogKeyValueData,
+      setLinesData,
+      setHeadersData
 
     }}>
       {children}

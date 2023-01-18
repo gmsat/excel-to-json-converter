@@ -150,7 +150,7 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
         {preview &&
           <Grow in={outputExists}>
             <Grid item width={"100%"}>
-              <a target={"_blank"} href={`${downloadLink}`} download={"download-file.txt"}>
+              <a target={"_blank"} href={`${downloadLink}`} download={"download-file.json"}>
                 {downloadEnabled ? <Button startDecorator={<DownloadRoundedIcon/>}
                                            sx={{
                                              width: "100%",

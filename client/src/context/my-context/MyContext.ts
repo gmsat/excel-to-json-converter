@@ -6,6 +6,7 @@ interface MyContextType {
   setFile: (file: Blob | null) => void,
   downloadLink: null | string,
   outputData: any[],
+  outputDataNew: object,
   preview: any,
   outputExists: boolean,
   downloadEnabled: boolean,
@@ -13,10 +14,13 @@ interface MyContextType {
   headerKeys: string[],
   oldKeys: string[],
   newKeys: string[],
+  linesData: string[],
+  headersData: object,
   dialogKeyValueData: TableObject[],
   showUpdateKeyValuesDialog: boolean,
   setDownloadLink: (link: string | null) => void,
   setOutputData: (data: any[]) => void,
+  setOutputDataNew: (data: object) => void,
   setPreview: (data: any) => void,
   setOutputExists: (bool: boolean) => void,
   setDownloadEnabled: (bool: boolean) => void,
@@ -25,7 +29,9 @@ interface MyContextType {
   setOldKeys: (oldKeys: string[]) => void,
   setNewKeys: (newKeys: string[]) => void,
   setShowUpdateKeyValuesDialog: (bool: boolean) => void,
-  setDialogKeyValueData: (data: any[]) => void
+  setDialogKeyValueData: (data: any[]) => void,
+  setLinesData: (data: any[]) => void,
+  setHeadersData: (data: object) => void
 }
 
 const MyContext = createContext<MyContextType>({
@@ -37,11 +43,14 @@ const MyContext = createContext<MyContextType>({
   headerKeys: [],
   newKeys: [],
   outputData: [],
+  outputDataNew: {},
   preview: null,
   outputExists: false,
   oldKeys: [],
   showUpdateKeyValuesDialog: false,
   dialogKeyValueData: [],
+  linesData: [],
+  headersData: {},
 
   setDownloadEnabled: () => {},
   setDownloadLink: () => {},
@@ -51,10 +60,13 @@ const MyContext = createContext<MyContextType>({
   setNewKeys: () => {},
   setOldKeys: () => {},
   setOutputData: () => {},
+  setOutputDataNew: () => {},
   setOutputExists: () => {},
   setPreview: () => {},
   setShowUpdateKeyValuesDialog: () => {},
-  setDialogKeyValueData: () => {}
+  setDialogKeyValueData: () => {},
+  setLinesData: () => {},
+  setHeadersData: () => {}
 
 });
 

@@ -212,7 +212,7 @@ export class ArrayHelpers {
         objValueTypes.push({type: TypeHelpers.getDataType(value), value: value});
       }
 
-      console.log("obj value types", objValueTypes);
+      // console.log("obj value types", objValueTypes);
     }
 
     // for (const value of values) {

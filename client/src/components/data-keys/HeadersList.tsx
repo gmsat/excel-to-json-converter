@@ -57,7 +57,7 @@ export const HeadersList: React.FC<HeadersListProps> = ({
         <Grid key={index} style={{display: "flex", flexFlow: "column", alignItems: "flex-start"}}>
 
           <div style={{display: "flex", gap: 10}}>
-            {index === 0 ? <text style={{fontSize: "0.8rem"}}>Edit headers</text> : null}
+            {index === 0 ? <text style={{fontSize: "0.8rem"}}>Edit lines</text> : null}
           </div>
 
           <HeaderInput resetClicked={resetClicked}
