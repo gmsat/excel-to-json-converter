@@ -17,7 +17,7 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
   const [downloadEnabled, setDownloadEnabled] = useState(false);
 
   // data options
-  const [header, setHeader] = useState("A12");
+  const [header, setHeader] = useState("A1");
   const [headerKeys, setHeaderKeys] = useState<string[]>([]);
   const [oldKeys, setOldKeys] = useState<string[]>([]);
   const [newKeys, setNewKeys] = useState<string[]>([]);
