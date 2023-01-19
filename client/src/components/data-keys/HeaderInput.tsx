@@ -2,9 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 import MyContext from "../../context/my-context/MyContext";
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton } from "@mui/joy";
-import { TextField } from "@mui/material"
+import { IconButton, Button } from "@mui/joy";
+// import { TextField } from "@mui/material"
 import { ListItem, Chip } from "@mui/material";
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import { CssVarsProvider, Input } from "@mui/joy";
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import DoneIcon from '@mui/icons-material/Done';
 
 export interface HeaderInputProps {
   itemData: string,
@@ -28,12 +32,15 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   const [originalVal, setOriginalVal] = useState(itemData);
   const [value, setValue] = useState(itemData);
   const [checked, setChecked] = useState(true);
+  const [keyInputEnabled, setKeyInputEnabled] = useState(false);
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {newKeys, setNewKeys} = useContext(MyContext);
   const {preview, setPreview} = useContext(MyContext);
   const {downloadLink, setDownloadLink} = useContext(MyContext);
   const {file, setFile} = useContext(MyContext);
+
+  const {headersData} = useContext(MyContext);
 
   const {showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog} = useContext(MyContext);
   const {dialogKeyValueData, setDialogKeyValueData} = useContext(MyContext);
@@ -81,6 +88,10 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     setDialogKeyValueData(dialogData);
   }
 
+  const handleEditInputKey = () => {
+    setKeyInputEnabled(!keyInputEnabled);
+  }
+
   // reset inputs to original values on reset button click
   useEffect(() => {
     setValue(originalVal);
@@ -89,7 +100,11 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   // updates data preview based when changing fields
   useEffect(() => {
     setOutputData(newData);
-    setPreview(newData);
+
+    const lines = newData;
+
+    // setPreview(newData);
+    setPreview({...headersData, lines});
   }, [value]);
 
   return (
@@ -112,27 +127,38 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     //   </div>
     // </ListItem>
 
+    <ListItem sx={{height: "40px", display: "flex", gap: 1, borderBottom: "solid lightgrey 1px", padding: "12px"}}>
+      {/*<div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>*/}
 
-    <ListItem style={{height: "30px", display: "flex"}}>
-      <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
-
-        <p style={{flex: 1, fontSize: "0.7rem"}}>({index})</p>
+        <p style={{flex: 1, fontSize: "0.7rem", color: "grey"}}>({index})</p>
 
         {/*<input type="checkbox" checked={checked} onChange={handleChecked}/>*/}
         {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
 
-        <TextField InputProps={HeaderInputProps} variant={"outlined"} sx={{flex: 6}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
-
         <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
-          <IconButton size={"sm"} variant={"outlined"} onClick={() => showDialog(index)} key={index}>
-            <EditIcon/>
+          <IconButton onClick={handleEditInputKey} variant={"plain"} >
+            {!keyInputEnabled ? <EditIcon sx={{fontSize: "1.2rem"}}/> : <DoneIcon/>}
           </IconButton>
         </div>
 
-        <Chip label={"INT"} size={"small"} sx={{borderRadius: 1}} color={"default"}/>
+        <div style={{flex: 10}}>
+          {/*<TextField InputProps={HeaderInputProps} variant={"outlined"} size={"small"} type="text" value={value} onChange={handleInputChange}/>*/}
+          <Input disabled={!keyInputEnabled} type={"text"} variant={"soft"} size={"sm"} value={value} onChange={handleInputChange}/>
+        </div>
 
-      </div>
+        <div style={{flex: 1}}>
+          <CssVarsProvider>
+            <IconButton size={"sm"} variant={"soft"} onClick={() => showDialog(index)} key={index}>
+              <MenuOpenIcon/>
+            </IconButton>
+          </CssVarsProvider>
+        </div>
+
+        {/*<Chip label={"INT"} size={"small"} sx={{borderRadius: 1}} color={"default"}/>*/}
+
+      {/*</div>*/}
     </ListItem>
+
 
   );
 }

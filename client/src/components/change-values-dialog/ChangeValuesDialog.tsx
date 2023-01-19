@@ -81,14 +81,20 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {setPreview} = useContext(MyContext);
+  const {headersData, setHeadersData} = useContext(MyContext);
 
   const handleSave = () => {
     setSaveAllClicked(true);
     const array = new ArrayHelpers();
     const newData = array.updateObjectValues(outputData, allValues, keyIndex, indexNumbers, dataType);
 
-    setPreview(newData);
-    setOutputData(newData);
+    const lines = newData;
+
+    // setPreview(newData);
+    // setOutputData(newData);
+
+    setPreview({...headersData, lines});
+    setOutputData(lines);
 
     setAllValues("");
   }
@@ -143,6 +149,8 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
   const deferred = useDeferredValue(allValues);
 
   const saveButtonRef = useRef<any>(null);
+  
+  const {headersData} = useContext(MyContext);
 
   const handleValueChange = (e: any) => {
     const targetVal = e.target.value;
@@ -162,7 +170,10 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
     const changedValues = array.updateObjectValues(outputData, _newValue, keyIndex, [objectIndex], dataType);
 
     setTimeout(() => {
-      setPreview(changedValues);
+      // setPreview(changedValues);
+      const lines = changedValues;
+      setPreview({...headersData, lines});
+
       setOutputData(changedValues);
 
       setRowData({

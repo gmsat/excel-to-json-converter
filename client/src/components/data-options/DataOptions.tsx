@@ -22,7 +22,16 @@ const DataOptions: React.FC<DataOptionsProps> = ({
                                                    outputExists
                                                  }) => {
   return (
-    <Grid sx={{overflow: "auto", maxHeight: "80vh"}}>
+    <Grid sx={{overflow: "auto", maxHeight: "80vh",
+      '&::-webkit-scrollbar': {
+        width: 7,
+        // backgroundColor: "lightgray"
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: "lightgray",
+        borderRadius: 4,
+      }
+    }}>
 
       {outputExists ?
         <DataKeys

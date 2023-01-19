@@ -60,7 +60,8 @@ const ResetButtonStyle = {
   right: -5,
   '&:hover': {
     transform: "scale(1.1)",
-    transition: ".5s"
+    transition: ".5s",
+    backgroundColor: "rgba(0,0,0,0)"
   }
 }
 
@@ -74,37 +75,10 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
 
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  const {setPreview,
-         setOutputExists,
-         setOutputData,
-         setOldKeys,
-         setNewKeys,
-         setHeaderKeys,
-         setDownloadLink,
-         setFile,
-         setDialogKeyValueData} = useContext(MyContext);
-
   const changeHeader = (e: any) => {
     const inputVal = e.target.value;
     setHeader(inputVal);
   }
-
-  // const handleReset = () => {
-  //   setDownloadEnabled(false);
-  //   setPreview(null);
-  //   // setOutputExists(false);
-  //   setOutputData([]);
-  //   setOldKeys([]);
-  //   setNewKeys([]);
-  //   setHeaderKeys([]);
-  //   setDownloadLink(null);
-  //   setFile(null);
-  //   setDialogKeyValueData([]);
-  //
-  //   uploadRef.current!.value = "";
-  //
-  //   console.log("FILE:", file);
-  // }
 
   const handleReset = () => {
     window.location.reload();
@@ -121,7 +95,7 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
               position: "relative"
             }}>
 
-        <IconButton sx={ResetButtonStyle} onClick={handleReset}>
+        <IconButton variant={"plain"} sx={ResetButtonStyle} onClick={handleReset}>
           <RestartAltSharpIcon sx={{color: "white", fontSize: "2rem"}}/>
         </IconButton>
 

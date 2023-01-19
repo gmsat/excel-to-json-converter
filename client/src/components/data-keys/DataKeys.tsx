@@ -85,16 +85,6 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
     setHeaders(data!);
   }, [data]);
 
-  // enable save changes button after changing data
-  // useEffect(() => {
-  //   console.log("OUTPUT DATA CHANGED!", outputData);
-  //   if (!enableSaveChanges) {
-  //     setEnableSaveChanges(true);
-  //   } else {
-  //     setEnableSaveChanges(false);
-  //   }
-  // }, [data]);
-
   return (
     <div style={{display: "flex", flexFlow: "column", gap: 5}}>
 

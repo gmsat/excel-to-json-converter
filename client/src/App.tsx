@@ -91,30 +91,30 @@ function App() {
     const etj = new ExcelToJson();
     const array = new ArrayHelpers();
 
-    // original working (only lines)
-    reader.onload = (evt) => {
-      if (evt.target) {
-        const binary = evt.target.result;
-        const headers = etj.getHeadersFromBinary(binary, header);
-        const data = etj.JSON_web(binary, header);
-        const parsed = JSON.parse(data);
-        const fileBlob = new Blob([data], {type: "text/plain"});
-        const url = URL.createObjectURL(fileBlob);
-
-        setDownloadLink(url);
-
-        setHeaderKeys(headers);
-        setOldKeys(headers);
-        setNewKeys(headers);
-
-        setOutputData(parsed);
-        setOutputExists(true);
-        setPreview(parsed);
-
-        // array.getDataTypes(parsed);
-        array.getDataTypes2(parsed);
-      }
-    };
+    // // original working (only lines)
+    // reader.onload = (evt) => {
+    //   if (evt.target) {
+    //     const binary = evt.target.result;
+    //     const headers = etj.getHeadersFromBinary(binary, header);
+    //     const data = etj.JSON_web(binary, header);
+    //     const parsed = JSON.parse(data);
+    //     const fileBlob = new Blob([data], {type: "text/plain"});
+    //     const url = URL.createObjectURL(fileBlob);
+    //
+    //     setDownloadLink(url);
+    //
+    //     setHeaderKeys(headers);
+    //     setOldKeys(headers);
+    //     setNewKeys(headers);
+    //
+    //     setOutputData(parsed);
+    //     setOutputExists(true);
+    //     setPreview(parsed);
+    //
+    //     // array.getDataTypes(parsed);
+    //     array.getDataTypes2(parsed);
+    //   }
+    // };
 
     // App.tsx
     // TODO: set lines data
@@ -180,41 +180,38 @@ function App() {
     //   }
     // };
 
-    // // TODO: sets structure that includes headers
-    // reader.onload = (evt) => {
-    //   if (evt.target) {
-    //     const binary = evt.target.result;
-    //     const headers = etj.getHeadersFromBinary(binary, header);
-    //     const data = etj.JSON_web_all_data(binary, header);
-    //     const headersSheet = JSON.parse(data[1]);
-    //     const lines = JSON.parse(data[0]);
-    //     const headersObj = headersSheet[0];
-    //
-    //     headersObj.lines = lines;
-    //
-    //     const headersOut = JSON.stringify(headersObj, null, 2);
-    //     const fileBlob = new Blob([headersOut], {type: "text/plain"});
-    //     const url = URL.createObjectURL(fileBlob);
-    //
-    //     // expected to get array of objects with sheet data
-    //     // TODO: set headers data[1], use first object for the data
-    //     // TODO: set lines data[0]
-    //     // TODO: set output data => {headers, lines: [{}, {}, {}, ...]}
-    //
-    //     setDownloadLink(url);
-    //
-    //     setHeaderKeys(headers);
-    //     setOldKeys(headers);
-    //     setNewKeys(headers);
-    //
-    //     setOutputData(headersObj);
-    //     setOutputExists(true);
-    //     setPreview(headersObj);
-    //
-    //     // array.getDataTypes(parsed);
-    //     array.getDataTypes2(lines);
-    //   }
-    // };
+
+
+    // TODO: sets structure that includes headers
+    reader.onload = (evt) => {
+      if (evt.target) {
+        const binary = evt.target.result;
+        const headers = etj.getHeadersFromBinary(binary, header);
+        const data = etj.JSON_web_all_data(binary, header);
+        const headersSheet = JSON.parse(data[1]);
+        const lines = JSON.parse(data[0]);
+        const headersObj = headersSheet[0];
+
+        const headersOut = JSON.stringify(headersObj, null, 2);
+        const fileBlob = new Blob([headersOut], {type: "text/plain"});
+        const url = URL.createObjectURL(fileBlob);
+
+        setDownloadLink(url);
+
+        setHeaderKeys(headers);
+        setOldKeys(headers);
+        setNewKeys(headers);
+
+        // setLinesData(lines);
+        setOutputData(lines);
+        setOutputExists(true);
+        setHeadersData(headersObj);
+        setPreview({...headersObj, lines});
+
+        setHeadersData(headersObj);
+
+      }
+    };
 
     // // TODO: sets structure that includes headers
     // reader.onload = (evt) => {
