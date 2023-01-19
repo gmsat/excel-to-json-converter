@@ -143,7 +143,7 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
 
         <div style={{flex: 10}}>
           {/*<TextField InputProps={HeaderInputProps} variant={"outlined"} size={"small"} type="text" value={value} onChange={handleInputChange}/>*/}
-          <Input disabled={!keyInputEnabled} type={"text"} variant={"soft"} size={"sm"} value={value} onChange={handleInputChange}/>
+          <Input readOnly={!keyInputEnabled} sx={{backgroundColor: keyInputEnabled ? "white" : null, border: keyInputEnabled ? "solid lightgrey 1px" : null}} type={"text"} variant={"soft"} size={"sm"} value={value} onChange={handleInputChange}/>
         </div>
 
         <div style={{flex: 1}}>

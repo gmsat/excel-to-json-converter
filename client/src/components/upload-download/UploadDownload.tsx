@@ -6,6 +6,9 @@ import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
 import { HeaderInput } from "../data-keys/HeaderInput";
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import RestartAltSharpIcon from '@mui/icons-material/RestartAltSharp';
+import { Backdrop } from "@mui/material";
+import { CircularProgress } from "@mui/joy";
+import { CssVarsProvider } from "@mui/joy";
 
 interface UploadDownloadProps {
   handleChange: (e: any) => void,
@@ -34,7 +37,7 @@ const uploadButtonBoxStyle = {
   '&:hover': {
     backgroundColor: "black",
     color: "white",
-    border: "dashed white 2px",
+    border: "dashed white 2px"
   }
 }
 
@@ -80,6 +83,13 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
     setHeader(inputVal);
   }
 
+  // TODO: show loader while data is being converted
+  const handleSubmit = () => {
+    setDownloadEnabled(true);
+
+
+  }
+
   const handleReset = () => {
     window.location.reload();
   }
@@ -107,7 +117,7 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
           </Grid>
 
           <Grid item flex={2} alignSelf={"flex-end"}>
-            <Button disabled={!outputExists} style={{width: "100%", backgroundColor: `${outputExists ? "#23C0AD" : "grey"}`, color: "white"}} type={"submit"} onClick={() => setDownloadEnabled(true)}>Convert</Button>
+            <Button disabled={!outputExists} style={{width: "100%", backgroundColor: `${outputExists ? "#23C0AD" : "grey"}`, color: "white"}} type={"submit"} onClick={handleSubmit}>Convert</Button>
           </Grid>
 
         </Grid>
@@ -143,6 +153,12 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
             </Grid>
           </Grow>
         }
+
+        <Backdrop open={!preview && downloadEnabled}>
+          <CssVarsProvider>
+            <CircularProgress variant={"solid"}/>
+          </CssVarsProvider>
+        </Backdrop>
 
       </Grid>
 
