@@ -23,7 +23,7 @@ const DataOptions: React.FC<DataOptionsProps> = ({
                                                  }) => {
   return (
     <Grid sx={{
-      overflow: "auto",
+      overflowY: "scroll",
       maxHeight: "80vh",
       '&::-webkit-scrollbar': {
         width: 7,

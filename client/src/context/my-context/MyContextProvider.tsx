@@ -30,6 +30,8 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
 
   const [outputDataNew, setOutputDataNew] = useState<object>({});
 
+  const [downloadOutput, setDownloadOutput] = useState({});
+
   return (
     <MyContext.Provider value={{
 
@@ -48,6 +50,7 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
       dialogKeyValueData,
       linesData,
       headersData,
+      downloadOutput,
 
       setPreview,
       setOutputExists,
@@ -63,7 +66,8 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
       setShowUpdateKeyValuesDialog,
       setDialogKeyValueData,
       setLinesData,
-      setHeadersData
+      setHeadersData,
+      setDownloadOutput
 
     }}>
       {children}

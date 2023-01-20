@@ -196,7 +196,18 @@ export class ArrayHelpers {
     // console.log(types);
     // TypeHelpers.getArrObjectTypes(_objects);
     // console.log(TypeHelpers.getArrObjectTypes(_objects));
-    console.log(types);
+    console.log("DATA TYPES", types);
+    return types;
+  }
+
+  getObjectDataTypes(_object: object): string[] {
+    const values = Object.values(_object);
+    const types: string[] = [];
+
+    for (const value of values) {
+      types.push(TypeHelpers.getDataType(value));
+    }
+
     return types;
   }
 

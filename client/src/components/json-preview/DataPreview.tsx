@@ -26,9 +26,12 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
 
   const {outputData, setOutputData} = useContext(MyContext);
 
+  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
+
   const handleChange = (e: any) => {
     const targetVal = e.target.value;
-    setOutputData(JSON.parse(targetVal));
+    // setOutputData(JSON.parse(targetVal));
+    setDownloadOutput(JSON.parse(targetVal));
     setPreviewData(targetVal);
   }
 

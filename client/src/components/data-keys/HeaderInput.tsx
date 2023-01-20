@@ -9,6 +9,7 @@ import TableRowsIcon from '@mui/icons-material/TableRows';
 import { CssVarsProvider, Input } from "@mui/joy";
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import DoneIcon from '@mui/icons-material/Done';
+import TypeHelpers from "../../modules/json-data-options/TypeHelpers";
 
 export interface HeaderInputProps {
   itemData: string,
@@ -33,6 +34,8 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   const [value, setValue] = useState(itemData);
   const [checked, setChecked] = useState(true);
   const [keyInputEnabled, setKeyInputEnabled] = useState(false);
+
+  const [dataTypes, setDataTypes] = useState<any>([]);
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {newKeys, setNewKeys} = useContext(MyContext);
@@ -107,6 +110,26 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     setPreview({...headersData, lines});
   }, [value]);
 
+  useEffect(() => {
+    // const typesArr = [];
+    const array = new ArrayHelpers();
+
+    const objToCheck = outputData.reduce((a, b) => {
+      return a.length > b.length ? a : b;
+    });
+
+    // console.log("OBJECT TO CHECK", objToCheck);
+    // console.log("ALL DATA", outputData);
+
+    // const types = array.getDataTypes(outputData);
+    const types = array.getObjectDataTypes(outputData[0]);
+
+    if (types) {
+      setDataTypes(types);
+      // console.log("TYPES USE EFFECT", types);
+    }
+  }, []);
+
   return (
     // <ListItem style={{height: "30px", display: "flex"}}>
     //   <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
@@ -127,34 +150,37 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     //   </div>
     // </ListItem>
 
-    <ListItem sx={{height: "40px", display: "flex", gap: 1, borderBottom: "solid lightgrey 1px", padding: "12px"}}>
+    <ListItem sx={{height: "40px", display: "flex", gap: 1, borderBottom: "solid lightgrey 1px", padding: 2}}>
       {/*<div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>*/}
 
-        <p style={{flex: 1, fontSize: "0.7rem", color: "grey"}}>({index})</p>
+      <div style={{flex: 1}}>
+        <Chip label={dataTypes[index]} size={"small"} sx={{borderRadius: 1, fontSize: "0.7rem"}} color={"default"}/>
+      </div>
 
-        {/*<input type="checkbox" checked={checked} onChange={handleChecked}/>*/}
-        {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
+      <p style={{flex: 1, fontSize: "0.7rem", color: "grey"}}>({index})</p>
 
-        <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
-          <IconButton onClick={handleEditInputKey} variant={"plain"} >
-            {!keyInputEnabled ? <EditIcon sx={{fontSize: "1.2rem"}}/> : <DoneIcon/>}
+      {/*<input type="checkbox" checked={checked} onChange={handleChecked}/>*/}
+      {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
+
+      <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
+        <IconButton onClick={handleEditInputKey} variant={"plain"} >
+          {!keyInputEnabled ? <EditIcon sx={{fontSize: "1.2rem"}}/> : <DoneIcon/>}
+        </IconButton>
+      </div>
+
+      <div style={{flex: 10}}>
+        {/*<TextField InputProps={HeaderInputProps} variant={"outlined"} size={"small"} type="text" value={value} onChange={handleInputChange}/>*/}
+        <Input readOnly={!keyInputEnabled} sx={{backgroundColor: keyInputEnabled ? "white" : null, border: keyInputEnabled ? "solid lightgrey 1px" : null}} type={"text"} variant={"soft"} size={"sm"} value={value} onChange={handleInputChange}/>
+      </div>
+
+      <div style={{flex: 1}}>
+        <CssVarsProvider>
+          <IconButton size={"sm"} variant={"soft"} onClick={() => showDialog(index)} key={index}>
+            <MenuOpenIcon/>
           </IconButton>
-        </div>
+        </CssVarsProvider>
+      </div>
 
-        <div style={{flex: 10}}>
-          {/*<TextField InputProps={HeaderInputProps} variant={"outlined"} size={"small"} type="text" value={value} onChange={handleInputChange}/>*/}
-          <Input readOnly={!keyInputEnabled} sx={{backgroundColor: keyInputEnabled ? "white" : null, border: keyInputEnabled ? "solid lightgrey 1px" : null}} type={"text"} variant={"soft"} size={"sm"} value={value} onChange={handleInputChange}/>
-        </div>
-
-        <div style={{flex: 1}}>
-          <CssVarsProvider>
-            <IconButton size={"sm"} variant={"soft"} onClick={() => showDialog(index)} key={index}>
-              <MenuOpenIcon/>
-            </IconButton>
-          </CssVarsProvider>
-        </div>
-
-        {/*<Chip label={"INT"} size={"small"} sx={{borderRadius: 1}} color={"default"}/>*/}
 
       {/*</div>*/}
     </ListItem>

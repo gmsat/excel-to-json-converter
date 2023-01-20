@@ -1,5 +1,6 @@
 import React, { useContext, useDeferredValue, useEffect, useRef, useState } from 'react';
 import {
+  Backdrop,
   Button,
   Dialog,
   DialogTitle,
@@ -12,7 +13,7 @@ import {
   TextField
 } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
-import { Input, Typography } from "@mui/joy";
+import { CircularProgress, CssVarsProvider, Input, Typography } from "@mui/joy";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 
 export type TableObject = { index: number, keyIndex: number, key: string, value: number | string };
@@ -83,6 +84,8 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
   const {setPreview} = useContext(MyContext);
   const {headersData, setHeadersData} = useContext(MyContext);
 
+  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
+
   const handleSave = () => {
     setSaveAllClicked(true);
     const array = new ArrayHelpers();
@@ -94,7 +97,9 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
     // setOutputData(newData);
 
     setPreview({...headersData, lines});
+
     setOutputData(lines);
+    setDownloadOutput({...headersData, lines});
 
     setAllValues("");
   }
@@ -152,6 +157,8 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
   
   const {headersData} = useContext(MyContext);
 
+  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
+
   const handleValueChange = (e: any) => {
     const targetVal = e.target.value;
     setNewValue(targetVal);
@@ -175,6 +182,7 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
       setPreview({...headersData, lines});
 
       setOutputData(changedValues);
+      setDownloadOutput({...headersData, lines});
 
       setRowData({
         value: newValue,
@@ -315,6 +323,8 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
 export const ChangeValuesTable = () => {
 
   const {dialogKeyValueData, setDialogKeyValueData} = useContext(MyContext);
+  const {showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog} = useContext(MyContext);
+
 
   useEffect(() => {
     console.log("DIALOG KEY VALUE DATA [ChangeValuesTable]", dialogKeyValueData);
@@ -322,7 +332,14 @@ export const ChangeValuesTable = () => {
 
   return (
     <div style={{width: "100%"}}>
+
+      {/*<Backdrop open={true}>*/}
+      {/*  <CssVarsProvider>*/}
+      {/*    <CircularProgress variant={"solid"}/>*/}
+      {/*  </CssVarsProvider>*/}
+      {/*</Backdrop>*/}
       <KeyValuesTableDataRows data={dialogKeyValueData} setData={setDialogKeyValueData}/>
+
     </div>
   );
 };
@@ -335,11 +352,16 @@ const ChangeValuesDialog: React.FC = () => {
   }
 
   return (
-    <Dialog fullWidth maxWidth={"lg"} sx={{margin: "auto", maxWidth: "100%"}} open={showUpdateKeyValuesDialog}
-            onClose={hideDialog}>
+    <Dialog fullWidth maxWidth={"lg"}
+            onClose={hideDialog}
+            open={showUpdateKeyValuesDialog}
+            sx={{margin: "auto",
+                 maxWidth: "100%"}}>
+
       <Grid item padding={5}>
         <ChangeValuesTable/>
       </Grid>
+
     </Dialog>
   );
 };

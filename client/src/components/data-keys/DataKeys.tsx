@@ -62,6 +62,8 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
   const {outputData, setOutputData} = useContext(MyContext);
   const {setDownloadLink} = useContext(MyContext);
 
+  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
+
   const handleReset = () => {
     setResetClicked(!resetClicked);
   }
@@ -73,7 +75,11 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
       return;
     }
 
-    const data = JSON.stringify(outputData, null, 2);
+    // const data = JSON.stringify(outputData, null, 2);
+    // const fileBlob = new Blob([data], {type: "text/plain"});
+    // const url = URL.createObjectURL(fileBlob);
+
+    const data = JSON.stringify(downloadOutput, null, 2);
     const fileBlob = new Blob([data], {type: "text/plain"});
     const url = URL.createObjectURL(fileBlob);
 

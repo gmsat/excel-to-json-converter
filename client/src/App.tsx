@@ -59,6 +59,8 @@ function App() {
   const {headersData, setHeadersData} = useContext(MyContext);
   const {outputDataNew, setOutputDataNew} = useContext(MyContext);
 
+  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
+
   const handleChange = (e: any) => {
     const files = e.target.files;
     const file = e.target.files?.[0];
@@ -192,11 +194,11 @@ function App() {
         const lines = JSON.parse(data[0]);
         const headersObj = headersSheet[0];
 
-        const headersOut = JSON.stringify(headersObj, null, 2);
-        const fileBlob = new Blob([headersOut], {type: "text/plain"});
-        const url = URL.createObjectURL(fileBlob);
+        // const headersOut = JSON.stringify(headersObj, null, 2);
+        // const fileBlob = new Blob([headersOut], {type: "text/plain"});
+        // const url = URL.createObjectURL(fileBlob);
 
-        setDownloadLink(url);
+        // setDownloadLink(url);
 
         setHeaderKeys(headers);
         setOldKeys(headers);
@@ -208,8 +210,17 @@ function App() {
         setHeadersData(headersObj);
         setPreview({...headersObj, lines});
 
+        setDownloadOutput({...headersObj, lines});
+
         setHeadersData(headersObj);
 
+        // set file download output data
+        const file = JSON.stringify({...headersObj, lines}, null, 2);
+        const fileBlob = new Blob([file], {type: "text/plain"});
+        const url = URL.createObjectURL(fileBlob);
+
+        setDownloadLink(url);
+        // array.getDataTypes(lines);
       }
     };
 
