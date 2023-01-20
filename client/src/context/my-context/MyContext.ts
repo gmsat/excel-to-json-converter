@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import { TableObject } from "../../components/change-values-dialog/ChangeValuesDialog";
 
-interface MyContextType {
+interface IMyContext {
   file: Blob | null,
   setFile: (file: Blob | null) => void,
   downloadLink: null | string,
@@ -38,7 +38,7 @@ interface MyContextType {
   setReset: (bool: boolean) => void
 }
 
-const MyContext = createContext<MyContextType>({
+const MyContext = createContext<IMyContext>({
 
   downloadEnabled: true,
   file: null,

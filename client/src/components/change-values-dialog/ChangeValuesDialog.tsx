@@ -91,6 +91,8 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
     const array = new ArrayHelpers();
     const newData = array.updateObjectValues(outputData, allValues, keyIndex, indexNumbers, dataType);
 
+    console.log("object index numbers", indexNumbers);
+
     const lines = newData;
 
     // setPreview(newData);
