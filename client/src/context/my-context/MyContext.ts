@@ -17,6 +17,7 @@ interface MyContextType {
   newKeys: string[],
   linesData: string[],
   headersData: object,
+  reset: boolean,
   dialogKeyValueData: TableObject[],
   showUpdateKeyValuesDialog: boolean,
   setDownloadLink: (link: string | null) => void,
@@ -33,7 +34,8 @@ interface MyContextType {
   setShowUpdateKeyValuesDialog: (bool: boolean) => void,
   setDialogKeyValueData: (data: any[]) => void,
   setLinesData: (data: any[]) => void,
-  setHeadersData: (data: object) => void
+  setHeadersData: (data: object) => void,
+  setReset: (bool: boolean) => void
 }
 
 const MyContext = createContext<MyContextType>({
@@ -54,6 +56,7 @@ const MyContext = createContext<MyContextType>({
   linesData: [],
   headersData: {},
   downloadOutput: {},
+  reset: false,
 
   setDownloadEnabled: () => {},
   setDownloadLink: () => {},
@@ -70,7 +73,8 @@ const MyContext = createContext<MyContextType>({
   setShowUpdateKeyValuesDialog: () => {},
   setDialogKeyValueData: () => {},
   setLinesData: () => {},
-  setHeadersData: () => {}
+  setHeadersData: () => {},
+  setReset: () => {}
 
 });
 

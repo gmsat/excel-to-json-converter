@@ -246,11 +246,6 @@ export class ArrayHelpers {
     return types;
   }
 
-  /**
-   * @returns \{index, key and value\} from provided array of objects and key index
-   * @param _objects
-   * @param _keyIndex
-   */
   getHeaderValuesByIndex(_objects: any[], _keyIndex: number) {
     const arr = _objects.map((obj, i) => {
       const [key, val] = Object.entries(obj)[_keyIndex];

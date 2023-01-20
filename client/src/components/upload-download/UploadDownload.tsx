@@ -9,6 +9,7 @@ import RestartAltSharpIcon from '@mui/icons-material/RestartAltSharp';
 import { Backdrop } from "@mui/material";
 import { CircularProgress } from "@mui/joy";
 import { CssVarsProvider } from "@mui/joy";
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface UploadDownloadProps {
   handleChange: (e: any) => void,
@@ -106,7 +107,7 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
             }}>
 
         <IconButton variant={"plain"} sx={ResetButtonStyle} onClick={handleReset}>
-          <RestartAltSharpIcon sx={{color: "white", fontSize: "2rem"}}/>
+          <RefreshIcon sx={{color: "white", fontSize: "2rem"}}/>
         </IconButton>
 
         <Grid container display={"flex"} flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"} spacing={2}>

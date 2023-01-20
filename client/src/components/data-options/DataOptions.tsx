@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DataKeys from "../data-keys/DataKeys";
 import { Grid } from "@mui/material";
+import { SaveControls } from "../index";
 
 interface DataOptionsProps {
   headerKeys: string[] | null,
@@ -21,33 +22,43 @@ const DataOptions: React.FC<DataOptionsProps> = ({
                                                    handleSubmit,
                                                    outputExists
                                                  }) => {
+  const [resetClicked, setResetClicked] = useState(false);
+
   return (
-    <Grid sx={{
-      overflowY: "scroll",
-      maxHeight: "80vh",
-      '&::-webkit-scrollbar': {
-        width: 7,
-      },
-      '&::-webkit-scrollbar-thumb': {
-        backgroundColor: "lightgray",
-        borderRadius: 4,
-      }
-    }}>
+    <Grid container display={"flex"} flexDirection={"column"} sx={{width: "100%", height: "100%"}}>
+      <Grid flex={12} item sx={{
+        overflowY: "scroll",
+        maxHeight: "80vh",
+        '&::-webkit-scrollbar': {
+          width: 7,
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: "lightgray",
+          borderRadius: 4,
+        }
+      }}>
 
-      {outputExists ?
-        <DataKeys
-          data={headerKeys}
-          oldKeys={oldKeys}
-          newKeys={newKeys && newKeys}
-          setNewKeys={setNewKeys}
-          setOldKeys={setOldKeys}
-          handleSubmit={handleSubmit}
-        />
+        {outputExists ?
+          <DataKeys
+            data={headerKeys}
+            oldKeys={oldKeys}
+            newKeys={newKeys && newKeys}
+            setNewKeys={setNewKeys}
+            setOldKeys={setOldKeys}
+            handleSubmit={handleSubmit}
+          />
 
-        : null
-      }
+          : null
+        }
+
+      </Grid>
+
+      <Grid item flex={1} sx={{height: "100%", width: "100%", margin: "auto", boxSizing: "content-box"}}>
+        <SaveControls/>
+      </Grid>
 
     </Grid>
+
   );
 };
 

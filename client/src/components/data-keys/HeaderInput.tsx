@@ -31,6 +31,7 @@ const HeaderInputProps = {
 
 export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetClicked}) => {
   const [originalVal, setOriginalVal] = useState(itemData);
+  const [oldValue, setOldValue] = useState(itemData);
   const [value, setValue] = useState(itemData);
   const [checked, setChecked] = useState(true);
   const [keyInputEnabled, setKeyInputEnabled] = useState(false);
@@ -48,31 +49,64 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   const {showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog} = useContext(MyContext);
   const {dialogKeyValueData, setDialogKeyValueData} = useContext(MyContext);
 
+  const {setDownloadOutput} = useContext(MyContext);
+
   const [newData, setNewData] = useState<any[]>(outputData);
 
-  const handleInputChange = (e: any) => {
-    const array = new ArrayHelpers();
-    const originalKey = value;
-    const targetVal = e.target.value;
+  const {reset, setReset} = useContext(MyContext);
 
-    if (array.keyExists(outputData, targetVal)) {
-      console.log(`Key name: [${targetVal}] already exists! Enter another key!`);
+  // const handleInputChange = (e: any) => {
+  //   const array = new ArrayHelpers();
+  //   const originalKey = value;
+  //   const targetVal = e.target.value;
+  //
+  //   if (array.keyExists(outputData, targetVal)) {
+  //     console.log(`Key name: [${targetVal}] already exists! Enter another key!`);
+  //     return;
+  //   }
+  //
+  //   setValue(targetVal);
+  //
+  //   const updated = array.getNewKeys(newKeys, index, targetVal);
+  //   setNewKeys(updated);
+  //
+  //   // renames by key index
+  //   // const data = array.renameKeysByIndex(outputData, index, targetVal);
+  //
+  //   // renames by key name
+  //   const data = array.renameKeysByKeyName(outputData, originalKey, targetVal);
+  //
+  //   setNewData(data);
+  //   setOutputData(newData);
+  // }
+
+  const handleInputChange = (e: any) => {
+    const targetVal = e.target.value;
+    setValue(targetVal);
+  }
+
+  const handleInputSave = () => {
+    console.log("INPUT SAVE CLICKED!");
+
+    const array = new ArrayHelpers();
+
+    if (array.keyExists(outputData, value)) {
+      console.log(`Key name: [${value}] already exists! Enter another key!`);
       return;
     }
 
-    setValue(targetVal);
-
-    const updated = array.getNewKeys(newKeys, index, targetVal);
+    const updated = array.getNewKeys(newKeys, index, value);
     setNewKeys(updated);
+    const data = array.renameKeysByKeyName(outputData, oldValue, value);
 
-    // renames by key index
-    // const data = array.renameKeysByIndex(outputData, index, targetVal);
-
-    // renames by key name
-    const data = array.renameKeysByKeyName(outputData, originalKey, targetVal);
+    const lines = data;
 
     setNewData(data);
-    setOutputData(newData);
+    setOutputData(lines);
+    setDownloadOutput({...headersData, lines});
+
+    setPreview({...headersData, lines});
+    setOldValue(value);
   }
 
   const handleChecked = () => {
@@ -93,22 +127,39 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
 
   const handleEditInputKey = () => {
     setKeyInputEnabled(!keyInputEnabled);
+    if (keyInputEnabled) {
+      handleInputSave()
+    }
   }
 
   // reset inputs to original values on reset button click
+  // useEffect(() => {
+  //   setValue(originalVal);
+  // }, [resetClicked]);
+
   useEffect(() => {
+    console.log("OLD VAlUE", oldValue);
     setValue(originalVal);
-  }, [resetClicked]);
+  }, [reset, resetClicked]);
 
-  // updates data preview based when changing fields
-  useEffect(() => {
-    setOutputData(newData);
+  // // updates data preview based when changing fields
+  // useEffect(() => {
+  //   setOutputData(newData);
+  //
+  //   const lines = newData;
+  //
+  //   // setPreview(newData);
+  //   setPreview({...headersData, lines});
+  // }, [value]);
 
-    const lines = newData;
-
-    // setPreview(newData);
-    setPreview({...headersData, lines});
-  }, [value]);
+  // useEffect(() => {
+  //   setOutputData(newData);
+  //
+  //   const lines = newData;
+  //
+  //   // setPreview(newData);
+  //   setPreview({...headersData, lines});
+  // }, [newData]);
 
   useEffect(() => {
     // const typesArr = [];
@@ -153,18 +204,19 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     <ListItem sx={{height: "40px", display: "flex", gap: 1, borderBottom: "solid lightgrey 1px", padding: 2}}>
       {/*<div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>*/}
 
-      <div style={{flex: 1}}>
-        <Chip label={dataTypes[index]} size={"small"} sx={{borderRadius: 1, fontSize: "0.7rem"}} color={"default"}/>
+      <div style={{display: "flex", flex: 5, justifyContent: "center", alignItems: "center", gap: 6}}>
+        <p style={{flex: 1, fontSize: "0.7rem", color: "grey"}}>{index}</p>
+        <div style={{flex: 1}}>
+          <Chip label={dataTypes[index]} size={"small"} sx={{borderRadius: 1, fontSize: "0.7rem"}} color={"default"}/>
+        </div>
       </div>
-
-      <p style={{flex: 1, fontSize: "0.7rem", color: "grey"}}>({index})</p>
 
       {/*<input type="checkbox" checked={checked} onChange={handleChecked}/>*/}
       {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
 
       <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
         <IconButton onClick={handleEditInputKey} variant={"plain"} >
-          {!keyInputEnabled ? <EditIcon sx={{fontSize: "1.2rem"}}/> : <DoneIcon/>}
+          {!keyInputEnabled ? <EditIcon sx={{fontSize: "1.2rem"}}/> : <DoneIcon color={"success"}/>}
         </IconButton>
       </div>
 

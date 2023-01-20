@@ -280,7 +280,7 @@ function App() {
              alignItems: "center",
              width: "100%",
              margin: "auto",
-             padding: 3,
+             padding: 1,
              boxSizing: "border-box",
              backgroundColor: "#FFB600"
            }}>
