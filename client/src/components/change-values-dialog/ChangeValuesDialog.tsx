@@ -104,6 +104,15 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
     setDownloadOutput({...headersData, lines});
 
     setAllValues("");
+
+    // setTimeout(() => {
+    //   setPreview({...headersData, lines});
+    //
+    //   setOutputData(lines);
+    //   setDownloadOutput({...headersData, lines});
+    //
+    //   setAllValues("");
+    // }, 100);
   }
 
   const handleNewValueChange = (e: any) => {
@@ -217,10 +226,10 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
   useEffect(() => {
     setNewValue(allValues);
   }, [deferred]);
-
+  
   useEffect(() => {
     if (saveAllClicked) {
-      handleSave(rowData, allValues);
+      handleSave(rowData, deferred);
       setSaveAllClicked(false);
     }
   }, [saveAllClicked]);
