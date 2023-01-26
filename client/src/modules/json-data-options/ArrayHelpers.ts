@@ -284,6 +284,24 @@ export class ArrayHelpers {
     return arr.filter(val => val !== null)
   }
 
+  static deleteKeyByKeyNameFromObjectArray(_array: object[], _keyName: string): object[] {
+    return _array.map((obj: any, i) => {
+      if (_keyName in obj) {
+        delete obj[_keyName];
+      }
+      return obj;
+    });
+  }
+
+  static getObjectHeaders(_array: object[]): string[] {
+    const firstObj = _array[0];
+    const keys = Object.keys(firstObj);
+
+    console.log("new keys:", keys);
+
+    return keys;
+  }
+
   getHeaderValuesByName(_objects: any[], _keyName: string, _keyIndex: number = 0) {
     const arr = _objects.map((obj, i) => {
       const val = obj[_keyName];

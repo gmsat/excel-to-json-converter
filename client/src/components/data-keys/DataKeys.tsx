@@ -89,7 +89,11 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
   // }
 
   useEffect(() => {
-    setHeaders(data!);
+    const newHeaders = data!;
+    console.log("NEW HEADERS DATA:", newHeaders);
+    // setHeaders(data!);
+    setHeaders(newHeaders);
+    // console.log("Updated headers", headers);
   }, [data]);
 
   return (

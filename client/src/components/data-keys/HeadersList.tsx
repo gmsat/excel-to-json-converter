@@ -22,10 +22,13 @@ export const HeadersList: React.FC<HeadersListProps> = ({
                                                         }) => {
   const [oldLocal, setOldLocal] = useState(oldKeys);
   const [updatedKeys, setUpdatedKeys] = useState(oldKeys);
+  const [headersLocal, setHeadersLocal] = useState(headers);
 
   const {file, setFile} = useContext(MyContext);
   const {outputData, setOutputData} = useContext(MyContext);
   const {setDownloadLink} = useContext(MyContext);
+
+  const {newKeys} = useContext(MyContext);
 
   const handleApply = (e: any) => {
     e.preventDefault();
@@ -51,14 +54,18 @@ export const HeadersList: React.FC<HeadersListProps> = ({
     setNewKeys(updatedKeys);
   }, [updatedKeys]);
 
+  useEffect(() => {
+    setHeadersLocal(headers);
+  }, [headers]);
+
   return (
     <>
-      {headers.map((item, index) =>
+      {headersLocal.map((item, index) =>
         <Grid key={index} style={{display: "flex", flexFlow: "column", alignItems: "flex-start"}}>
 
-          <div style={{display: "flex", gap: 10}}>
-            {index === 0 ? <text style={{fontSize: "0.8rem"}}>Lines</text> : null}
-          </div>
+          {/*<div style={{display: "flex", gap: 10}}>*/}
+          {/*  {index === 0 ? <text style={{fontSize: "0.8rem"}}>Lines</text> : null}*/}
+          {/*</div>*/}
 
           <HeaderInput resetClicked={resetClicked}
                        setResetClicked={setResetClicked}

@@ -4,12 +4,14 @@ import MyContext from "../../context/my-context/MyContext";
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Button } from "@mui/joy";
 // import { TextField } from "@mui/material"
-import { ListItem, Chip } from "@mui/material";
+import { ListItem } from "@mui/material";
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import { CssVarsProvider, Input } from "@mui/joy";
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import DoneIcon from '@mui/icons-material/Done';
 import TypeHelpers from "../../modules/json-data-options/TypeHelpers";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { Tooltip, Chip } from "@mui/joy";
 
 export interface HeaderInputProps {
   itemData: string,
@@ -54,6 +56,8 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   const [newData, setNewData] = useState<any[]>(outputData);
 
   const {reset, setReset} = useContext(MyContext);
+
+  const {setHeaderKeys} = useContext(MyContext);
 
   // const handleInputChange = (e: any) => {
   //   const array = new ArrayHelpers();
@@ -132,6 +136,28 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     }
   }
 
+  const handleDeleteKey = (_keyName: string) => {
+    const updatedData = ArrayHelpers.deleteKeyByKeyNameFromObjectArray(outputData, _keyName);
+    const updatedHeaders = ArrayHelpers.getObjectHeaders(updatedData);
+
+    setHeaderKeys(updatedHeaders);
+
+    updateData(updatedData);
+  }
+
+  const updateData = (_data: any) => {
+    const lines = _data;
+
+    setNewData(_data);
+    setOutputData(lines);
+    setDownloadOutput({...headersData, lines});
+    setPreview({...headersData, lines});
+    setOldValue(value);
+  }
+
+  // TODO: update inputs UI after deleting key
+
+
   // reset inputs to original values on reset button click
   // useEffect(() => {
   //   setValue(originalVal);
@@ -181,6 +207,11 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     }
   }, []);
 
+  // update input on headers change
+  useEffect(() => {
+    setValue(itemData);
+  }, [itemData])
+
   return (
     // <ListItem style={{height: "30px", display: "flex"}}>
     //   <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
@@ -202,12 +233,22 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     // </ListItem>
 
     <ListItem sx={{height: "40px", display: "flex", gap: 1, borderBottom: "solid lightgrey 1px", padding: 2}}>
-      {/*<div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>*/}
+
+      <div style={{flex: 1}}>
+        <Tooltip placement={"left"} size={"sm"} color={"danger"} title={"Delete"}>
+          <IconButton size={"sm"} color={"warning"} variant={"plain"} onClick={() => handleDeleteKey(value)}>
+            <DeleteForeverIcon/>
+          </IconButton>
+        </Tooltip>
+      </div>
+
+      {/*<Divider orientation={"vertical"} sx={{height: "15px"}}/>*/}
 
       <div style={{display: "flex", flex: 5, justifyContent: "center", alignItems: "center", gap: 6}}>
         <p style={{flex: 1, fontSize: "0.7rem", color: "grey"}}>{index}</p>
         <div style={{flex: 1}}>
-          <Chip label={dataTypes[index]} size={"small"} sx={{borderRadius: 1, fontSize: "0.7rem"}} color={"default"}/>
+          {/*<Chip label={dataTypes[index]} size={"small"} sx={{borderRadius: 1, fontSize: "0.7rem"}} color={"default"}/>*/}
+          <Chip sx={{borderRadius: 3, fontSize: "0.75rem"}} size={"sm"} variant={"soft"} color={"neutral"}>{dataTypes[index]}</Chip>
         </div>
       </div>
 
@@ -215,7 +256,7 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
       {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
 
       <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
-        <IconButton onClick={handleEditInputKey} variant={"plain"} >
+        <IconButton size={"sm"} onClick={handleEditInputKey} variant={"plain"} >
           {!keyInputEnabled ? <EditIcon sx={{fontSize: "1.2rem"}}/> : <DoneIcon color={"success"}/>}
         </IconButton>
       </div>
@@ -233,10 +274,6 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
         </CssVarsProvider>
       </div>
 
-
-      {/*</div>*/}
     </ListItem>
-
-
   );
 }

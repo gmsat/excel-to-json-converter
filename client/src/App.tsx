@@ -182,8 +182,6 @@ function App() {
     //   }
     // };
 
-
-
     // TODO: sets structure that includes headers
     reader.onload = (evt) => {
       if (evt.target) {
