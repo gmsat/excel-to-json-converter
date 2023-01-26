@@ -25,6 +25,15 @@ export class ArrayHelpers {
     return changedKeys;
   }
 
+  static setIndexNumbers(_array: object[]): number[] {
+    const numArr: number[] = [];
+    _array.map((obj, index) => {
+      numArr.push(index);
+    });
+
+    return numArr;
+  }
+
   getNewKeys(_array: string[], _index: number, _targetVal: any) {
     return _array!.map((item, i) => {
       if (i === _index) return _targetVal;
@@ -196,7 +205,18 @@ export class ArrayHelpers {
     // console.log(types);
     // TypeHelpers.getArrObjectTypes(_objects);
     // console.log(TypeHelpers.getArrObjectTypes(_objects));
-    console.log(types);
+    console.log("DATA TYPES", types);
+    return types;
+  }
+
+  getObjectDataTypes(_object: object): string[] {
+    const values = Object.values(_object);
+    const types: string[] = [];
+
+    for (const value of values) {
+      types.push(TypeHelpers.getDataType(value));
+    }
+
     return types;
   }
 
@@ -212,7 +232,7 @@ export class ArrayHelpers {
         objValueTypes.push({type: TypeHelpers.getDataType(value), value: value});
       }
 
-      console.log("obj value types", objValueTypes);
+      // console.log("obj value types", objValueTypes);
     }
 
     // for (const value of values) {
@@ -235,11 +255,6 @@ export class ArrayHelpers {
     return types;
   }
 
-  /**
-   * @returns \{index, key and value\} from provided array of objects and key index
-   * @param _objects
-   * @param _keyIndex
-   */
   getHeaderValuesByIndex(_objects: any[], _keyIndex: number) {
     const arr = _objects.map((obj, i) => {
       const [key, val] = Object.entries(obj)[_keyIndex];
@@ -267,6 +282,24 @@ export class ArrayHelpers {
       return returnObject;
     });
     return arr.filter(val => val !== null)
+  }
+
+  static deleteKeyByKeyNameFromObjectArray(_array: object[], _keyName: string): object[] {
+    return _array.map((obj: any, i) => {
+      if (_keyName in obj) {
+        delete obj[_keyName];
+      }
+      return obj;
+    });
+  }
+
+  static getObjectHeaders(_array: object[]): string[] {
+    const firstObj = _array[0];
+    const keys = Object.keys(firstObj);
+
+    console.log("new keys:", keys);
+
+    return keys;
   }
 
   getHeaderValuesByName(_objects: any[], _keyName: string, _keyIndex: number = 0) {

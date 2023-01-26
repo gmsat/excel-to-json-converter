@@ -43,7 +43,7 @@ class TypeHelpers {
   }
 
   static getDataType(_value: any) {
-    const returnType = ["DATE", "STRING", "INT", "FLOAT"];
+    const returnType = ["DATE", "STR", "INT", "FLOAT"];
 
     if (typeof _value === "string") {
 

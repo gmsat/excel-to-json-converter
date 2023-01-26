@@ -24,8 +24,36 @@ export default class ExcelToJson {
     // const workBook = readFile(_fileName); // from path in system
     const workBook = read(_fileName, {type: "binary"}); // web
     const sheetName = workBook.SheetNames[0];
+    const sheetNames = workBook.SheetNames;
 
     return workBook.Sheets[sheetName];
+  }
+
+  private getWorkSheetNames(_fileName: string): string[] {
+    const workBook = read(_fileName, {type: "binary"});
+    return workBook.SheetNames;
+  }
+
+  // TODO: return single WorkSheet object => {}
+  // TODO: select WorkSheet name from the array -> sheetNames[0], sheetNames[1], ...
+  // TODO: getWorkSheetDataFromWorkSheet(fileName, getWorkSheetNames(filename)[0]);
+  private getWorkSheetDataFromWorkSheet(_fileName: string, _workSheetName: string) {
+    const workBook = read(_fileName, {type: "binary"});
+    return workBook.Sheets[_workSheetName];
+  }
+
+  // TODO: return array of WorkSheet objects => [workSheetData: {}, workSheet2Data: {}, ...]
+  // TODO: getDataFromAllWorkSheets(fileName, workSheetsArr);
+  private getDataFromAllWorkSheets(_fileName: string, _workSheets: string[]): object[] {
+    const workBook = read(_fileName, {type: "binary"});
+    const data: object[] = [];
+
+    for (const workSheetName of _workSheets) {
+      data.push(workBook.Sheets[workSheetName]);
+    }
+
+    // console.log(" >>>>>>>>>>>>>>> All work sheet data >>>>>>>>>>>>>>> :", data);
+    return data;
   }
 
   private convertContentToJSON(_sheet: any) {
@@ -244,6 +272,48 @@ export default class ExcelToJson {
     }
 
     return this.returnJSONFromOption(sheet, option);
+  }
+
+  JSON_web_all_data(_file: any,
+                    _headers: string = "A1",
+                    _exportOption: ExportOption = "original",
+                    _oldKeys?: string[],
+                    _newKeys?: string[],
+                    _keyToChangeValueFor?: Headers,
+                    _newValueForKey?: string | number
+  ) {
+    const option = _exportOption;
+
+    this.headers = _headers;
+    this.oldKeys = _oldKeys;
+    this.newKeys = _newKeys;
+    this.keyToChangeValueFor = _keyToChangeValueFor;
+    this.newValueForKey = _newValueForKey;
+
+    const sheetNames = this.getWorkSheetNames(_file);
+    // const sheet: any = this.getDataFromAllWorkSheets(_file, sheetNames);
+
+    // TODO: content the array of worksheet data to JSON
+    const sheetsData = this.getDataFromAllWorkSheets(_file, sheetNames);
+
+    const jsonDataArr = [];
+
+    for (const s of sheetsData) {
+      const jsonData = this.convertContentToJSON(s);
+      jsonDataArr.push(jsonData);
+    }
+
+    return jsonDataArr;
+
+    // if (sheet) {
+    //   try {
+    //     this.returnJSONFromOption(sheet, option);
+    //   } catch (e) {
+    //     console.log("Error!", e)
+    //   }
+    // }
+    //
+    // return this.returnJSONFromOption(sheet, option);
   }
 
   JSON_test(_binary: any) {

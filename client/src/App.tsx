@@ -12,7 +12,7 @@ import { ArrayHelpers } from "./modules/json-data-options/ArrayHelpers";
 
 // logic improvements
 // after importing file, make the logic to manipulate json data separately, and set download file after manipulating the data
-//  - don't run the the convert button logic, make separate logic for options (Apply Changes)
+//  - don't run the convert button logic, make separate logic for options (Apply Changes)
 //  - set json data
 //  - manipulate data with options
 //  - apply button applies changes to data and sets new download file with the data
@@ -55,6 +55,11 @@ function App() {
   const {headerKeys, setHeaderKeys} = useContext(MyContext);
   const {oldKeys, setOldKeys} = useContext(MyContext);
   const {newKeys, setNewKeys} = useContext(MyContext);
+  const {linesData, setLinesData} = useContext(MyContext);
+  const {headersData, setHeadersData} = useContext(MyContext);
+  const {outputDataNew, setOutputDataNew} = useContext(MyContext);
+
+  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
 
   const handleChange = (e: any) => {
     const files = e.target.files;
@@ -88,37 +93,167 @@ function App() {
     const etj = new ExcelToJson();
     const array = new ArrayHelpers();
 
+    // // original working (only lines)
+    // reader.onload = (evt) => {
+    //   if (evt.target) {
+    //     const binary = evt.target.result;
+    //     const headers = etj.getHeadersFromBinary(binary, header);
+    //     const data = etj.JSON_web(binary, header);
+    //     const parsed = JSON.parse(data);
+    //     const fileBlob = new Blob([data], {type: "text/plain"});
+    //     const url = URL.createObjectURL(fileBlob);
+    //
+    //     setDownloadLink(url);
+    //
+    //     setHeaderKeys(headers);
+    //     setOldKeys(headers);
+    //     setNewKeys(headers);
+    //
+    //     setOutputData(parsed);
+    //     setOutputExists(true);
+    //     setPreview(parsed);
+    //
+    //     // array.getDataTypes(parsed);
+    //     array.getDataTypes2(parsed);
+    //   }
+    // };
+
+    // App.tsx
+    // TODO: set lines data
+    // TODO: set headers data
+    // TODO: set output data [add lines to headers] headers.lines = linesData
+    // TODO: set preview data [headers with lines]
+
+    // HeaderInput.tsx | ChangeValuesDialog.tsx
+    // TODO: editing lines - update lines and update output/preview [update headers object] with updated lines data
+
+    // reader.onload = (evt) => {
+    //   if (evt.target) {
+    //     const binary = evt.target.result;
+    //     const headers = etj.getHeadersFromBinary(binary, header);
+    //     const data = etj.JSON_web_all_data(binary, header);
+    //
+    //     const linesData = data[0];
+    //     const headersSheet = JSON.parse(data[1]);
+    //     const headersObj = headersSheet[0];
+    //     const linesWithHeaders = headersObj;
+    //
+    //     linesWithHeaders.lines = JSON.parse(linesData);
+    //
+    //     console.log("Original Headers Only", headersObj);
+    //     console.log("<<><><><><", linesWithHeaders);
+    //
+    //     // linesWithHeaders.lines = JSON.parse(linesData);
+    //
+    //     const parsed = JSON.parse(linesWithHeaders);
+    //     const fileBlob = new Blob([linesWithHeaders], {type: "text/plain"});
+    //     const url = URL.createObjectURL(fileBlob);
+    //
+    //
+    //     setHeadersData(headersObj);
+    //
+    //
+    //     console.log("Lines Data", JSON.parse(linesData));
+    //     console.log("Headers data", headersData);
+    //
+    //
+    //     setDownloadLink(url);
+    //
+    //     setHeaderKeys(headers);
+    //     setOldKeys(headers);
+    //     setNewKeys(headers);
+    //
+    //     setOutputData(parsed);
+    //     setOutputExists(true);
+    //
+    //     setLinesData(JSON.parse(linesData));
+    //
+    //
+    //     headersObj.lines = parsed;
+    //
+    //
+    //     console.log("HEADERS WITH LINES:", headersObj);
+    //
+    //
+    //     setOutputDataNew(headersObj);
+    //     setPreview(headersObj);
+    //
+    //     // array.getDataTypes2(parsed);
+    //   }
+    // };
+
+    // TODO: sets structure that includes headers
     reader.onload = (evt) => {
       if (evt.target) {
         const binary = evt.target.result;
         const headers = etj.getHeadersFromBinary(binary, header);
-        const data = etj.JSON_web(binary, header);
-        const parsed = JSON.parse(data);
-        const fileBlob = new Blob([data], {type: "text/plain"});
-        const url = URL.createObjectURL(fileBlob);
+        const data = etj.JSON_web_all_data(binary, header);
+        const headersSheet = JSON.parse(data[1]);
+        const lines = JSON.parse(data[0]);
+        const headersObj = headersSheet[0];
 
-        setDownloadLink(url);
+        // const headersOut = JSON.stringify(headersObj, null, 2);
+        // const fileBlob = new Blob([headersOut], {type: "text/plain"});
+        // const url = URL.createObjectURL(fileBlob);
+
+        // setDownloadLink(url);
 
         setHeaderKeys(headers);
         setOldKeys(headers);
         setNewKeys(headers);
 
-        setOutputData(parsed);
+        // setLinesData(lines);
+        setOutputData(lines);
         setOutputExists(true);
-        setPreview(parsed);
+        setHeadersData(headersObj);
+        setPreview({...headersObj, lines});
 
-        // array.getDataTypes(parsed);
-        array.getDataTypes2(parsed);
+        setDownloadOutput({...headersObj, lines});
+
+        setHeadersData(headersObj);
+
+        // set file download output data
+        const file = JSON.stringify({...headersObj, lines}, null, 2);
+        const fileBlob = new Blob([file], {type: "text/plain"});
+        const url = URL.createObjectURL(fileBlob);
+
+        setDownloadLink(url);
+        // array.getDataTypes(lines);
       }
     };
 
+    // // TODO: sets structure that includes headers
+    // reader.onload = (evt) => {
+    //   if (evt.target) {
+    //     const binary = evt.target.result;
+    //     const headers = etj.getHeadersFromBinary(binary, header);
+    //     const data = etj.JSON_web_all_data(binary, header);
+    //     const headersSheet = JSON.parse(data[1]);
+    //     const lines = JSON.parse(data[0]);
+    //     const headersObj = headersSheet[0];
+    //     const outputObj = headersObj;
+    //
+    //     outputObj.lines = lines;
+    //
+    //     const outputFile = JSON.stringify(outputObj, null, 2);
+    //     const fileBlob = new Blob([outputFile], {type: "text/plain"});
+    //     const url = URL.createObjectURL(fileBlob);
+    //
+    //     setDownloadLink(url);
+    //
+    //     setHeaderKeys(headers);
+    //     setOldKeys(headers);
+    //     setNewKeys(headers);
+    //
+    //     setOutputData(lines);
+    //     // setOutputDataNew(outputObj);
+    //     setOutputExists(true);
+    //     setPreview(outputObj);
+    //   }
+    // };
+
     reader.readAsArrayBuffer(file);
   }
-
-  // useEffect(() => {
-  //   console.log("DOWNLOAD ENABLED:", downloadEnabled)}, [downloadEnabled]);
-  // useEffect(() => {
-  //   console.log("DOWNLOAD ENABLED:", downloadEnabled)}, []);
 
   return (
 
@@ -143,7 +278,7 @@ function App() {
              alignItems: "center",
              width: "100%",
              margin: "auto",
-             padding: 3,
+             padding: 1,
              boxSizing: "border-box",
              backgroundColor: "#FFB600"
            }}>

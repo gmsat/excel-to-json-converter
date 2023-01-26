@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { TextField, Button, Grid } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
+import CodeEditor from "@uiw/react-textarea-code-editor";
 
 interface DataPreviewProps {
   preview: any
@@ -25,14 +26,19 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
 
   const {outputData, setOutputData} = useContext(MyContext);
 
+  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
+
   const handleChange = (e: any) => {
     const targetVal = e.target.value;
-    setOutputData(JSON.parse(targetVal));
+    // setOutputData(JSON.parse(targetVal));
+    setDownloadOutput(JSON.parse(targetVal));
     setPreviewData(targetVal);
   }
 
   useEffect(() => {
+    const lines = preview;
     setPreviewData(JSON.stringify(preview, null, 2));
+    // setPreviewData(JSON.stringify({...headersData}, null, 2));
   }, [preview]);
 
   useEffect(() => {
@@ -54,7 +60,32 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
         <label style={{textAlign: "left"}} htmlFor="preview">Preview / Edit</label>
         <Button color={editButtonColor} onClick={() => setEnableDirectEdit(!enableDirectEdit)} variant={"contained"} size={"small"}>{enableEditButtonText}</Button>
       </Grid>
-      <TextField disabled={!enableDirectEdit} onChange={handleChange} sx={TextFieldStyle} variant={previewVariant} size={"small"} maxRows={32} multiline id={"preview"} value={previewData ? previewData : ""}/>
+
+      {/*<TextField disabled={!enableDirectEdit} */}
+      {/*           onChange={handleChange} */}
+      {/*           sx={TextFieldStyle} */}
+      {/*           variant={previewVariant} */}
+      {/*           size={"small"} */}
+      {/*           maxRows={32} */}
+      {/*           multiline */}
+      {/*           id={"preview"} */}
+      {/*           value={previewData ? previewData : ""}/>*/}
+
+      <Grid sx={{height: "80vh", overflowY: "scroll"}}>
+        <CodeEditor value={previewData ? previewData : ""}
+                    language={"json"}
+                    disabled={!enableDirectEdit}
+                    onChange={handleChange}
+                    style={{
+                      fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                      backgroundColor: !enableDirectEdit ? "#f5f5f5" : "white",
+                      fontSize: 18,
+                      borderRadius: 4
+                    }}
+        />
+      </Grid>
+
+
     </div>
 
   );

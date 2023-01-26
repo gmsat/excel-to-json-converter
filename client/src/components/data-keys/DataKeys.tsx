@@ -4,6 +4,7 @@ import { Button, Grid, Snackbar } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
 import { IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import { SaveControls } from "../index";
 
 export interface DataKeysProps {
   data: string[] | null,
@@ -19,7 +20,7 @@ interface ApplyChangesSnackbarProps {
   setOpenSnackbar: (_val: boolean) => void
 }
 
-const ApplyChangesSnackbar: React.FC<ApplyChangesSnackbarProps> = ({openSnackbar, setOpenSnackbar}) => {
+export const ApplyChangesSnackbar: React.FC<ApplyChangesSnackbarProps> = ({openSnackbar, setOpenSnackbar}) => {
   const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
@@ -62,64 +63,74 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
   const {outputData, setOutputData} = useContext(MyContext);
   const {setDownloadLink} = useContext(MyContext);
 
-  const handleReset = () => {
-    setResetClicked(!resetClicked);
-  }
+  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
 
-  const handleApply = (e: any) => {
-    e.preventDefault();
-
-    if (!file) {
-      return;
-    }
-
-    const data = JSON.stringify(outputData, null, 2);
-    const fileBlob = new Blob([data], {type: "text/plain"});
-    const url = URL.createObjectURL(fileBlob);
-
-    setDownloadLink(url);
-    setOpenSnackbar(true);
-  }
+  // const handleReset = () => {
+  //   setResetClicked(!resetClicked);
+  // }
+  //
+  // const handleApply = (e: any) => {
+  //   e.preventDefault();
+  //
+  //   if (!file) {
+  //     return;
+  //   }
+  //
+  //   // const data = JSON.stringify(outputData, null, 2);
+  //   // const fileBlob = new Blob([data], {type: "text/plain"});
+  //   // const url = URL.createObjectURL(fileBlob);
+  //
+  //   const data = JSON.stringify(downloadOutput, null, 2);
+  //   const fileBlob = new Blob([data], {type: "text/plain"});
+  //   const url = URL.createObjectURL(fileBlob);
+  //
+  //   setDownloadLink(url);
+  //   setOpenSnackbar(true);
+  // }
 
   useEffect(() => {
-    setHeaders(data!);
+    const newHeaders = data!;
+    console.log("NEW HEADERS DATA:", newHeaders);
+    // setHeaders(data!);
+    setHeaders(newHeaders);
+    // console.log("Updated headers", headers);
   }, [data]);
 
-  // enable save changes button after changing data
-  // useEffect(() => {
-  //   console.log("OUTPUT DATA CHANGED!", outputData);
-  //   if (!enableSaveChanges) {
-  //     setEnableSaveChanges(true);
-  //   } else {
-  //     setEnableSaveChanges(false);
-  //   }
-  // }, [data]);
-
   return (
-    <div style={{display: "flex", flexFlow: "column", gap: 5}}>
+    <Grid>
+      <div style={{display: "flex", flexFlow: "column", gap: 5}}>
 
-      <Grid>
+        <Grid>
 
-        <button style={{margin: 12, backgroundColor: "orangered", color: "white"}} onClick={handleReset}>Reset</button>
-        <button style={{margin: 12, backgroundColor: "aquamarine"}} onClick={handleApply}>Save Changes</button>
+          {/*<SaveControls handleReset={handleReset} handleApply={handleApply}/>*/}
 
-        <ApplyChangesSnackbar
-          openSnackbar={openSnackbar}
-          setOpenSnackbar={setOpenSnackbar}/>
+          {/*<ApplyChangesSnackbar*/}
+          {/*  openSnackbar={openSnackbar}*/}
+          {/*  setOpenSnackbar={setOpenSnackbar}/>*/}
 
-      </Grid>
+        </Grid>
 
-      {headers ? <HeadersList setResetClicked={setResetClicked}
-                              resetClicked={resetClicked}
-                              setHeaders={setHeaders}
-                              headers={headers}
-                              newKeys={newKeys}
-                              setNewKeys={setNewKeys}
-                              oldKeys={oldKeys}/>
+        {headers ? <HeadersList setResetClicked={setResetClicked}
+                                resetClicked={resetClicked}
+                                setHeaders={setHeaders}
+                                headers={headers}
+                                newKeys={newKeys}
+                                setNewKeys={setNewKeys}
+                                oldKeys={oldKeys}/>
 
-      : <div>Upload file to get data...</div>}
+          : <div>Upload file to get data...</div>}
 
-    </div>
+      </div>
+
+      {/*<Grid>*/}
+      {/*  <button style={{margin: 12, backgroundColor: "orangered", color: "white"}} onClick={handleReset}>Reset</button>*/}
+      {/*  <button style={{margin: 12, backgroundColor: "aquamarine"}} onClick={handleApply}>Save Changes</button>*/}
+      {/*</Grid>*/}
+
+      {/*<SaveControls handleReset={handleReset} handleApply={handleApply}/>*/}
+
+    </Grid>
+
   );
 }
 

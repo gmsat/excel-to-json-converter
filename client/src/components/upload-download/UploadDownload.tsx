@@ -6,6 +6,10 @@ import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
 import { HeaderInput } from "../data-keys/HeaderInput";
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import RestartAltSharpIcon from '@mui/icons-material/RestartAltSharp';
+import { Backdrop } from "@mui/material";
+import { CircularProgress } from "@mui/joy";
+import { CssVarsProvider } from "@mui/joy";
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface UploadDownloadProps {
   handleChange: (e: any) => void,
@@ -34,7 +38,7 @@ const uploadButtonBoxStyle = {
   '&:hover': {
     backgroundColor: "black",
     color: "white",
-    border: "dashed white 2px",
+    border: "dashed white 2px"
   }
 }
 
@@ -60,7 +64,8 @@ const ResetButtonStyle = {
   right: -5,
   '&:hover': {
     transform: "scale(1.1)",
-    transition: ".5s"
+    transition: ".5s",
+    backgroundColor: "rgba(0,0,0,0)"
   }
 }
 
@@ -74,37 +79,17 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
 
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  const {setPreview,
-         setOutputExists,
-         setOutputData,
-         setOldKeys,
-         setNewKeys,
-         setHeaderKeys,
-         setDownloadLink,
-         setFile,
-         setDialogKeyValueData} = useContext(MyContext);
-
   const changeHeader = (e: any) => {
     const inputVal = e.target.value;
     setHeader(inputVal);
   }
 
-  // const handleReset = () => {
-  //   setDownloadEnabled(false);
-  //   setPreview(null);
-  //   // setOutputExists(false);
-  //   setOutputData([]);
-  //   setOldKeys([]);
-  //   setNewKeys([]);
-  //   setHeaderKeys([]);
-  //   setDownloadLink(null);
-  //   setFile(null);
-  //   setDialogKeyValueData([]);
-  //
-  //   uploadRef.current!.value = "";
-  //
-  //   console.log("FILE:", file);
-  // }
+  // TODO: show loader while data is being converted
+  const handleSubmit = () => {
+    setDownloadEnabled(true);
+
+
+  }
 
   const handleReset = () => {
     window.location.reload();
@@ -121,8 +106,8 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
               position: "relative"
             }}>
 
-        <IconButton sx={ResetButtonStyle} onClick={handleReset}>
-          <RestartAltSharpIcon sx={{color: "white", fontSize: "2rem"}}/>
+        <IconButton variant={"plain"} sx={ResetButtonStyle} onClick={handleReset}>
+          <RefreshIcon sx={{color: "white", fontSize: "2rem"}}/>
         </IconButton>
 
         <Grid container display={"flex"} flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"} spacing={2}>
@@ -133,7 +118,7 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
           </Grid>
 
           <Grid item flex={2} alignSelf={"flex-end"}>
-            <Button disabled={!outputExists} style={{width: "100%", backgroundColor: `${outputExists ? "#23C0AD" : "grey"}`, color: "white"}} type={"submit"} onClick={() => setDownloadEnabled(true)}>Convert</Button>
+            <Button disabled={!outputExists} style={{width: "100%", backgroundColor: `${outputExists ? "#23C0AD" : "grey"}`, color: "white"}} type={"submit"} onClick={handleSubmit}>Convert</Button>
           </Grid>
 
         </Grid>
@@ -150,7 +135,7 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
         {preview &&
           <Grow in={outputExists}>
             <Grid item width={"100%"}>
-              <a target={"_blank"} href={`${downloadLink}`} download={"download-file.txt"}>
+              <a target={"_blank"} href={`${downloadLink}`} download={"download-file.json"}>
                 {downloadEnabled ? <Button startDecorator={<DownloadRoundedIcon/>}
                                            sx={{
                                              width: "100%",
@@ -169,6 +154,12 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
             </Grid>
           </Grow>
         }
+
+        <Backdrop open={!preview && downloadEnabled}>
+          <CssVarsProvider>
+            <CircularProgress variant={"solid"}/>
+          </CssVarsProvider>
+        </Backdrop>
 
       </Grid>
 

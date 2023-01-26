@@ -1,11 +1,13 @@
 import { createContext } from "react";
 import { TableObject } from "../../components/change-values-dialog/ChangeValuesDialog";
 
-interface MyContextType {
+interface IMyContext {
   file: Blob | null,
   setFile: (file: Blob | null) => void,
   downloadLink: null | string,
   outputData: any[],
+  outputDataNew: object,
+  downloadOutput: any,
   preview: any,
   outputExists: boolean,
   downloadEnabled: boolean,
@@ -13,10 +15,15 @@ interface MyContextType {
   headerKeys: string[],
   oldKeys: string[],
   newKeys: string[],
+  linesData: string[],
+  headersData: object,
+  reset: boolean,
   dialogKeyValueData: TableObject[],
   showUpdateKeyValuesDialog: boolean,
   setDownloadLink: (link: string | null) => void,
   setOutputData: (data: any[]) => void,
+  setOutputDataNew: (data: object) => void,
+  setDownloadOutput: (data: any) => void,
   setPreview: (data: any) => void,
   setOutputExists: (bool: boolean) => void,
   setDownloadEnabled: (bool: boolean) => void,
@@ -25,10 +32,13 @@ interface MyContextType {
   setOldKeys: (oldKeys: string[]) => void,
   setNewKeys: (newKeys: string[]) => void,
   setShowUpdateKeyValuesDialog: (bool: boolean) => void,
-  setDialogKeyValueData: (data: any[]) => void
+  setDialogKeyValueData: (data: any[]) => void,
+  setLinesData: (data: any[]) => void,
+  setHeadersData: (data: object) => void,
+  setReset: (bool: boolean) => void
 }
 
-const MyContext = createContext<MyContextType>({
+const MyContext = createContext<IMyContext>({
 
   downloadEnabled: true,
   file: null,
@@ -37,11 +47,16 @@ const MyContext = createContext<MyContextType>({
   headerKeys: [],
   newKeys: [],
   outputData: [],
+  outputDataNew: {},
   preview: null,
   outputExists: false,
   oldKeys: [],
   showUpdateKeyValuesDialog: false,
   dialogKeyValueData: [],
+  linesData: [],
+  headersData: {},
+  downloadOutput: {},
+  reset: false,
 
   setDownloadEnabled: () => {},
   setDownloadLink: () => {},
@@ -51,10 +66,15 @@ const MyContext = createContext<MyContextType>({
   setNewKeys: () => {},
   setOldKeys: () => {},
   setOutputData: () => {},
+  setOutputDataNew: () => {},
+  setDownloadOutput: () => {},
   setOutputExists: () => {},
   setPreview: () => {},
   setShowUpdateKeyValuesDialog: () => {},
-  setDialogKeyValueData: () => {}
+  setDialogKeyValueData: () => {},
+  setLinesData: () => {},
+  setHeadersData: () => {},
+  setReset: () => {}
 
 });
 
