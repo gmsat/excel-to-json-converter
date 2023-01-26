@@ -59,7 +59,7 @@ export const HeadersList: React.FC<HeadersListProps> = ({
   }, [headers]);
 
   return (
-    <>
+    <Grid>
       {headersLocal.map((item, index) =>
         <Grid key={index} style={{display: "flex", flexFlow: "column", alignItems: "flex-start"}}>
 
@@ -77,6 +77,6 @@ export const HeadersList: React.FC<HeadersListProps> = ({
 
         </Grid>
       )}
-    </>
+    </Grid>
   )
 }

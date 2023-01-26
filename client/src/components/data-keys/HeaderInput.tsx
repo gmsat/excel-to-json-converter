@@ -46,7 +46,7 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   const {downloadLink, setDownloadLink} = useContext(MyContext);
   const {file, setFile} = useContext(MyContext);
 
-  const {headersData} = useContext(MyContext);
+  const {headersData, setHeadersData} = useContext(MyContext);
 
   const {showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog} = useContext(MyContext);
   const {dialogKeyValueData, setDialogKeyValueData} = useContext(MyContext);
@@ -90,7 +90,7 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   }
 
   const handleInputSave = () => {
-    console.log("INPUT SAVE CLICKED!");
+    // console.log("INPUT SAVE CLICKED!");
 
     const array = new ArrayHelpers();
 
@@ -141,18 +141,19 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     const updatedHeaders = ArrayHelpers.getObjectHeaders(updatedData);
 
     setHeaderKeys(updatedHeaders);
-
     updateData(updatedData);
   }
 
   const updateData = (_data: any) => {
     const lines = _data;
 
+    console.log("_data", _data);
+
     setNewData(_data);
-    setOutputData(lines);
+    setOutputData(_data);
     setDownloadOutput({...headersData, lines});
     setPreview({...headersData, lines});
-    setOldValue(value);
+    // setOldValue(value);
   }
 
   // TODO: update inputs UI after deleting key
@@ -166,7 +167,8 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   useEffect(() => {
     console.log("OLD VAlUE", oldValue);
     setValue(originalVal);
-  }, [reset, resetClicked]);
+    setOldValue(originalVal);
+  }, [reset]);
 
   // // updates data preview based when changing fields
   // useEffect(() => {
@@ -188,29 +190,25 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   // }, [newData]);
 
   useEffect(() => {
-    // const typesArr = [];
     const array = new ArrayHelpers();
-
     const objToCheck = outputData.reduce((a, b) => {
       return a.length > b.length ? a : b;
     });
-
-    // console.log("OBJECT TO CHECK", objToCheck);
-    // console.log("ALL DATA", outputData);
-
-    // const types = array.getDataTypes(outputData);
     const types = array.getObjectDataTypes(outputData[0]);
 
     if (types) {
       setDataTypes(types);
-      // console.log("TYPES USE EFFECT", types);
     }
   }, []);
 
   // update input on headers change
   useEffect(() => {
     setValue(itemData);
-  }, [itemData])
+  }, [itemData]);
+
+  // useEffect(() => {
+  //   setValue(originalVal);
+  // }, [resetClicked]);
 
   return (
     // <ListItem style={{height: "30px", display: "flex"}}>
