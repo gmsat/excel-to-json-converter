@@ -31,15 +31,19 @@ interface KeyValueRow {
   allValues: string | number,
   saveAllClicked: boolean,
   setSaveAllClicked: (_val: boolean) => void,
-  indexNumbers: number[]
+  indexNumbers: number[],
+  allValuesDataType: SelectorDataTypes,
+  setAllValuesDataType: (_dataType: SelectorDataTypes) => void
 }
 
 interface DataTypeSelectorProps {
   dataType: SelectorDataTypes,
   setDataType: (_type: SelectorDataTypes) => void,
   disabled?: boolean,
-  onFocus?: React.FocusEventHandler<HTMLInputElement> | undefined
-  onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined
+  onFocus?: React.FocusEventHandler<HTMLInputElement> | undefined,
+  onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined,
+  allValuesDataType: SelectorDataTypes,
+  setAllValuesDataType: (_dataType: SelectorDataTypes) => void
 }
 
 interface ChangeAllValuesControlProps {
@@ -49,10 +53,20 @@ interface ChangeAllValuesControlProps {
   data: TableObject[],
   setAllValues: (_newVal: string | number) => void,
   allValues: string | number,
+  allValuesDataType: SelectorDataTypes,
+  setAllValuesDataType: (_dataType: SelectorDataTypes) => void,
   setSaveAllClicked: (_val: boolean) => void
 }
 
-const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataType, disabled, onFocus, onBlur}) => {
+const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({
+                                                             dataType,
+                                                             setDataType,
+                                                             disabled,
+                                                             onFocus,
+                                                             onBlur,
+                                                             allValuesDataType,
+                                                             setAllValuesDataType
+                                                           }) => {
   const [value, setValue] = useState<SelectorDataTypes>("text");
 
   const handleChange = (e: SelectChangeEvent) => {
@@ -61,12 +75,14 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataTyp
 
   useEffect(() => {
     setDataType(value);
+    setAllValuesDataType(value);
   }, [value]);
 
   return (
     <>
       <FormControl variant={"outlined"} fullWidth>
-        <Select onFocus={onFocus} onBlur={onBlur} disabled={disabled} size={"small"} value={dataType} onChange={handleChange}>
+        <Select onFocus={onFocus} onBlur={onBlur} disabled={disabled} size={"small"} value={dataType}
+                onChange={handleChange}>
           <MenuItem value={"text"}>String</MenuItem>
           <MenuItem value={"number"}>Number</MenuItem>
           <MenuItem value={"date"}>Date</MenuItem>
@@ -76,7 +92,17 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({dataType, setDataTyp
   )
 }
 
-const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, keyIndex, indexNumbers, data, setAllValues, allValues, setSaveAllClicked}) => {
+const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({
+                                                                         key,
+                                                                         keyIndex,
+                                                                         indexNumbers,
+                                                                         data,
+                                                                         setAllValues,
+                                                                         allValues,
+                                                                         setSaveAllClicked,
+                                                                         allValuesDataType,
+                                                                         setAllValuesDataType
+                                                                       }) => {
   const [dataType, setDataType] = useState<SelectorDataTypes>("text");
   const [saveAllActive, setSaveAllActive] = useState(false);
 
@@ -91,7 +117,7 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
     const array = new ArrayHelpers();
     const newData = array.updateObjectValues(outputData, allValues, keyIndex, indexNumbers, dataType);
 
-    console.log("object index numbers", indexNumbers);
+    // console.log("object index numbers", indexNumbers);
 
     const lines = newData;
 
@@ -133,12 +159,15 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({key, key
       <FormControl>
         <FormLabel>Change all values</FormLabel>
         <Grid display={"flex"} flexDirection={"row"} gap={2}>
-          <TextField type={dataType} size={"small"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"} value={allValues}
+          <TextField type={dataType} size={"small"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"}
+                     value={allValues}
                      onChange={handleNewValueChange}/>
           <Grid item>
-            <DataTypeSelector dataType={dataType} setDataType={setDataType}/>
+            <DataTypeSelector allValuesDataType={allValuesDataType} setAllValuesDataType={setAllValuesDataType}
+                              dataType={dataType} setDataType={setDataType}/>
           </Grid>
-          <Button disabled={!saveAllActive} onClick={handleSave} sx={{borderRadius: 0}} variant={"outlined"}>Save All</Button>
+          <Button disabled={!saveAllActive} onClick={handleSave} sx={{borderRadius: 0}} variant={"outlined"}>Save
+            All</Button>
         </Grid>
       </FormControl>
     </Grid>
@@ -152,8 +181,10 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
                                               allValues,
                                               saveAllClicked,
                                               setSaveAllClicked,
-                                              indexNumbers
-}) => {
+                                              indexNumbers,
+                                              allValuesDataType,
+                                              setAllValuesDataType
+                                            }) => {
   const [newValue, setNewValue] = useState<string | number>("");
   const [rowData, setRowData] = useState<TableObject>(obj);
   const [saveDisabled, setSaveDisabled] = useState(true);
@@ -165,7 +196,7 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
   const deferred = useDeferredValue(allValues);
 
   const saveButtonRef = useRef<any>(null);
-  
+
   const {headersData} = useContext(MyContext);
 
   const {downloadOutput, setDownloadOutput} = useContext(MyContext);
@@ -181,11 +212,12 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
     }
   }
 
-  const handleSave = (_obj: any, _newValue: string | number) => {
+  const handleSave = (_obj: any, _newValue: string | number, _dataType: SelectorDataTypes) => {
     const array = new ArrayHelpers();
     const objectIndex = _obj.index;
     const keyIndex = _obj.keyIndex;
-    const changedValues = array.updateObjectValues(outputData, _newValue, keyIndex, [objectIndex], dataType);
+
+    const changedValues = array.updateObjectValues(outputData, _newValue, keyIndex, [objectIndex], _dataType);
 
     setTimeout(() => {
       // setPreview(changedValues);
@@ -208,7 +240,7 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
     }, 100);
   }
 
-  // // TODO: if value not empty for index number, add index number to array
+  // TODO: if value not empty for index number, add index number to array
   const handleSaveAllIndividual = () => {
     console.log("REFERENCE:", saveButtonRef);
     saveButtonRef.current.click();
@@ -226,10 +258,10 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
   useEffect(() => {
     setNewValue(allValues);
   }, [deferred]);
-  
+
   useEffect(() => {
     if (saveAllClicked) {
-      handleSave(rowData, deferred);
+      handleSave(rowData, deferred, allValuesDataType);
       setSaveAllClicked(false);
     }
   }, [saveAllClicked]);
@@ -243,14 +275,17 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.key}</th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.value}</th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>
-          <Input onChange={handleValueChange} size={"sm"} variant={"plain"} type={dataType} placeholder={"enter new value"} value={newValue}/>
+          <Input onChange={handleValueChange} size={"sm"} variant={"plain"} type={dataType}
+                 placeholder={"enter new value"} value={newValue}/>
         </th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>
-          <DataTypeSelector dataType={dataType} setDataType={setDataType}/>
+          <DataTypeSelector allValuesDataType={allValuesDataType} setAllValuesDataType={setAllValuesDataType}
+                            dataType={dataType} setDataType={setDataType}/>
         </th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"center"}>
           <button ref={saveButtonRef} disabled={saveDisabled}
-                  onClick={() => handleSave(rowData, newValue)}>Save</button>
+                  onClick={() => handleSave(rowData, newValue, dataType)}>Save
+          </button>
           {/*<Button disabled={saveDisabled} sx={{borderRadius: 0}} variant={"outlined"}*/}
           {/*        onClick={() => handleSave(rowData, newValue)}>Save</Button>*/}
         </th>
@@ -264,22 +299,23 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
   const [objectsIndicesArr, setObjectIndicesArr] = useState<number[]>([]);
   const [tableData, setTableData] = useState(data);
   const [allValues, setAllValues] = useState<string | number>("");
+  const [allValuesDataType, setAllValuesDataType] = useState<SelectorDataTypes>("text")
   const [saveAllClicked, setSaveAllClicked] = useState(false);
 
-  function setIndexNumbers(_array: object[]): number[] {
-    const numArr: number[] = [];
-    _array.map((obj, index) => {
-      numArr.push(index);
-    });
-
-    return numArr;
-  }
+  // function setIndexNumbers(_array: object[]): number[] {
+  //   const numArr: number[] = [];
+  //   _array.map((obj, index) => {
+  //     numArr.push(index);
+  //   });
+  //
+  //   return numArr;
+  // }
 
   useEffect(() => {
-    setObjectIndicesArr(setIndexNumbers(data));
+    setObjectIndicesArr(ArrayHelpers.setIndexNumbers(data));
     setTableData(data);
 
-    console.log("TABLE DATA [KeyValuesTableDataRows]", tableData);
+    // console.log("TABLE DATA [KeyValuesTableDataRows]", tableData);
 
   }, [data]);
 
@@ -296,7 +332,10 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
                                 setAllValues={setAllValues}
                                 allValues={allValues}
                                 setSaveAllClicked={setSaveAllClicked}
-                                indexNumbers={objectsIndicesArr}/>
+                                indexNumbers={objectsIndicesArr}
+                                allValuesDataType={allValuesDataType}
+                                setAllValuesDataType={setAllValuesDataType}
+        />
       </Grid>
 
       <table align={"left"} style={{borderCollapse: "collapse", border: "solid lightgrey 1px"}}>
@@ -318,7 +357,10 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
             obj={obj}
             index={index}
             saveAllClicked={saveAllClicked}
-            setSaveAllClicked={setSaveAllClicked}/>
+            setSaveAllClicked={setSaveAllClicked}
+            allValuesDataType={allValuesDataType}
+            setAllValuesDataType={setAllValuesDataType}
+          />
         ))}
       </table>
 
@@ -332,14 +374,12 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
 }
 
 export const ChangeValuesTable = () => {
-
   const {dialogKeyValueData, setDialogKeyValueData} = useContext(MyContext);
   const {showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog} = useContext(MyContext);
 
-
-  useEffect(() => {
-    console.log("DIALOG KEY VALUE DATA [ChangeValuesTable]", dialogKeyValueData);
-  }, [dialogKeyValueData]);
+  // useEffect(() => {
+  //   console.log("DIALOG KEY VALUE DATA [ChangeValuesTable]", dialogKeyValueData);
+  // }, [dialogKeyValueData]);
 
   return (
     <div style={{width: "100%"}}>
@@ -366,8 +406,10 @@ const ChangeValuesDialog: React.FC = () => {
     <Dialog fullWidth maxWidth={"lg"}
             onClose={hideDialog}
             open={showUpdateKeyValuesDialog}
-            sx={{margin: "auto",
-                 maxWidth: "100%"}}>
+            sx={{
+              margin: "auto",
+              maxWidth: "100%"
+            }}>
 
       <Grid item padding={5}>
         <ChangeValuesTable/>

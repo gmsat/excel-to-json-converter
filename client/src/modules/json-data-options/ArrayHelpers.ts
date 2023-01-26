@@ -25,6 +25,15 @@ export class ArrayHelpers {
     return changedKeys;
   }
 
+  static setIndexNumbers(_array: object[]): number[] {
+    const numArr: number[] = [];
+    _array.map((obj, index) => {
+      numArr.push(index);
+    });
+
+    return numArr;
+  }
+
   getNewKeys(_array: string[], _index: number, _targetVal: any) {
     return _array!.map((item, i) => {
       if (i === _index) return _targetVal;
