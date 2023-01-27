@@ -87,8 +87,6 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
   // TODO: show loader while data is being converted
   const handleSubmit = () => {
     setDownloadEnabled(true);
-
-
   }
 
   const handleReset = () => {
@@ -112,10 +110,10 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
 
         <Grid container display={"flex"} flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"} spacing={2}>
 
-          <Grid item display={"flex"} flexDirection={"column"} width={"100%"} flex={1}>
-            <label style={{fontSize: "0.8rem", color: "white"}} htmlFor="set-header">Header</label>
-            <TextField inputProps={HeaderInputProps} sx={{backgroundColor: "white", borderRadius: 1, width: "100%"}} size={"small"} id={"set-header"} type={"text"} value={header} onChange={changeHeader}/>
-          </Grid>
+          {/*<Grid item display={"flex"} flexDirection={"column"} width={"100%"} flex={1}>*/}
+          {/*  <label style={{fontSize: "0.8rem", color: "white"}} htmlFor="set-header">Header</label>*/}
+          {/*  <TextField inputProps={HeaderInputProps} sx={{backgroundColor: "white", borderRadius: 1, width: "100%"}} size={"small"} id={"set-header"} type={"text"} value={header} onChange={changeHeader}/>*/}
+          {/*</Grid>*/}
 
           <Grid item flex={2} alignSelf={"flex-end"}>
             <Button disabled={!outputExists} style={{width: "100%", backgroundColor: `${outputExists ? "#23C0AD" : "grey"}`, color: "white"}} type={"submit"} onClick={handleSubmit}>Convert</Button>

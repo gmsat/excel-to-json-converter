@@ -253,7 +253,7 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
     if (allValues !== "") {
       setSaveDisabled(false);
     }
-  }, [allValues])
+  }, [allValues]);
 
   useEffect(() => {
     setNewValue(allValues);

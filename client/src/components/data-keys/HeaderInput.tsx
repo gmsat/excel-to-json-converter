@@ -204,6 +204,7 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   // update input on headers change
   useEffect(() => {
     setValue(itemData);
+    setOldValue(itemData);
   }, [itemData]);
 
   // useEffect(() => {

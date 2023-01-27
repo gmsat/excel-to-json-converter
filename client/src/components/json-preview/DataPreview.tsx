@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useTransition } from 'react';
 import { TextField, Button, Grid } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
 import CodeEditor from "@uiw/react-textarea-code-editor";
+import BackdropLoader from "../backdrop-loading/BackdropLoader";
 
 interface DataPreviewProps {
   preview: any
@@ -28,6 +29,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
 
   const {downloadOutput, setDownloadOutput} = useContext(MyContext);
 
+  const [isPending, setTransition] = useTransition();
+
   const handleChange = (e: any) => {
     const targetVal = e.target.value;
     // setOutputData(JSON.parse(targetVal));
@@ -37,7 +40,11 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
 
   useEffect(() => {
     const lines = preview;
-    setPreviewData(JSON.stringify(preview, null, 2));
+
+    setTransition(() => {
+      setPreviewData(JSON.stringify(preview, null, 2));
+    });
+
     // setPreviewData(JSON.stringify({...headersData}, null, 2));
   }, [preview]);
 
@@ -83,6 +90,9 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
                       borderRadius: 4
                     }}
         />
+
+        {isPending && <BackdropLoader open={true}/>}
+
       </Grid>
 
 
