@@ -6,12 +6,14 @@ import {
   FormControl,
   FormLabel,
   Grid,
-  MenuItem,
+  MenuItem, Paper,
   SelectChangeEvent,
-  TextField
+  TextField,
+  Typography,
+  Divider
 } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
-import { CircularProgress, CssVarsProvider, Input, Typography, Select, Option, Button } from "@mui/joy";
+import { CircularProgress, CssVarsProvider, Input, Select, Option, Button } from "@mui/joy";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 
 export type TableObject = { index: number, keyIndex: number, key: string, value: number | string };
@@ -164,23 +166,36 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({
   }, [allValues]);
 
   return (
-    <Grid padding={2} sx={{border: "solid lightgrey 1px"}}>
-      <FormControl>
-        <FormLabel>Change all values</FormLabel>
-        <Grid display={"flex"} flexDirection={"row"} gap={2}>
-          <Input type={dataType} size={"sm"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"}
+    <Paper variant={"outlined"} sx={{display: "flex", flexDirection: "column", padding: 1}}>
+      <Grid sx={{display: "flex", justifyContent: "space-between"}}>
+        <FormLabel><Typography variant={"overline"}>Change all</Typography></FormLabel>
+        <Grid item>
+          <DataTypeSelector allValuesDataType={allValuesDataType} setAllValuesDataType={setAllValuesDataType}
+                            dataType={dataType} setDataType={setDataType}/>
+        </Grid>
+      </Grid>
+      <Divider sx={{marginBottom: 1, marginTop: 1}}/>
+      <Paper variant={"outlined"} sx={{border: "none"}}>
+        <Grid sx={{display: "flex", width: "auto", justifyContent: "flex-end"}}>
+          <FormControl>
+            <Grid display={"flex"} flexDirection={"row"} gap={1}>
+              <Input type={dataType} size={"sm"} variant={"outlined"} sx={{minWidth: "180px"}} placeholder={"enter new value"}
                      value={allValues}
                      onChange={handleNewValueChange}/>
-          <Grid item>
-            <DataTypeSelector allValuesDataType={allValuesDataType} setAllValuesDataType={setAllValuesDataType}
-                              dataType={dataType} setDataType={setDataType}/>
-          </Grid>
-          <Button size={"sm"} disabled={!saveAllActive} onClick={handleSave} variant={"outlined"}>
-            Save All
-          </Button>
+
+              <Grid>
+                <Button size={"sm"} disabled={!saveAllActive} onClick={handleSave} variant={"outlined"}>
+                  Save
+                </Button>
+              </Grid>
+
+            </Grid>
+          </FormControl>
         </Grid>
-      </FormControl>
-    </Grid>
+      </Paper>
+    </Paper>
+
+
   );
 }
 
