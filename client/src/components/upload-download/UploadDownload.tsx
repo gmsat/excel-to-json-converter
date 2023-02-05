@@ -1,6 +1,6 @@
 import React, { useContext, useRef } from 'react';
 import MyContext from "../../context/my-context/MyContext";
-import { Input, TextField, FormLabel, Grid, Grow, Fab } from "@mui/material";
+import { Input, TextField, FormLabel, Grid, Grow, Fab, Paper } from "@mui/material";
 import { Input as JoyInput, Box, Button, IconButton } from "@mui/joy";
 import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
 import { HeaderInput } from "../data-keys/HeaderInput";
@@ -96,37 +96,34 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
   return (
     <Grid container sx={containerStyle}>
 
-      <Grid container display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"flex-start"} gap={1} flex={1}
-            sx={{
-              backgroundColor: "#0049FF",
-              padding: 2,
-              borderRadius: 2,
-              position: "relative"
-            }}>
+      <Paper variant={"elevation"} sx={{borderRadius: 2}} elevation={4}>
+        <Grid container display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"flex-start"} gap={1} flex={1}
+              sx={{
+                backgroundColor: "#0049FF",
+                padding: 3,
+                position: "relative",
+                borderRadius: 2
+              }}>
 
-        <IconButton variant={"plain"} sx={ResetButtonStyle} onClick={handleReset}>
-          <RefreshIcon sx={{color: "white", fontSize: "2rem"}}/>
-        </IconButton>
+          <IconButton variant={"plain"} sx={ResetButtonStyle} onClick={handleReset}>
+            <RefreshIcon sx={{color: "white", fontSize: "2rem"}}/>
+          </IconButton>
 
-        <Grid container display={"flex"} flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"} spacing={2}>
+          <Grid container display={"flex"} flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"} spacing={2}>
 
-          {/*<Grid item display={"flex"} flexDirection={"column"} width={"100%"} flex={1}>*/}
-          {/*  <label style={{fontSize: "0.8rem", color: "white"}} htmlFor="set-header">Header</label>*/}
-          {/*  <TextField inputProps={HeaderInputProps} sx={{backgroundColor: "white", borderRadius: 1, width: "100%"}} size={"small"} id={"set-header"} type={"text"} value={header} onChange={changeHeader}/>*/}
-          {/*</Grid>*/}
+            <Grid item flex={2} alignSelf={"flex-end"}>
+              <Button disabled={!outputExists} style={{width: "100%", backgroundColor: `${outputExists ? "#23C0AD" : "grey"}`, color: "white"}} type={"submit"} onClick={handleSubmit}>Convert</Button>
+            </Grid>
 
-          <Grid item flex={2} alignSelf={"flex-end"}>
-            <Button disabled={!outputExists} style={{width: "100%", backgroundColor: `${outputExists ? "#23C0AD" : "grey"}`, color: "white"}} type={"submit"} onClick={handleSubmit}>Convert</Button>
+          </Grid>
+
+          <Grid item sx={uploadButtonBoxStyle} width={"100%"}>
+            <FileUploadRoundedIcon sx={{position: "absolute", fontSize: "2rem"}} fontSize={"large"}/>
+            <TextField ref={uploadRef} sx={hideUpload} itemID={"upload"} variant={"outlined"} type="file" id={"file"} onInputCapture={handleChange} required/>
           </Grid>
 
         </Grid>
-
-        <Grid item sx={uploadButtonBoxStyle} width={"100%"}>
-          <FileUploadRoundedIcon sx={{position: "absolute", fontSize: "2rem"}} fontSize={"large"}/>
-          <TextField ref={uploadRef} sx={hideUpload} itemID={"upload"} variant={"outlined"} type="file" id={"file"} onInputCapture={handleChange} required/>
-        </Grid>
-
-      </Grid>
+      </Paper>
 
       <Grid container display={"flex"} flexDirection={"row"} margin={"auto"} gap={1} width={"30%"} sx={{justifyContent: "center", alignItems: "center"}} flex={1}>
 
