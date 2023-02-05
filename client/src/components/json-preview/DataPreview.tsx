@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState, useTransition } from 'react';
-import { TextField, Button, Grid, Paper } from "@mui/material";
+import { TextField, Grid, Paper } from "@mui/material";
+import { Button } from "@mui/joy";
 import MyContext from "../../context/my-context/MyContext";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import BackdropLoader from "../backdrop-loading/BackdropLoader";
@@ -22,7 +23,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
   const [previewData, setPreviewData] = useState(JSON.stringify(preview, null, 2));
   const [enableDirectEdit, setEnableDirectEdit] = useState(false);
   const [enableEditButtonText, setEnableEditButtonText] = useState<string>("Edit");
-  const [editButtonColor, setEditButtonColor] = useState<"primary" | "error">("primary");
+  const [editButtonColor, setEditButtonColor] = useState<"primary" | "danger">("primary");
   const [previewVariant, setPreviewVariant] = useState<"filled" | "outlined">("filled");
 
   const {outputData, setOutputData} = useContext(MyContext);
@@ -51,7 +52,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
   useEffect(() => {
     if (enableDirectEdit) {
       setEnableEditButtonText("Stop");
-      setEditButtonColor("error");
+      setEditButtonColor("danger");
       setPreviewVariant("outlined");
     } else {
       setEnableEditButtonText("Edit");
@@ -65,7 +66,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
     <div style={{display: "flex", flexDirection: "column", width: "100%", height: "100%", margin: "auto", justifyContent: "flex-end", gap: 10}}>
 
       <Paper variant={"outlined"} sx={{height: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center", padding: 2}}>
-        <Button startIcon={!enableDirectEdit ? <EditIcon/> : <EditOffIcon/>} color={editButtonColor} onClick={() => setEnableDirectEdit(!enableDirectEdit)} variant={"contained"} size={"small"}>{enableEditButtonText}</Button>
+        <Button startDecorator={!enableDirectEdit ? <EditIcon fontSize={"small"}/> : <EditOffIcon fontSize={"small"}/>} color={editButtonColor} onClick={() => setEnableDirectEdit(!enableDirectEdit)} variant={"solid"} size={"sm"}>{enableEditButtonText}</Button>
       </Paper>
 
       <Paper variant={"outlined"}>
@@ -84,9 +85,9 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
           />
 
           {isPending && <BackdropLoader open={true}/>}
-
         </Grid>
       </Paper>
+
     </div>
   );
 };

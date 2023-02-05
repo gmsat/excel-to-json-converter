@@ -4,7 +4,7 @@ import MyContext from "../../context/my-context/MyContext";
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Button } from "@mui/joy";
 // import { TextField } from "@mui/material"
-import { ListItem } from "@mui/material";
+import { Divider, ListItem } from "@mui/material";
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import { CssVarsProvider, Input } from "@mui/joy";
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
@@ -37,27 +37,20 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   const [value, setValue] = useState(itemData);
   const [checked, setChecked] = useState(true);
   const [keyInputEnabled, setKeyInputEnabled] = useState(false);
-
   const [dataTypes, setDataTypes] = useState<any>([]);
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {newKeys, setNewKeys} = useContext(MyContext);
-  const {preview, setPreview} = useContext(MyContext);
-  const {downloadLink, setDownloadLink} = useContext(MyContext);
-  const {file, setFile} = useContext(MyContext);
-
-  const {headersData, setHeadersData} = useContext(MyContext);
-
-  const {showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog} = useContext(MyContext);
-  const {dialogKeyValueData, setDialogKeyValueData} = useContext(MyContext);
-
+  const {setPreview} = useContext(MyContext);
+  const {headersData} = useContext(MyContext);
+  const {setShowUpdateKeyValuesDialog} = useContext(MyContext);
+  const {setDialogKeyValueData} = useContext(MyContext);
   const {setDownloadOutput} = useContext(MyContext);
+  const {reset} = useContext(MyContext);
+  const {setHeaderKeys} = useContext(MyContext);
 
   const [newData, setNewData] = useState<any[]>(outputData);
 
-  const {reset, setReset} = useContext(MyContext);
-
-  const {setHeaderKeys} = useContext(MyContext);
 
   // const handleInputChange = (e: any) => {
   //   const array = new ArrayHelpers();
@@ -90,8 +83,6 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   }
 
   const handleInputSave = () => {
-    // console.log("INPUT SAVE CLICKED!");
-
     const array = new ArrayHelpers();
 
     if (array.keyExists(outputData, value)) {
@@ -101,8 +92,8 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
 
     const updated = array.getNewKeys(newKeys, index, value);
     setNewKeys(updated);
-    const data = array.renameKeysByKeyName(outputData, oldValue, value);
 
+    const data = array.renameKeysByKeyName(outputData, oldValue, value);
     const lines = data;
 
     setNewData(data);
@@ -147,47 +138,16 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
   const updateData = (_data: any) => {
     const lines = _data;
 
-    console.log("_data", _data);
-
     setNewData(_data);
     setOutputData(_data);
     setDownloadOutput({...headersData, lines});
     setPreview({...headersData, lines});
-    // setOldValue(value);
   }
 
-  // TODO: update inputs UI after deleting key
-
-
-  // reset inputs to original values on reset button click
-  // useEffect(() => {
-  //   setValue(originalVal);
-  // }, [resetClicked]);
-
   useEffect(() => {
-    console.log("OLD VAlUE", oldValue);
     setValue(originalVal);
     setOldValue(originalVal);
   }, [reset]);
-
-  // // updates data preview based when changing fields
-  // useEffect(() => {
-  //   setOutputData(newData);
-  //
-  //   const lines = newData;
-  //
-  //   // setPreview(newData);
-  //   setPreview({...headersData, lines});
-  // }, [value]);
-
-  // useEffect(() => {
-  //   setOutputData(newData);
-  //
-  //   const lines = newData;
-  //
-  //   // setPreview(newData);
-  //   setPreview({...headersData, lines});
-  // }, [newData]);
 
   useEffect(() => {
     const array = new ArrayHelpers();
@@ -207,31 +167,8 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
     setOldValue(itemData);
   }, [itemData]);
 
-  // useEffect(() => {
-  //   setValue(originalVal);
-  // }, [resetClicked]);
-
   return (
-    // <ListItem style={{height: "30px", display: "flex"}}>
-    //   <div style={{display: "flex", gap: 5, justifyContent: "center", alignItems: "center"}}>
-    //
-    //     <p style={{flex: 1}}>({index})</p>
-    //
-    //     {/*<input type="checkbox" checked={checked} onChange={handleChecked}/>*/}
-    //     {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
-    //
-    //     <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
-    //       <IconButton size={"sm"} variant={"outlined"} onClick={() => showDialog(index)} key={index}>
-    //         <EditIcon/>
-    //       </IconButton>
-    //     </div>
-    //
-    //     <TextField InputProps={HeaderInputProps} variant={"outlined"} sx={{flex: 6}} size={"small"} type="text" value={value} onChange={handleInputChange}/>
-    //
-    //   </div>
-    // </ListItem>
-
-    <ListItem sx={{height: "40px", display: "flex", gap: 1, borderBottom: "solid lightgrey 1px", padding: 2}}>
+    <ListItem sx={{height: "40px", display: "flex", gap: 1, borderBottom: "solid lightgrey 1px"}}>
 
       <div style={{flex: 1}}>
         <Tooltip placement={"left"} size={"sm"} color={"danger"} title={"Delete"}>
@@ -241,18 +178,12 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
         </Tooltip>
       </div>
 
-      {/*<Divider orientation={"vertical"} sx={{height: "15px"}}/>*/}
-
       <div style={{display: "flex", flex: 5, justifyContent: "center", alignItems: "center", gap: 6}}>
         <p style={{flex: 1, fontSize: "0.7rem", color: "grey"}}>{index}</p>
         <div style={{flex: 1}}>
-          {/*<Chip label={dataTypes[index]} size={"small"} sx={{borderRadius: 1, fontSize: "0.7rem"}} color={"default"}/>*/}
           <Chip sx={{borderRadius: 3, fontSize: "0.75rem"}} size={"sm"} variant={"soft"} color={"neutral"}>{dataTypes[index]}</Chip>
         </div>
       </div>
-
-      {/*<input type="checkbox" checked={checked} onChange={handleChecked}/>*/}
-      {/*<input type="text" value={value} onChange={handleInputChange}/>*/}
 
       <div style={{display: "flex", flexFlow: "column", alignItems: "center", justifyContent: "center", flex: 1}}>
         <IconButton size={"sm"} onClick={handleEditInputKey} variant={"plain"} >
@@ -261,7 +192,6 @@ export const HeaderInput: React.FC<HeaderInputProps> = ({itemData, index, resetC
       </div>
 
       <div style={{flex: 10}}>
-        {/*<TextField InputProps={HeaderInputProps} variant={"outlined"} size={"small"} type="text" value={value} onChange={handleInputChange}/>*/}
         <Input readOnly={!keyInputEnabled} sx={{backgroundColor: keyInputEnabled ? "white" : null, border: keyInputEnabled ? "solid lightgrey 1px" : null}} type={"text"} variant={"soft"} size={"sm"} value={value} onChange={handleInputChange}/>
       </div>
 

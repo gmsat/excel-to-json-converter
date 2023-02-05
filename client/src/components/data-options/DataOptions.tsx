@@ -57,9 +57,7 @@ const DataOptions: React.FC<DataOptionsProps> = ({
       <Divider/>
 
       <Paper variant={"outlined"} sx={{border: "none"}}>
-        <Grid>
-          <SaveControls/>
-        </Grid>
+        <SaveControls/>
       </Paper>
 
     </Grid>

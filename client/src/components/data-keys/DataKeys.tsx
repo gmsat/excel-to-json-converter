@@ -110,13 +110,15 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
 
         </Grid>
 
-        {headers ? <HeadersList setResetClicked={setResetClicked}
-                                resetClicked={resetClicked}
-                                setHeaders={setHeaders}
-                                headers={headers}
-                                newKeys={newKeys}
-                                setNewKeys={setNewKeys}
-                                oldKeys={oldKeys}/>
+        {headers
+
+          ? <HeadersList setResetClicked={setResetClicked}
+                         resetClicked={resetClicked}
+                         setHeaders={setHeaders}
+                         headers={headers}
+                         newKeys={newKeys}
+                         setNewKeys={setNewKeys}
+                         oldKeys={oldKeys}/>
 
           : <div>Upload file to get data...</div>}
 

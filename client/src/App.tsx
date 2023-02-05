@@ -308,11 +308,10 @@ function App() {
                      elevation={3}
                      sx={{
                        display: "flex",
-                       border: "solid white 1px",
                        padding: 2,
                        borderRadius: 2,
                        gap: 2,
-                       backgroundColor: "white",
+                       backgroundColor: "#e3e4e9",
                        flex: 4}}>
 
                 <Paper variant={"outlined"}>
