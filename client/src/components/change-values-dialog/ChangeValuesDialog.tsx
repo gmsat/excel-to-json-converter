@@ -1,19 +1,17 @@
 import React, { useContext, useDeferredValue, useEffect, useRef, useState } from 'react';
 import {
   Backdrop,
-  Button,
   Dialog,
   DialogTitle,
   FormControl,
   FormLabel,
   Grid,
   MenuItem,
-  Select,
   SelectChangeEvent,
   TextField
 } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
-import { CircularProgress, CssVarsProvider, Input, Typography } from "@mui/joy";
+import { CircularProgress, CssVarsProvider, Input, Typography, Select, Option, Button } from "@mui/joy";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 
 export type TableObject = { index: number, keyIndex: number, key: string, value: number | string };
@@ -69,8 +67,14 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({
                                                            }) => {
   const [value, setValue] = useState<SelectorDataTypes>("text");
 
-  const handleChange = (e: SelectChangeEvent) => {
-    setValue(e.target.value as SelectorDataTypes);
+  // const handleChange = (e: any) => {
+  //   setValue(e.target.value as SelectorDataTypes);
+  //   console.log(e.target.value);
+  //   // setDataType(value);
+  // }
+
+  const handleChange = (e: any, newValue: any) => {
+    setValue(newValue);
   }
 
   useEffect(() => {
@@ -80,12 +84,17 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({
 
   return (
     <>
-      <FormControl variant={"outlined"} fullWidth>
-        <Select onFocus={onFocus} onBlur={onBlur} disabled={disabled} size={"small"} value={dataType}
-                onChange={handleChange}>
-          <MenuItem value={"text"}>String</MenuItem>
-          <MenuItem value={"number"}>Number</MenuItem>
-          <MenuItem value={"date"}>Date</MenuItem>
+      <FormControl size={"small"} variant={"outlined"} fullWidth>
+        {/*<Select onFocus={onFocus} onBlur={onBlur} disabled={disabled} size={"small"} value={dataType}*/}
+        {/*        onChange={handleChange}>*/}
+        {/*  <MenuItem value={"text"}>String</MenuItem>*/}
+        {/*  <MenuItem value={"number"}>Number</MenuItem>*/}
+        {/*  <MenuItem value={"date"}>Date</MenuItem>*/}
+        {/*</Select>*/}
+        <Select sx={{minWidth: "100px"}} onChange={(e, newValue) => handleChange(e, newValue)} defaultValue={"text"} size={"sm"}>
+          <Option value={"text"}>Text</Option>
+          <Option value={"number"}>Number</Option>
+          <Option value={"date"}>Date</Option>
         </Select>
       </FormControl>
     </>
@@ -159,15 +168,16 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({
       <FormControl>
         <FormLabel>Change all values</FormLabel>
         <Grid display={"flex"} flexDirection={"row"} gap={2}>
-          <TextField type={dataType} size={"small"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"}
+          <Input type={dataType} size={"sm"} variant={"outlined"} sx={{flex: 3}} placeholder={"enter new value"}
                      value={allValues}
                      onChange={handleNewValueChange}/>
           <Grid item>
             <DataTypeSelector allValuesDataType={allValuesDataType} setAllValuesDataType={setAllValuesDataType}
                               dataType={dataType} setDataType={setDataType}/>
           </Grid>
-          <Button disabled={!saveAllActive} onClick={handleSave} sx={{borderRadius: 0}} variant={"outlined"}>Save
-            All</Button>
+          <Button size={"sm"} disabled={!saveAllActive} onClick={handleSave} variant={"outlined"}>
+            Save All
+          </Button>
         </Grid>
       </FormControl>
     </Grid>
@@ -270,12 +280,11 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
     <>
       {/*{index === 0 ? <button onClick={handleSaveAllIndividual}>Save All</button> : null}*/}
       <tr tabIndex={0}>
-        <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"right"}><Typography
-          variant={"plain"}>{rowData.index}</Typography></th>
+        <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"right"}>{rowData.index}</th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.key}</th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.value}</th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>
-          <Input onChange={handleValueChange} size={"sm"} variant={"plain"} type={dataType}
+          <Input onChange={handleValueChange} size={"sm"} variant={"outlined"} type={dataType}
                  placeholder={"enter new value"} value={newValue}/>
         </th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>
@@ -283,9 +292,9 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
                             dataType={dataType} setDataType={setDataType}/>
         </th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"center"}>
-          <button ref={saveButtonRef} disabled={saveDisabled}
+          <Button variant={"outlined"} size={"sm"} ref={saveButtonRef} disabled={saveDisabled}
                   onClick={() => handleSave(rowData, newValue, dataType)}>Save
-          </button>
+          </Button>
           {/*<Button disabled={saveDisabled} sx={{borderRadius: 0}} variant={"outlined"}*/}
           {/*        onClick={() => handleSave(rowData, newValue)}>Save</Button>*/}
         </th>
@@ -338,9 +347,8 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
         />
       </Grid>
 
-      <table align={"left"} style={{borderCollapse: "collapse", border: "solid lightgrey 1px"}}>
+      <table align={"left"} style={{borderCollapse: "collapse", border: "solid lightgrey 1px", fontSize: "0.9rem"}}>
         <tr>
-          {/*<th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}>Reset</th>*/}
           <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "2%"}}>Index</th>
           <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Key</th>
           <th align={"left"} style={{padding: "10px", border: "solid lightgrey 1px", width: "10%"}}>Value</th>
