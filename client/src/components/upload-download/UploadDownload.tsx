@@ -96,55 +96,73 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
   return (
     <Grid container sx={containerStyle}>
 
-      <Paper variant={"elevation"} sx={{borderRadius: 2}} elevation={4}>
-        <Grid container display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"flex-start"} gap={1} flex={1}
-              sx={{
-                backgroundColor: "#0049FF",
-                padding: 3,
-                position: "relative",
-                borderRadius: 2
-              }}>
+      {!preview &&
+        <Paper variant={"elevation"} sx={{borderRadius: 2}} elevation={4}>
+          <Grid container display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"flex-start"} gap={1} flex={1}
+                sx={{
+                  backgroundColor: "#0049FF",
+                  padding: 3,
+                  position: "relative",
+                  borderRadius: 2
+                }}>
 
-          <IconButton variant={"plain"} sx={ResetButtonStyle} onClick={handleReset}>
-            <RefreshIcon sx={{color: "white", fontSize: "2rem"}}/>
-          </IconButton>
+            {/*<IconButton variant={"plain"} sx={ResetButtonStyle} onClick={handleReset}>*/}
+            {/*  <RefreshIcon sx={{color: "white", fontSize: "2rem"}}/>*/}
+            {/*</IconButton>*/}
 
-          <Grid container display={"flex"} flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"} spacing={2}>
+            <Grid container display={"flex"} flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"} spacing={2}>
 
-            <Grid item flex={2} alignSelf={"flex-end"}>
-              <Button disabled={!outputExists} style={{width: "100%", backgroundColor: `${outputExists ? "#23C0AD" : "grey"}`, color: "white"}} type={"submit"} onClick={handleSubmit}>Convert</Button>
+              <Grid item flex={2} alignSelf={"flex-end"}>
+                <Button disabled={!outputExists} style={{width: "100%", backgroundColor: `${outputExists ? "#23C0AD" : "grey"}`, color: "white"}} type={"submit"} onClick={handleSubmit}>Convert</Button>
+              </Grid>
+
+            </Grid>
+
+            <Grid item sx={uploadButtonBoxStyle} width={"100%"}>
+              <FileUploadRoundedIcon sx={{position: "absolute", fontSize: "2rem"}} fontSize={"large"}/>
+              <TextField ref={uploadRef} sx={hideUpload} itemID={"upload"} variant={"outlined"} type="file" id={"file"} onInputCapture={handleChange} required/>
             </Grid>
 
           </Grid>
-
-          <Grid item sx={uploadButtonBoxStyle} width={"100%"}>
-            <FileUploadRoundedIcon sx={{position: "absolute", fontSize: "2rem"}} fontSize={"large"}/>
-            <TextField ref={uploadRef} sx={hideUpload} itemID={"upload"} variant={"outlined"} type="file" id={"file"} onInputCapture={handleChange} required/>
-          </Grid>
-
-        </Grid>
-      </Paper>
+        </Paper>
+      }
 
       <Grid container display={"flex"} flexDirection={"row"} margin={"auto"} gap={1} width={"30%"} sx={{justifyContent: "center", alignItems: "center"}} flex={1}>
 
         {preview &&
           <Grow in={outputExists}>
-            <Grid item width={"100%"}>
+            <Grid>
               <a target={"_blank"} href={`${downloadLink}`} download={"download-file.json"}>
-                {downloadEnabled ? <Button startDecorator={<DownloadRoundedIcon/>}
-                                           sx={{
-                                             width: "100%",
-                                             backgroundColor: "#141824",
-                                             color: "white",
-                                             display: "flex",
-                                             alignItems: "center",
-                                             justifyContent: "center",
-                                             '&:hover': {
-                                               backgroundColor: "white",
-                                               color: "black"
-                                             }
-                                           }}
-                                           type={"button"} disabled={!downloadEnabled}></Button> : null}
+                {downloadEnabled ?
+
+                  <Grid container sx={{display: "flex", flexFlow: "column", gap: 1}}>
+
+                    <Button type={"reset"} onClick={handleReset} startDecorator={<RefreshIcon sx={{color: "white", fontSize: "2rem"}}/>}>
+                      New File
+                    </Button>
+
+                    <Button startDecorator={<DownloadRoundedIcon/>}
+                            sx={{
+                              width: "100%",
+                              backgroundColor: "#141824",
+                              color: "white",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              '&:hover': {
+                                backgroundColor: "white",
+                                color: "black"
+                              }
+                            }}
+                            type={"button"}
+                            disabled={!downloadEnabled}>
+                      Download
+                    </Button>
+
+                  </Grid>
+
+                  : null
+                }
               </a>
             </Grid>
           </Grow>

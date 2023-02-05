@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState, useTransition } from 'react';
-import { TextField, Button, Grid } from "@mui/material";
+import { TextField, Button, Grid, Paper } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import BackdropLoader from "../backdrop-loading/BackdropLoader";
+import EditIcon from '@mui/icons-material/Edit';
+import EditOffIcon from '@mui/icons-material/EditOff';
 
 interface DataPreviewProps {
   preview: any
 }
-
-type DisableEnableEdit = "Edit Data" | "Stop Editing";
 
 const TextFieldStyle = {
   width: "1000px",
@@ -21,7 +21,7 @@ const TextFieldStyle = {
 const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
   const [previewData, setPreviewData] = useState(JSON.stringify(preview, null, 2));
   const [enableDirectEdit, setEnableDirectEdit] = useState(false);
-  const [enableEditButtonText, setEnableEditButtonText] = useState<DisableEnableEdit>("Edit Data");
+  const [enableEditButtonText, setEnableEditButtonText] = useState<string>("Edit");
   const [editButtonColor, setEditButtonColor] = useState<"primary" | "error">("primary");
   const [previewVariant, setPreviewVariant] = useState<"filled" | "outlined">("filled");
 
@@ -50,11 +50,11 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
 
   useEffect(() => {
     if (enableDirectEdit) {
-      setEnableEditButtonText("Stop Editing");
+      setEnableEditButtonText("Stop");
       setEditButtonColor("error");
       setPreviewVariant("outlined");
     } else {
-      setEnableEditButtonText("Edit Data");
+      setEnableEditButtonText("Edit");
       setEditButtonColor("primary");
       setPreviewVariant("filled");
     }
@@ -62,42 +62,32 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
 
   return (
 
-    <div style={{display: "flex", flexDirection: "column", width: "100%", margin: "auto"}}>
-      <Grid gap={3} display={"flex"} flexDirection={"row"} justifyContent={"flex-start"} alignItems={"center"} padding={2}>
-        <label style={{textAlign: "left"}} htmlFor="preview">Preview / Edit</label>
-        <Button color={editButtonColor} onClick={() => setEnableDirectEdit(!enableDirectEdit)} variant={"contained"} size={"small"}>{enableEditButtonText}</Button>
-      </Grid>
+    <div style={{display: "flex", flexDirection: "column", width: "100%", height: "100%", margin: "auto", justifyContent: "flex-end", gap: 10}}>
 
-      {/*<TextField disabled={!enableDirectEdit} */}
-      {/*           onChange={handleChange} */}
-      {/*           sx={TextFieldStyle} */}
-      {/*           variant={previewVariant} */}
-      {/*           size={"small"} */}
-      {/*           maxRows={32} */}
-      {/*           multiline */}
-      {/*           id={"preview"} */}
-      {/*           value={previewData ? previewData : ""}/>*/}
+      <Paper variant={"outlined"} sx={{height: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center", padding: 2}}>
+        <Button startIcon={!enableDirectEdit ? <EditIcon/> : <EditOffIcon/>} color={editButtonColor} onClick={() => setEnableDirectEdit(!enableDirectEdit)} variant={"contained"} size={"small"}>{enableEditButtonText}</Button>
+      </Paper>
 
-      <Grid sx={{height: "80vh", overflowY: "scroll"}}>
-        <CodeEditor value={previewData ? previewData : ""}
-                    language={"json"}
-                    disabled={!enableDirectEdit}
-                    onChange={handleChange}
-                    style={{
-                      fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-                      backgroundColor: !enableDirectEdit ? "#f5f5f5" : "white",
-                      fontSize: 18,
-                      borderRadius: 4
-                    }}
-        />
+      <Paper variant={"outlined"}>
+        <Grid sx={{height: "85vh", overflowY: "scroll"}}>
+          <CodeEditor value={previewData ? previewData : ""}
+                      language={"json"}
+                      disabled={!enableDirectEdit}
+                      onChange={handleChange}
+                      style={{
+                        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                        backgroundColor: !enableDirectEdit ? "#f5f5f5" : "white",
+                        fontSize: 18,
+                        borderRadius: 4,
+                        lineHeight: 1.2
+                      }}
+          />
 
-        {isPending && <BackdropLoader open={true}/>}
+          {isPending && <BackdropLoader open={true}/>}
 
-      </Grid>
-
-
+        </Grid>
+      </Paper>
     </div>
-
   );
 };
 

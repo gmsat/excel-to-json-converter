@@ -3,7 +3,7 @@ import ExcelToJson from "./modules/excel-to-json";
 import { DataOptions, DataPreview, UploadDownload, Loading } from "./components";
 import MyContext from "./context/my-context/MyContext";
 import ChangeValuesDialog from "./components/change-values-dialog/ChangeValuesDialog";
-import { AppBar, Grid, Box, Drawer, Grow } from "@mui/material";
+import { AppBar, Grid, Box, Drawer, Grow, Paper, Typography } from "@mui/material";
 import "./app.css";
 import { ArrayHelpers } from "./modules/json-data-options/ArrayHelpers";
 
@@ -304,29 +304,35 @@ function App() {
 
           {preview &&
             <Grow in={outputExists}>
-              <Grid item display={"flex"} sx={{
-                border: "solid white 1px",
-                padding: 2,
-                borderRadius: 2,
-                backgroundColor: "white",
-                flex: 4
-              }}>
+              <Paper variant={"elevation"}
+                     elevation={3}
+                     sx={{
+                       display: "flex",
+                       border: "solid white 1px",
+                       padding: 2,
+                       borderRadius: 2,
+                       gap: 2,
+                       backgroundColor: "white",
+                       flex: 4}}>
 
-                <Grid item display={"flex"} flexDirection={"row"} gap={4} padding={4}>
-                  <DataOptions headerKeys={headerKeys}
-                               oldKeys={oldKeys}
-                               setOldKeys={setOldKeys}
-                               newKeys={newKeys}
-                               setNewKeys={setNewKeys}
-                               handleSubmit={handleSubmit}
-                               outputExists={outputExists}/>
-                </Grid>
+                <Paper variant={"outlined"}>
+                  <Grid item display={"flex"} flexDirection={"column"} padding={2}>
+                    <Typography sx={{margin: 0, padding: 0}} fontSize={"0.6rem"} variant={"caption"}>{file?.name}</Typography>
+                    <DataOptions headerKeys={headerKeys}
+                                 oldKeys={oldKeys}
+                                 setOldKeys={setOldKeys}
+                                 newKeys={newKeys}
+                                 setNewKeys={setNewKeys}
+                                 handleSubmit={handleSubmit}
+                                 outputExists={outputExists}/>
+                  </Grid>
+                </Paper>
 
                 <Grid item flex={1}>
                   <DataPreview preview={preview}/>
                 </Grid>
 
-              </Grid>
+              </Paper>
             </Grow>
 
           }

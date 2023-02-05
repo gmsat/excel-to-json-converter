@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { HeaderInput } from "./HeaderInput";
 import MyContext from "../../context/my-context/MyContext";
-import { Box, Grid, List } from "@mui/material";
+import { Box, Grid, List, Paper } from "@mui/material";
 
 export interface HeadersListProps {
   headers: string[],

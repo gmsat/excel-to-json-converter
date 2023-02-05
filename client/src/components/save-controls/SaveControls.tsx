@@ -6,11 +6,6 @@ import { Button } from "@mui/joy";
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import SaveIcon from '@mui/icons-material/Save';
 
-// interface SaveControlsProps {
-//   handleReset: () => void,
-//   handleApply: (e: any) => void
-// }
-
 const SaveControls: React.FC = () => {
   const {preview, setPreview} = useContext(MyContext);
   const {reset, setReset} = useContext(MyContext);
@@ -61,14 +56,25 @@ const SaveControls: React.FC = () => {
       {/*  <button style={{margin: 12, backgroundColor: "orangered", color: "white"}} onClick={handleReset}>Reset</button>*/}
       {/*  <button style={{margin: 12, backgroundColor: "aquamarine"}} onClick={handleApply}>Save Changes</button>*/}
       {/*</Grid>*/}
-      <Grid sx={{padding: 0, margin: "1.2rem 1.2rem 0 1.2rem", width: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center", gap: 2, boxSizing: "content-box"}}>
-        {/*<Button startDecorator={<RestartAltIcon/>} size={"lg"} color={"danger"} variant={"outlined"} onClick={handleReset}>Reset</Button>*/}
-        <button style={{margin: 0, backgroundColor: "orangered", color: "white"}} onClick={handleReset}>
-          <div style={{display: "flex", justifyContent: "center", alignItems: "center", gap: 10}}>
-            <RestartAltIcon/> <div>Reset</div>
-          </div>
-        </button>
-        <Button startDecorator={<SaveIcon/>} size={"lg"} color={"success"} variant={"solid"} onClick={handleApply}>Save</Button>
+      <Grid sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        padding: 1,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        gap: 1}}>
+
+
+        {/*<button style={{margin: 0, backgroundColor: "orangered", color: "white"}} onClick={handleReset}>*/}
+        {/*  <div style={{display: "flex", justifyContent: "center", alignItems: "center", gap: 10}}>*/}
+        {/*    <RestartAltIcon /> <div>Reset</div>*/}
+        {/*  </div>*/}
+        {/*</button>*/}
+
+        <Button type={"submit"} startDecorator={<RestartAltIcon/>} size={"sm"} color={"danger"} variant={"solid"} onClick={handleReset}>Reset</Button>
+        <Button startDecorator={<SaveIcon/>} size={"sm"} color={"success"} variant={"solid"} onClick={handleApply}>Save</Button>
+
       </Grid>
 
       <ApplyChangesSnackbar
