@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Grid } from "@mui/material";
 import { ApplyChangesSnackbar } from "../data-keys/DataKeys";
 import MyContext from "../../context/my-context/MyContext";
@@ -12,8 +12,7 @@ const SaveControls: React.FC = () => {
   const [saveEnabled, setSaveEnabled] = useState(false);
 
   const {file, setDownloadLink, downloadOutput} = useContext(MyContext);
-  const {reset, setReset} = useContext(MyContext);
-  const {headersData} = useContext(MyContext);
+  const {setReset} = useContext(MyContext);
 
   const handleReset = () => {
     setResetClicked(true);
@@ -50,10 +49,13 @@ const SaveControls: React.FC = () => {
         padding: 1,
         justifyContent: "space-between",
         alignItems: "center",
-        gap: 1}}>
+        gap: 1
+      }}>
 
-        <Button sx={{flex: 1}} startDecorator={<SaveIcon/>} size={"sm"} color={"success"} variant={"solid"} onClick={handleApply}>Save</Button>
-        <Button sx={{flex: 1}} type={"submit"} startDecorator={<RestartAltIcon/>} size={"sm"} color={"danger"} variant={"solid"} onClick={handleReset}>Reset</Button>
+        <Button sx={{flex: 1}} startDecorator={<SaveIcon/>} size={"sm"} color={"success"} variant={"solid"}
+                onClick={handleApply}>Save</Button>
+        <Button sx={{flex: 1}} type={"submit"} startDecorator={<RestartAltIcon/>} size={"sm"} color={"danger"}
+                variant={"solid"} onClick={handleReset}>Reset</Button>
 
       </Grid>
 

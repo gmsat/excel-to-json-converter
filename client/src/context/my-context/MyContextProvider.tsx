@@ -8,7 +8,6 @@ interface MyContextProviderProps {
 
 export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) => {
   const [file, setFile] = useState<Blob | null>(null);
-  const [fileData, setFileData] = useState<string | null>(null);
   const [downloadLink, setDownloadLink] = useState<null | string>(null);
   const [outputData, setOutputData] = useState<any>([]);
   const [preview, setPreview] = useState(null);
@@ -16,7 +15,6 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({children}) 
   const [outputExists, setOutputExists] = useState(false);
   const [downloadEnabled, setDownloadEnabled] = useState(false);
 
-  // data options
   const [header, setHeader] = useState("A1");
   const [headerKeys, setHeaderKeys] = useState<string[]>([]);
   const [oldKeys, setOldKeys] = useState<string[]>([]);

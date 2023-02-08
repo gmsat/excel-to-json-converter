@@ -1,19 +1,7 @@
 import React, { useContext, useDeferredValue, useEffect, useRef, useState } from 'react';
-import {
-  Backdrop,
-  Dialog,
-  DialogTitle,
-  FormControl,
-  FormLabel,
-  Grid,
-  MenuItem, Paper,
-  SelectChangeEvent,
-  TextField,
-  Typography,
-  Divider
-} from "@mui/material";
+import { Dialog, DialogTitle, Divider, FormControl, FormLabel, Grid, Paper, Typography } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
-import { CircularProgress, CssVarsProvider, Input, Select, Option, Button } from "@mui/joy";
+import { Button, Input, Option, Select } from "@mui/joy";
 import { ArrayHelpers } from "../../modules/json-data-options/ArrayHelpers";
 
 export type TableObject = { index: number, keyIndex: number, key: string, value: number | string };
@@ -68,13 +56,6 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({
                                                              setAllValuesDataType
                                                            }) => {
   const [value, setValue] = useState<SelectorDataTypes>("text");
-
-  // const handleChange = (e: any) => {
-  //   setValue(e.target.value as SelectorDataTypes);
-  //   console.log(e.target.value);
-  //   // setDataType(value);
-  // }
-
   const handleChange = (e: any, newValue: any) => {
     setValue(newValue);
   }
@@ -87,13 +68,8 @@ const DataTypeSelector: React.FC<DataTypeSelectorProps> = ({
   return (
     <>
       <FormControl size={"small"} variant={"outlined"} fullWidth>
-        {/*<Select onFocus={onFocus} onBlur={onBlur} disabled={disabled} size={"small"} value={dataType}*/}
-        {/*        onChange={handleChange}>*/}
-        {/*  <MenuItem value={"text"}>String</MenuItem>*/}
-        {/*  <MenuItem value={"number"}>Number</MenuItem>*/}
-        {/*  <MenuItem value={"date"}>Date</MenuItem>*/}
-        {/*</Select>*/}
-        <Select sx={{minWidth: "100px"}} onChange={(e, newValue) => handleChange(e, newValue)} defaultValue={"text"} size={"sm"}>
+        <Select sx={{minWidth: "100px"}} onChange={(e, newValue) => handleChange(e, newValue)} defaultValue={"text"}
+                size={"sm"}>
           <Option value={"text"}>Text</Option>
           <Option value={"number"}>Number</Option>
           <Option value={"date"}>Date</Option>
@@ -119,37 +95,20 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({
 
   const {outputData, setOutputData} = useContext(MyContext);
   const {setPreview} = useContext(MyContext);
-  const {headersData, setHeadersData} = useContext(MyContext);
+  const {headersData} = useContext(MyContext);
 
-  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
+  const {setDownloadOutput} = useContext(MyContext);
 
   const handleSave = () => {
     setSaveAllClicked(true);
     const array = new ArrayHelpers();
     const newData = array.updateObjectValues(outputData, allValues, keyIndex, indexNumbers, dataType);
-
-    // console.log("object index numbers", indexNumbers);
-
     const lines = newData;
 
-    // setPreview(newData);
-    // setOutputData(newData);
-
     setPreview({...headersData, lines});
-
     setOutputData(lines);
     setDownloadOutput({...headersData, lines});
-
     setAllValues("");
-
-    // setTimeout(() => {
-    //   setPreview({...headersData, lines});
-    //
-    //   setOutputData(lines);
-    //   setDownloadOutput({...headersData, lines});
-    //
-    //   setAllValues("");
-    // }, 100);
   }
 
   const handleNewValueChange = (e: any) => {
@@ -179,7 +138,8 @@ const ChangeAllValuesControl: React.FC<ChangeAllValuesControlProps> = ({
         <Grid sx={{display: "flex", width: "auto", justifyContent: "flex-end"}}>
           <FormControl>
             <Grid display={"flex"} flexDirection={"row"} gap={1}>
-              <Input type={dataType} size={"sm"} variant={"outlined"} sx={{minWidth: "180px"}} placeholder={"enter new value"}
+              <Input type={dataType} size={"sm"} variant={"outlined"} sx={{minWidth: "180px"}}
+                     placeholder={"enter new value"}
                      value={allValues}
                      onChange={handleNewValueChange}/>
 
@@ -219,12 +179,10 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
   const {setPreview} = useContext(MyContext);
 
   const deferred = useDeferredValue(allValues);
-
   const saveButtonRef = useRef<any>(null);
 
   const {headersData} = useContext(MyContext);
-
-  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
+  const {setDownloadOutput} = useContext(MyContext);
 
   const handleValueChange = (e: any) => {
     const targetVal = e.target.value;
@@ -245,7 +203,6 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
     const changedValues = array.updateObjectValues(outputData, _newValue, keyIndex, [objectIndex], _dataType);
 
     setTimeout(() => {
-      // setPreview(changedValues);
       const lines = changedValues;
       setPreview({...headersData, lines});
 
@@ -263,15 +220,6 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
       setSaveDisabled(true);
       // setDownload(changedValues);
     }, 100);
-  }
-
-  // TODO: if value not empty for index number, add index number to array
-  const handleSaveAllIndividual = () => {
-    console.log("REFERENCE:", saveButtonRef);
-    saveButtonRef.current.click();
-    // if (saveButtonRef.current!.attribute.disabled === false) {
-    //   saveButtonRef.current.click();
-    // }
   }
 
   useEffect(() => {
@@ -293,7 +241,6 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
 
   return (
     <>
-      {/*{index === 0 ? <button onClick={handleSaveAllIndividual}>Save All</button> : null}*/}
       <tr tabIndex={0}>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"right"}>{rowData.index}</th>
         <th style={{padding: "6px", border: "solid lightgrey 1px"}} align={"left"}>{rowData.key}</th>
@@ -310,8 +257,6 @@ const KeyValueRow: React.FC<KeyValueRow> = ({
           <Button variant={"outlined"} size={"sm"} ref={saveButtonRef} disabled={saveDisabled}
                   onClick={() => handleSave(rowData, newValue, dataType)}>Save
           </Button>
-          {/*<Button disabled={saveDisabled} sx={{borderRadius: 0}} variant={"outlined"}*/}
-          {/*        onClick={() => handleSave(rowData, newValue)}>Save</Button>*/}
         </th>
       </tr>
     </>
@@ -326,21 +271,9 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
   const [allValuesDataType, setAllValuesDataType] = useState<SelectorDataTypes>("text")
   const [saveAllClicked, setSaveAllClicked] = useState(false);
 
-  // function setIndexNumbers(_array: object[]): number[] {
-  //   const numArr: number[] = [];
-  //   _array.map((obj, index) => {
-  //     numArr.push(index);
-  //   });
-  //
-  //   return numArr;
-  // }
-
   useEffect(() => {
     setObjectIndicesArr(ArrayHelpers.setIndexNumbers(data));
     setTableData(data);
-
-    // console.log("TABLE DATA [KeyValuesTableDataRows]", tableData);
-
   }, [data]);
 
   const mapData =
@@ -398,22 +331,10 @@ const KeyValuesTableDataRows: React.FC<TableData> = ({data, setData}) => {
 
 export const ChangeValuesTable = () => {
   const {dialogKeyValueData, setDialogKeyValueData} = useContext(MyContext);
-  const {showUpdateKeyValuesDialog, setShowUpdateKeyValuesDialog} = useContext(MyContext);
-
-  // useEffect(() => {
-  //   console.log("DIALOG KEY VALUE DATA [ChangeValuesTable]", dialogKeyValueData);
-  // }, [dialogKeyValueData]);
 
   return (
     <div style={{width: "100%"}}>
-
-      {/*<Backdrop open={true}>*/}
-      {/*  <CssVarsProvider>*/}
-      {/*    <CircularProgress variant={"solid"}/>*/}
-      {/*  </CssVarsProvider>*/}
-      {/*</Backdrop>*/}
       <KeyValuesTableDataRows data={dialogKeyValueData} setData={setDialogKeyValueData}/>
-
     </div>
   );
 };

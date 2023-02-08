@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { HeaderInput } from "./HeaderInput";
 import MyContext from "../../context/my-context/MyContext";
-import { Box, Grid, List, Paper } from "@mui/material";
+import { Grid } from "@mui/material";
 
 export interface HeadersListProps {
   headers: string[],
@@ -24,11 +24,9 @@ export const HeadersList: React.FC<HeadersListProps> = ({
   const [updatedKeys, setUpdatedKeys] = useState(oldKeys);
   const [headersLocal, setHeadersLocal] = useState(headers);
 
-  const {file, setFile} = useContext(MyContext);
-  const {outputData, setOutputData} = useContext(MyContext);
+  const {file} = useContext(MyContext);
+  const {outputData} = useContext(MyContext);
   const {setDownloadLink} = useContext(MyContext);
-
-  const {newKeys} = useContext(MyContext);
 
   const handleApply = (e: any) => {
     e.preventDefault();
@@ -62,11 +60,6 @@ export const HeadersList: React.FC<HeadersListProps> = ({
     <Grid>
       {headersLocal.map((item, index) =>
         <Grid key={index} style={{display: "flex", flexFlow: "column", alignItems: "flex-start"}}>
-
-          {/*<div style={{display: "flex", gap: 10}}>*/}
-          {/*  {index === 0 ? <text style={{fontSize: "0.8rem"}}>Lines</text> : null}*/}
-          {/*</div>*/}
-
           <HeaderInput resetClicked={resetClicked}
                        setResetClicked={setResetClicked}
                        updatedKeys={updatedKeys}
@@ -74,7 +67,6 @@ export const HeadersList: React.FC<HeadersListProps> = ({
                        key={index}
                        itemData={item}
                        index={index}/>
-
         </Grid>
       )}
     </Grid>

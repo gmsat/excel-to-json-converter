@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useTransition } from 'react';
-import { TextField, Grid, Paper } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import { Button } from "@mui/joy";
 import MyContext from "../../context/my-context/MyContext";
 import CodeEditor from "@uiw/react-textarea-code-editor";
@@ -26,27 +26,20 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
   const [editButtonColor, setEditButtonColor] = useState<"primary" | "danger">("primary");
   const [previewVariant, setPreviewVariant] = useState<"filled" | "outlined">("filled");
 
-  const {outputData, setOutputData} = useContext(MyContext);
-
-  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
+  const {setDownloadOutput} = useContext(MyContext);
 
   const [isPending, setTransition] = useTransition();
 
   const handleChange = (e: any) => {
     const targetVal = e.target.value;
-    // setOutputData(JSON.parse(targetVal));
     setDownloadOutput(JSON.parse(targetVal));
     setPreviewData(targetVal);
   }
 
   useEffect(() => {
-    const lines = preview;
-
     setTransition(() => {
       setPreviewData(JSON.stringify(preview, null, 2));
     });
-
-    // setPreviewData(JSON.stringify({...headersData}, null, 2));
   }, [preview]);
 
   useEffect(() => {
@@ -63,10 +56,21 @@ const DataPreview: React.FC<DataPreviewProps> = ({preview}) => {
 
   return (
 
-    <div style={{display: "flex", flexDirection: "column", width: "100%", height: "100%", margin: "auto", justifyContent: "flex-end", gap: 10}}>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      width: "100%",
+      height: "100%",
+      margin: "auto",
+      justifyContent: "flex-end",
+      gap: 10
+    }}>
 
-      <Paper variant={"outlined"} sx={{height: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center", padding: 2}}>
-        <Button startDecorator={!enableDirectEdit ? <EditIcon fontSize={"small"}/> : <EditOffIcon fontSize={"small"}/>} color={editButtonColor} onClick={() => setEnableDirectEdit(!enableDirectEdit)} variant={"solid"} size={"sm"}>{enableEditButtonText}</Button>
+      <Paper variant={"outlined"}
+             sx={{height: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center", padding: 2}}>
+        <Button startDecorator={!enableDirectEdit ? <EditIcon fontSize={"small"}/> : <EditOffIcon fontSize={"small"}/>}
+                color={editButtonColor} onClick={() => setEnableDirectEdit(!enableDirectEdit)} variant={"solid"}
+                size={"sm"}>{enableEditButtonText}</Button>
       </Paper>
 
       <Paper variant={"outlined"}>

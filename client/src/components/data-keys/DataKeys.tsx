@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { HeadersList } from "./HeadersList";
-import { Button, Grid, Snackbar } from "@mui/material";
+import { Grid, IconButton, Snackbar } from "@mui/material";
 import MyContext from "../../context/my-context/MyContext";
-import { IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import { SaveControls } from "../index";
 
 export interface DataKeysProps {
   data: string[] | null,
@@ -37,7 +35,7 @@ export const ApplyChangesSnackbar: React.FC<ApplyChangesSnackbarProps> = ({openS
         color="inherit"
         onClick={handleClose}
       >
-        <CloseIcon fontSize="small" />
+        <CloseIcon fontSize="small"/>
       </IconButton>
     </>
   );
@@ -55,61 +53,15 @@ export const ApplyChangesSnackbar: React.FC<ApplyChangesSnackbarProps> = ({openS
 const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys}) => {
   const [headers, setHeaders] = useState<string[]>(data!);
   const [resetClicked, setResetClicked] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  const [enableSaveChanges, setEnableSaveChanges] = useState(false);
-
-  const {file, setFile} = useContext(MyContext);
-  const {outputData, setOutputData} = useContext(MyContext);
-  const {setDownloadLink} = useContext(MyContext);
-
-  const {downloadOutput, setDownloadOutput} = useContext(MyContext);
-
-  // const handleReset = () => {
-  //   setResetClicked(!resetClicked);
-  // }
-  //
-  // const handleApply = (e: any) => {
-  //   e.preventDefault();
-  //
-  //   if (!file) {
-  //     return;
-  //   }
-  //
-  //   // const data = JSON.stringify(outputData, null, 2);
-  //   // const fileBlob = new Blob([data], {type: "text/plain"});
-  //   // const url = URL.createObjectURL(fileBlob);
-  //
-  //   const data = JSON.stringify(downloadOutput, null, 2);
-  //   const fileBlob = new Blob([data], {type: "text/plain"});
-  //   const url = URL.createObjectURL(fileBlob);
-  //
-  //   setDownloadLink(url);
-  //   setOpenSnackbar(true);
-  // }
 
   useEffect(() => {
     const newHeaders = data!;
-    console.log("NEW HEADERS DATA:", newHeaders);
-    // setHeaders(data!);
     setHeaders(newHeaders);
-    // console.log("Updated headers", headers);
   }, [data]);
 
   return (
     <Grid>
       <div style={{display: "flex", flexFlow: "column", gap: 5}}>
-
-        <Grid>
-
-          {/*<SaveControls handleReset={handleReset} handleApply={handleApply}/>*/}
-
-          {/*<ApplyChangesSnackbar*/}
-          {/*  openSnackbar={openSnackbar}*/}
-          {/*  setOpenSnackbar={setOpenSnackbar}/>*/}
-
-        </Grid>
-
         {headers
 
           ? <HeadersList setResetClicked={setResetClicked}
@@ -120,17 +72,9 @@ const DataKeys: React.FC<DataKeysProps> = ({data, newKeys, oldKeys, setNewKeys})
                          setNewKeys={setNewKeys}
                          oldKeys={oldKeys}/>
 
-          : <div>Upload file to get data...</div>}
-
+          : <div>Upload file to get data...</div>
+        }
       </div>
-
-      {/*<Grid>*/}
-      {/*  <button style={{margin: 12, backgroundColor: "orangered", color: "white"}} onClick={handleReset}>Reset</button>*/}
-      {/*  <button style={{margin: 12, backgroundColor: "aquamarine"}} onClick={handleApply}>Save Changes</button>*/}
-      {/*</Grid>*/}
-
-      {/*<SaveControls handleReset={handleReset} handleApply={handleApply}/>*/}
-
     </Grid>
 
   );

@@ -3,7 +3,6 @@ import TypeHelpers from "./TypeHelpers";
 type SelectorDataTypes = "text" | "number" | "date";
 
 export class ArrayHelpers {
-  private data: any[] = [];
 
   private renameKey(_array: any[], _originalKey: string, _newKey: string) {
     return _array.map((item, index) => {
@@ -46,6 +45,7 @@ export class ArrayHelpers {
       const newObj = Object.entries(obj).map(([key, value], objIndex) => {
         return [_keyIndex === objIndex ? _newKeyName : key, value];
       })
+
       return Object.fromEntries(newObj);
     });
   }
@@ -88,6 +88,7 @@ export class ArrayHelpers {
 
     if (typeof _newValue === "string" && _dataType === "number") {
       newValue = parseFloat(_newValue);
+
       if (newValue % 1 === 0) {
         newValue = parseFloat(newValue.toFixed(2));
       }
@@ -105,107 +106,14 @@ export class ArrayHelpers {
     return updatedArray;
   }
 
-  // TODO: loop through all objects and if one value is float, set type to float
-  // getDataTypes(_objects: any[]) {
-  //   const values = Object.values(_objects[1]);
-  //   const types: string[] = [];
-  //
-  //   values.map((val, i) => {
-  //     const result = _objects.some(obj => obj[i])
-  //   })
-  //
-  //   // const valuesArr = [];
-  //   // const valuesTypes: any[] = [];
-  //
-  //   for (const value of values) {
-  //
-  //     if (typeof value === "string") {
-  //
-  //       if (TypeHelpers.isDate(value)) {
-  //         types.push("DATE");
-  //
-  //         // valuesArr.push(value);
-  //         // const obj = {value, type: "DATE"};
-  //         // valuesTypes.push(obj);
-  //       }
-  //
-  //       if (!TypeHelpers.isDate(value)) {
-  //         types.push("STRING");
-  //
-  //         // valuesArr.push(value);
-  //         // const obj = {value, type: "STRING"};
-  //         // valuesTypes.push(obj);
-  //       }
-  //     }
-  //
-  //     if (typeof value === "number") {
-  //
-  //       if (TypeHelpers.isInt(value)) {
-  //         types.push("INT");
-  //
-  //         // valuesArr.push(value);
-  //         // const obj = {value, type: "INT"};
-  //         // valuesTypes.push(obj);
-  //
-  //       }
-  //
-  //       if (TypeHelpers.isFloat(value)) {
-  //         types.push("FLOAT");
-  //
-  //         // valuesArr.push(value);
-  //         // const obj = {value, type: "FLOAT"};
-  //         // valuesTypes.push(obj);
-  //
-  //       }
-  //     }
-  //   }
-  //
-  //   // console.log(valuesArr);
-  //   // console.log(types);
-  //   // console.log(valuesTypes);
-  //   return types;
-  // }
-
   getDataTypes(_objects: any[]) {
     const values = Object.values(_objects[1]);
     const types: string[] = [];
-
-    // values.map((val, i) => {
-    //   const result = _objects.some(obj => obj[i])
-    // });
-
-    // _objects.some(obj => {
-    //   for (let key in obj) {
-    //
-    //     if (typeof obj[key] === "string") {
-    //       if (TypeHelpers.getDataType(obj[key]) === "DATE") {
-    //         types.push("DATE");
-    //       }
-    //       if (TypeHelpers.getDataType(obj[key]) === "STRING") {
-    //         types.push("STRING");
-    //       }
-    //     }
-    //
-    //     if (typeof obj[key] === "number") {
-    //       if (TypeHelpers.getDataType(obj[key]) === "INT") {
-    //         types.push("INT");
-    //       }
-    //       if (TypeHelpers.getDataType(obj[key]) === "FLOAT") {
-    //         types.push("FLOAT");
-    //       }
-    //     }
-    //
-    //   }
-    // });
 
     for (const value of values) {
       types.push(TypeHelpers.getDataType(value));
     }
 
-    // console.log(types);
-    // TypeHelpers.getArrObjectTypes(_objects);
-    // console.log(TypeHelpers.getArrObjectTypes(_objects));
-    console.log("DATA TYPES", types);
     return types;
   }
 
@@ -231,15 +139,8 @@ export class ArrayHelpers {
       for (const value of objValues) {
         objValueTypes.push({type: TypeHelpers.getDataType(value), value: value});
       }
-
-      // console.log("obj value types", objValueTypes);
     }
 
-    // for (const value of values) {
-    //   types.push(TypeHelpers.getDataType(value));
-    // }
-
-    // console.log(types);
     return types;
   }
 
@@ -251,36 +152,38 @@ export class ArrayHelpers {
       types.push(TypeHelpers.getDataType(value));
     }
 
-    console.log("obj value types", types);
     return types;
   }
 
   getHeaderValuesByIndex(_objects: any[], _keyIndex: number) {
     const arr = _objects.map((obj, i) => {
       const [key, val] = Object.entries(obj)[_keyIndex];
-      const returnObject = {
+
+      return {
         index: i,
         keyIndex: _keyIndex,
         key: key,
         value: val
-      }
-      return returnObject;
+      };
     });
+
     return [...arr];
   }
 
   getHeaderValuesByNameIndex(_objects: any[], _keyName: string, _keyIndex: number) {
     const arr = _objects.map((obj, i) => {
       const val = obj[_keyName];
+
       if(val === undefined) return null
-      const returnObject = {
+
+      return {
         index: i,
         keyIndex: _keyIndex,
         key: _keyName,
         value: val
-      }
-      return returnObject;
+      };
     });
+
     return arr.filter(val => val !== null)
   }
 
@@ -295,25 +198,23 @@ export class ArrayHelpers {
 
   static getObjectHeaders(_array: object[]): string[] {
     const firstObj = _array[0];
-    const keys = Object.keys(firstObj);
-
-    console.log("new keys:", keys);
-
-    return keys;
+    return Object.keys(firstObj);
   }
 
   getHeaderValuesByName(_objects: any[], _keyName: string, _keyIndex: number = 0) {
     const arr = _objects.map((obj, i) => {
       const val = obj[_keyName];
+
       if(val === undefined) return null
-      const returnObject = {
+
+      return {
         index: i,
         keyIndex: _keyIndex,
         key: _keyName,
         value: val
-      }
-      return returnObject;
+      };
     });
-    return arr.filter(val => val !== null)
+
+    return arr.filter(val => val !== null);
   }
 }
