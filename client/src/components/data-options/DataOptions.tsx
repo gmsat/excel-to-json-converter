@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DataKeys from "../data-keys/DataKeys";
-import { Grid, Paper, Divider } from "@mui/material";
+import { Divider, Grid, Paper } from "@mui/material";
 import { SaveControls } from "../index";
 
 interface DataOptionsProps {
@@ -22,8 +22,6 @@ const DataOptions: React.FC<DataOptionsProps> = ({
                                                    handleSubmit,
                                                    outputExists
                                                  }) => {
-  const [resetClicked, setResetClicked] = useState(false);
-
   return (
     <Grid container display={"flex"} flexDirection={"column"} sx={{width: "100%", height: "100%"}} gap={1}>
       <Grid item
@@ -37,10 +35,10 @@ const DataOptions: React.FC<DataOptionsProps> = ({
                 backgroundColor: "lightgray",
                 borderRadius: 4,
               }
-      }}>
+            }}>
 
-        {outputExists ?
-          <DataKeys
+        {outputExists
+          ? <DataKeys
             data={headerKeys}
             oldKeys={oldKeys}
             newKeys={newKeys && newKeys}
