@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ExcelToJson from "./modules/excel-to-json";
 import { DataOptions, DataPreview, UploadDownload, Loading } from "./components";
 import MyContext from "./context/my-context/MyContext";
@@ -58,22 +58,17 @@ function App() {
   const {linesData, setLinesData} = useContext(MyContext);
   const {headersData, setHeadersData} = useContext(MyContext);
   const {outputDataNew, setOutputDataNew} = useContext(MyContext);
-
   const {downloadOutput, setDownloadOutput} = useContext(MyContext);
 
   const handleChange = (e: any) => {
-    const files = e.target.files;
     const file = e.target.files?.[0];
 
-    console.log("FILE FILE FIEL", file)
-
-    // setFile(e.target.files?.[0]);
     setFile(file);
-    setOutputExists(true);
 
-    // e.target.value = "";
+    if (file) {
+      setOutputExists(true);
+    }
 
-    console.log("\nFILES:", files);
   }
 
   const changeHeader = (e: any) => {
@@ -85,7 +80,6 @@ function App() {
     e.preventDefault();
 
     if (!file) {
-      console.log("NO FILE! return;");
       return;
     }
 
@@ -188,6 +182,17 @@ function App() {
         const binary = evt.target.result;
         const headers = etj.getHeadersFromBinary(binary, header);
         const data = etj.JSON_web_all_data(binary, header);
+
+        console.log("DATA", data);
+
+        if (!data[1]) {
+          setPreview(null);
+          setOutputExists(false);
+          setDownloadLink(null);
+          setDownloadEnabled(false);
+          return;
+        }
+
         const headersSheet = JSON.parse(data[1]);
         const lines = JSON.parse(data[0]);
         const headersObj = headersSheet[0];
@@ -195,7 +200,6 @@ function App() {
         // const headersOut = JSON.stringify(headersObj, null, 2);
         // const fileBlob = new Blob([headersOut], {type: "text/plain"});
         // const url = URL.createObjectURL(fileBlob);
-
         // setDownloadLink(url);
 
         setHeaderKeys(headers);
