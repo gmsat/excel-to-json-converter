@@ -198,7 +198,7 @@ const UploadDownload: React.FC<UploadDownloadProps> = ({downloadLink,
           </Grow>
         }
 
-        <Backdrop open={!preview && downloadEnabled}>
+        <Backdrop open={!preview && downloadEnabled && outputExists && !downloadLink}>
           <CssVarsProvider>
             <CircularProgress variant={"solid"}/>
           </CssVarsProvider>
