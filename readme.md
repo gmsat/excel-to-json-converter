@@ -1,11 +1,28 @@
-## Info
+## JSON sample creator
 
-`The tool converts excel workbook to Json format and lets you to customize the output`
+The tool converts excel workbook to Json format and lets you to customize the output
 
+* Converts .xlsx to JSON format that you can download
+* Constructs JSON object with headers and lines
+* Shows data types for lines
+* Rename/delete keys for lines
+* Change line key values based on index
+* Change line key values for all line objects
+* Directly edit JSON output
+
+---
+
+## Technologies used
+* Typescript
+* React front-end UI library
+* Electron js (desktop app)
+
+---
+
+## Prerequisites
 * The tool only works with `.xlsx` excel file format
 * At least 2 sheets are required in the workbook (otherwise nothing will happen)
 * For data to be correct `table headers for both sheets should start from the first row`
-
 * Sheet 1: sets the lines data
 * Sheet 2: sets the headers data (first data row)
 
