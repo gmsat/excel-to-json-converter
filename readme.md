@@ -1,4 +1,4 @@
-## JSON sample creator
+## Excel to JSON converter
 
 The tool converts excel workbook to Json format and lets you to customize the output
 
@@ -16,6 +16,7 @@ The tool converts excel workbook to Json format and lets you to customize the ou
 * Typescript
 * React front-end UI library
 * Electron js (desktop app)
+* xlsx
 
 ---
 
